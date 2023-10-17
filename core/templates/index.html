@@ -1,0 +1,15 @@
+{% extends 'layouts/admin.html' %}
+
+{% block content %}
+<div x-data="{count: 0}" class="mb-3">
+    <input type="number" x-model="count"/>
+    <br/>
+
+    <button @click="count++">Increment</button>
+
+    <button @click="count *= count">Square</button>
+
+    <h1 x-text="count"></h1>
+</div>
+
+{% endblock %}
