@@ -38,11 +38,11 @@
                 <li class="nav-item dropdown">
                     <a class="bi bi-person-circle nav-link dropdown-toggle align-content-end" href="#"
                        data-bs-toggle="dropdown"
-                       aria-expanded="false"> User</a>
+                       aria-expanded="false"> {{ user.username}}</a>
                     <ul class="dropdown-menu dropdown-menu-end w-auto h-auto">
                         <li class="d-flex align-items-center flex-column px-5 ">
-                            <h5 class="" href=''>Username</h5>
-                            <h6 class="text-muted" href=''>Supervisor</h6>
+                            <h5 class="" href=''>{{ user.username }}</h5>
+                            <h6 class="text-muted" href=''>{{ user.role }}</h6>
                         </li>
                         <li>
                             <hr class="dropdown-divider bg-light">

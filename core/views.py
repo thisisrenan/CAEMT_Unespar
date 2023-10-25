@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-
+from core.models.users import Estagiario
 # Create your views here.
 # Create your views here.
 def index(request):
