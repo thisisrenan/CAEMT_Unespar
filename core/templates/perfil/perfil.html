@@ -1,9 +1,31 @@
 {% extends 'layouts/admin.html' %}
 
 {% block content %}
-   <h1>{{ user.username }}</h1>
+    <div class="d-flex flex-row mt-5 justify-content-evenly">
+        <div class="d-flex  flex-column align-items-center w-25 rounded-3 ">
+            <img id="perfilimg" src="{{ userProfile.image.url }}" class="perfil-page rounded-circle" style="object-fit: cover; width: 16em; height: 16em; border: 4px solid rgba(196,196,196,0.77);" alt="">
+            <div class="align-items-start " style="margin-right: auto">
+                <h2  class="text-capitalize" >{{ userProfile.username }}</h2>
+                <h4  class="text-uppercase text-muted" >{{ userProfile.role }}</h4>
+                <p class="text-start" style="max-width: 20em; font-size: 1em; text-align: justify;">
+                    {{ userProfile.biografia }}
+                </p>
+            </div>
+
+        </div>
+        <div class="p-5 mt-1 rounded-3 border w-75">
+            <h1>{{ userProfile.username }}</h1>
+        </div>
+    </div>
+
 {% endblock %}
 
 <style>
+
+    .perfil-page{
+        object-fit: cover;
+        width: 100px;
+        height: 100px;
+    }
 
 </style>

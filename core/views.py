@@ -12,9 +12,10 @@ def index(request):
 def home(request):
     return render(request, "index.html", {})
 
+@login_required
 def PerfilProfile(request, username):
     user = get_object_or_404(User,username=username)
     context = {
-        "user": user
+        "userProfile": user
     }
     return render(request, 'perfil/perfil.html', context)

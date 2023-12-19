@@ -13,12 +13,16 @@
                 <span class="bi-list" aria-hidden="true"></span>
             </a>
             <img class="navbar-brand" src="../../static/img/logo.png" height="50em" alt="">
-           <a class="navbar-brand" style="font-size: 1.1em; margin-top: 7px; font-family: 'Courier New';">
-              {% if request.path == "/" %}
-                Home
-              {% else %}
-                {{ request.path  }}
-              {% endif %}
+            <a class="navbar-brand text-uppercase" style="font-size: 1.1em; margin-top: 7px; font-family: 'Courier New';">
+                {% if request.path == "/" %}
+                    Home
+                {% else %}
+                    {% if request.path|slice:":8" == "/perfil/" %}
+                        {{ request.path|slice:"8:"}}
+                    {% else %}
+                        {{ request.path }}
+                    {% endif %}
+                {% endif %}
             </a>
 
         </div>
@@ -29,9 +33,12 @@
        <div class="">
             <ul class="navbar-nav " style="font-size: 1em">
                 <li class="nav-item dropdown">
-                    <a class="bi bi-person-circle nav-link dropdown-toggle align-content-end" role="button" href="#offcanvasUser"
+
+                    <a class="nav-link dropdown-toggle align-content-end" role="button" href="#offcanvasUser"
                        data-bs-toggle="offcanvas"
-                       aria-expanded="false"> {{ user.username}}
+                       aria-expanded="false">
+                        <img id="perfilimg" src="{{ user.image.url }}" class="perfil-page rounded-circle" style="object-fit: cover; width: 2em; height: 2em; " alt="">
+
                     </a>
                     <!--<ul class="dropdown-menu dropdown-menu-end w-auto h-auto">
                         <li class="d-flex align-items-center flex-column px-5 ">
@@ -68,13 +75,14 @@
 
 
 <div class="offcanvas offcanvas-end rounded-start" tabindex="-1" id="offcanvasUser" >
-  <div class="offcanvas-header">
-      <div class="flex-row">
+<div class="offcanvas-header justify-content-start">
+    <img id="perfilimg" src="{{ user.image.url }}" class="rounded-circle" style="object-fit: cover; width: 3em; height: 3em;" alt="">
+    <div class="flex-row" style="margin-left: 1em">
         <p class="" style="font-size: 100%" href=''>{{ user.username }}</p>
         <p class="text-muted" style="font-size: 0.8em; margin-top: -1.5em">{{ user.role }}</p>
-      </div>
-    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close" style="margin-top: -2em"></button>
-  </div>
+    </div>
+    <button type="button" class="btn-close text-reset ms-auto" data-bs-dismiss="offcanvas" aria-label="Close" style="margin-top: -2em"></button>
+</div>
   <div class="offcanvas-body">
         <ul style="list-style: none; margin-bottom: 0;">
           <li>
