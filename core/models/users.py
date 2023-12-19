@@ -12,6 +12,7 @@ class User(AbstractUser):
         ESTAGIARIO = "ESTAGIARIO", 'estagiario'
 
     email = models.EmailField(unique=True, verbose_name='Email')
+    username = models.EmailField(unique=True, verbose_name='Username')
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
     base_role = Role.SUPERVISOR

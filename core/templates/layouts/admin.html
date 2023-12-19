@@ -17,7 +17,7 @@
               {% if request.path == "/" %}
                 Home
               {% else %}
-                {{ nome_do_path }}
+                {{ request.path  }}
               {% endif %}
             </a>
 
@@ -78,7 +78,7 @@
   <div class="offcanvas-body">
         <ul style="list-style: none; margin-bottom: 0;">
           <li>
-            <a class="bi-person dropdown-item px-1" href=''> Perfil</a>
+            <a class="bi-person dropdown-item px-1" href='{% url "perfil" user.username %}'> Perfil</a>
           </li>
         </ul>
         <hr class="dropdown-divider " style="color: lightgray; margin: 0.5em;">
@@ -108,7 +108,7 @@
   <div class="offcanvas-body">
         <ul style="list-style: none; margin-bottom: 0;">
            <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="">Home</a>
+                    <a class="nav-link " aria-current="page" href="{% url "home" %}">Home</a>
                 </li>
         </ul>
         <hr class="dropdown-divider " style="color: lightgray; margin: 0.5em;">
