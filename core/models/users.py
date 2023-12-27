@@ -4,16 +4,27 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 
+class Endereco(models.Model):
+    cep = models.CharField(verbose_name='CEP', max_length=8)
+    numero = models.CharField(verbose_name='Número', max_length=10)
+    complemento = models.CharField(verbose_name='Complemento', max_length=255, blank=True)
+    cidade = models.CharField(verbose_name='Cidade', max_length=100, blank=True)
+    estado = models.CharField(verbose_name='estado', max_length=100, blank=True)
+    bairro = models.CharField(verbose_name='Bairro', max_length=100, blank=True)
+    av_r = models.CharField(verbose_name="AV", max_length=300,  blank=True)
+
 
 class User(AbstractUser):
     class Role(models.TextChoices):
         SUPERVISOR = "SUPERVISOR", 'supervisor'
         ORIENTADOR = "ORIENTADOR", 'orientador'
         ESTAGIARIO = "ESTAGIARIO", 'estagiario'
+        PARTICIPANTE = "PARTICIPANTE", 'participante'
 
     email = models.EmailField(unique=True, verbose_name='Email')
     username = models.CharField(unique=True, verbose_name='Username', max_length=10)
     biografia = models.CharField(verbose_name='Bio', max_length=50, default='')
+    outrasinformacoes = models.CharField(verbose_name='Bio', max_length=500, default='')
     image = models.ImageField(upload_to='pics', default='padrao.png')
 
     USERNAME_FIELD = 'email'
@@ -26,6 +37,36 @@ class User(AbstractUser):
         if not self.pk:
             self.role = self.base_role
             return super().save(*arg, **kwargs)
+
+
+
+
+class Participante(User):
+    base_role = User.Role.PARTICIPANTE
+
+    class Meta:
+        proxy = True
+
+    def welcome(self):
+        return "Only Orientador"
+
+    @classmethod
+    def create_users(cls, username, email, nascimento, telefone, motivobusca, cep, numero, complemento, cidade, estado, bairro, av):
+        Participante = cls.objects.create_user(username=username, password="123", email=email)
+        endereco = Endereco.objects.create(cep=cep, numero=numero, complemento=complemento, cidade=cidade, estado=estado, bairro=bairro, av_r=av)
+        Profile = ParticipanteProfile.objects.create(user=Participante, data_de_nascimento=nascimento, telefone=telefone, motivo_busca_atendimento=motivobusca, endereco=endereco)
+        return Participante
+        print("Sucesso demais Participante")
+
+
+class ParticipanteProfile(models.Model):
+    user = models.OneToOneField(Participante, on_delete=models.CASCADE)
+    participante_id = models.IntegerField(verbose_name='ID', primary_key=True)
+    data_de_nascimento = models.DateField(verbose_name='Nascimento', blank=True)
+    telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
+    motivo_busca_atendimento = models.TextField(verbose_name='Motivo da Busca por Atendimento', blank=True)
+    endereco = models.OneToOneField(Endereco, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Endereço')
+
 
 
 class Orientador(User):

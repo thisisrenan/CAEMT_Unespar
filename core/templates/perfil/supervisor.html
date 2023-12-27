@@ -1,0 +1,27 @@
+
+{% block contentPerfil %}
+<div class="d-flex row p-5 mt-2 rounded-3 border w-75">
+    <div class="d-flex ">
+        <div class="w-50 h-25">
+            <h6 class="label">Nome:</h6>
+            <p class="me-3 rounded-3 border p-2">{{ userProfile.first_name }}</p>
+        </div>
+        <div class="h-25 w-50">
+            <h6 class="label">Sobrenome:</h6>
+            <p class="me-3 rounded-3 border p-2">{{ userProfile.last_name }}</p>
+        </div>
+    </div>
+    <div class="d-flex">
+        <div class="w-100 h-25">
+            <h6 class="label">Email:</h6>
+            <p class="me-3 rounded-3 border p-2">{{ userProfile.email }}</p>
+        </div>
+    </div>
+    <div class="d-flex">
+        <div class="w-100 h-25">
+            <h6 class="label">Outras Informações:</h6>
+            <textarea class="form-control me-3 rounded-3 border p-2 bg-transparent" rows="3" readonly style="resize: none; pointer-events: none;">  </textarea>
+        </div>
+    </div>
+</div>
+{% endblock contentPerfil %}

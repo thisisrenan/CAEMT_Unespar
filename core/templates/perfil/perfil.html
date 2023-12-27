@@ -7,15 +7,15 @@
             <div class="align-items-start " style="margin-right: auto">
                 <h2  class="text-capitalize" >{{ userProfile.username }}</h2>
                 <h4  class="text-uppercase text-muted" >{{ userProfile.role }}</h4>
-                <p class="text-start" style="max-width: 20em; font-size: 1em; text-align: justify;">
+                <p class="text-start" style=" max-width: 20em; font-size: 1em; text-align: justify;">
                     {{ userProfile.biografia }}
                 </p>
             </div>
 
         </div>
-        <div class="p-5 mt-1 rounded-3 border w-75">
-            <h1>{{ userProfile.username }}</h1>
-        </div>
+            {% with template_path='perfil/'|add:userProfile.role|lower|add:'.html' %}
+                {% include template_path %}
+            {% endwith %}
     </div>
 
 {% endblock %}
