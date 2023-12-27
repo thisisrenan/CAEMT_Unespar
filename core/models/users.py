@@ -41,31 +41,7 @@ class User(AbstractUser):
 
 
 
-class Participante(User):
-    base_role = User.Role.PARTICIPANTE
 
-    class Meta:
-        proxy = True
-
-    def welcome(self):
-        return "Only Orientador"
-
-    @classmethod
-    def create_users(cls, username, email, nascimento, telefone, motivobusca, cep, numero, complemento, cidade, estado, bairro, av):
-        Participante = cls.objects.create_user(username=username, password="123", email=email)
-        endereco = Endereco.objects.create(cep=cep, numero=numero, complemento=complemento, cidade=cidade, estado=estado, bairro=bairro, av_r=av)
-        Profile = ParticipanteProfile.objects.create(user=Participante, data_de_nascimento=nascimento, telefone=telefone, motivo_busca_atendimento=motivobusca, endereco=endereco)
-        return Participante
-        print("Sucesso demais Participante")
-
-
-class ParticipanteProfile(models.Model):
-    user = models.OneToOneField(Participante, on_delete=models.CASCADE)
-    participante_id = models.IntegerField(verbose_name='ID', primary_key=True)
-    data_de_nascimento = models.DateField(verbose_name='Nascimento', blank=True)
-    telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
-    motivo_busca_atendimento = models.TextField(verbose_name='Motivo da Busca por Atendimento', blank=True)
-    endereco = models.OneToOneField(Endereco, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Endereço')
 
 
 
@@ -115,3 +91,39 @@ class EstagiarioProfile(models.Model):
     data_de_nascimento = models.DateField(verbose_name='Nascimento', blank=True)
     telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
     orientador = models.ForeignKey(Orientador, on_delete=models.SET_NULL, null=True, blank=True, related_name='estagiarios', verbose_name='Orientador')
+
+
+class Participante(User):
+    base_role = User.Role.PARTICIPANTE
+
+    class Meta:
+        proxy = True
+
+    def welcome(self):
+        return "Only Orientador"
+
+    @classmethod
+    def create_users(cls, username, email, nascimento, telefone, motivobusca, cep, numero, complemento, cidade, estado,
+                     bairro, av, estagiarios=None):
+        participante = cls.objects.create_user(username=username, password="123", email=email)
+        endereco = Endereco.objects.create(cep=cep, numero=numero, complemento=complemento, cidade=cidade,
+                                           estado=estado, bairro=bairro, av_r=av)
+        profile = ParticipanteProfile.objects.create(user=participante, data_de_nascimento=nascimento,
+                                                     telefone=telefone, motivo_busca_atendimento=motivobusca,
+                                                     endereco=endereco)
+
+        if estagiarios:
+            profile.estagiarios.set(estagiarios)
+
+        print("Sucesso demais Participante")
+        return participante
+
+
+class ParticipanteProfile(models.Model):
+    user = models.OneToOneField(Participante, on_delete=models.CASCADE)
+    participante_id = models.AutoField(verbose_name='ID', primary_key=True, )
+    data_de_nascimento = models.DateField(verbose_name='Nascimento', blank=True)
+    telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
+    motivo_busca_atendimento = models.TextField(verbose_name='Motivo da Busca por Atendimento', blank=True)
+    endereco = models.OneToOneField(Endereco, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Endereço')
+    estagiarios = models.ManyToManyField(Estagiario, related_name='participante_profiles', blank=True)
