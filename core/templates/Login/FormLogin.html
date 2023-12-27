@@ -1,26 +1,38 @@
 
 
-
-<form id="form" class="p-5">
-    <h1 class="h1 mb-3 fw-normal text-center">Login</h1>
-    <hr class="mt-3 mb-4">
-    <div class="form-floating pb-3">
-        <input type="email" class="form-control" id="floatingInput" placeholder="Email" />
-        <label for="floatingInput"> Seu Email</label>
+<div class="d-flex flex-row justify-content-center">
+    <div class="col-sm-12 mt-5">
+        <div class="row d-flex align-items-cente ">
+            <h1 class="display-4 font fw-bold">CAEMT Unespar</h1>
+            <p class="lead" style="font-size: 1.5em">Centro de Atendimento e Estudos em Musicoterapia</p>
+        </div>
     </div>
-    <div class="form-floating">
-        <input type="password" class="form-control" id="floatingInput" placeholder="Email" />
-        <label for="floatingInput"> Sua Senha</label>
-    </div>
-    <div class="form-check text-start my-3">
-        <input type="checkbox" class="form-check-input" id="flexCheck" placeholder="Email" />
-        <label class="form-check-label" for="flexCheck"> lembre de mim</label>
-    </div>
+    <div class=" col-xl-11 mb-5" >
+        <form id="form" class="p-5" method="post">
+                {% csrf_token %}
+                <div class="text-center mb-3">
+                    <img src="../../static/img/logo.png" alt="">
+                </div>
 
-    <button class="btn btn-primary w-100 py-2 button_style ">Entrar</button>
-</form>
+                <hr class="mt-3 mb-4">
+                <div class="form-floating pb-3">
+                    <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Email" />
+                    <label for="floatingInput"> Seu Email</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="floatingInput" name="password" placeholder="Email" />
+                    <label for="floatingInput"> Sua Senha</label>
+                </div>
 
+            <button class="btn btn-primary w-100 py-2 button_style ">Entrar</button>
+        </form>
+    </div>
+</div>
 <style>
+    .font {
+        font-family: bootstrap-icons;
+        margin-top: 1.5em;
+    }
     .button_style {
         background-color: #04D361;
         border-color: #04D361
