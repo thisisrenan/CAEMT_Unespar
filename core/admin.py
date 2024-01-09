@@ -1,9 +1,10 @@
 from django.contrib import admin
-from .models import *
-from .models.users import EstagiarioProfile, OrientadorProfile
+
+from .models.users import *
 
 # Register your models here.
 
 admin.site.register(User)
-admin.site.register(EstagiarioProfile)
-admin.site.register(OrientadorProfile)
+admin.site.register(Estagiario)
+admin.site.register(Orientador)
+admin.site.register(Participante)
