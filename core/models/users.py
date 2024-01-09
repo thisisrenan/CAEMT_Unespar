@@ -40,6 +40,12 @@ class Orientador(User):
 
     class Meta:
         verbose_name_plural = "Orientador"
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.set_password(self.password)
+            self.role = self.base_role
+        super().save(*args, **kwargs)
     def welcome(self):
         return "Only Orientador"
 
@@ -56,6 +62,12 @@ class Estagiario(User):
 
     class Meta:
         verbose_name_plural = "Estagiario"
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.set_password(self.password)
+            self.role = self.base_role
+        super().save(*args, **kwargs)
     def welcome(self):
         return "Only Estagiario"
 
