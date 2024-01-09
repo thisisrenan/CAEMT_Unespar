@@ -8,7 +8,7 @@ class OrientadorForm(forms.ModelForm):
         model = Orientador
         fields = '__all__'
         exclude = ['role', 'user_permissions', 'groups', 'is_staff', 'is_superuser', 'last_login', 'is_active']
-        fields = ['username', 'password', 'password_confirm', 'first_name', 'last_name', 'email', 'data_de_nascimento', 'telefone', 'image', 'data_final', 'role']
+        fields = ['username', 'password', 'password_confirm', 'first_name', 'last_name', 'email', 'data_de_nascimento', 'telefone', 'image', 'role']
 
     def clean(self):
         cleaned_data = super().clean()
