@@ -68,14 +68,15 @@ class Estagiario(User):
     class Meta:
         verbose_name_plural = "Estagiario"
 
-
+    def get_absolute_url(self):
+        return reverse('estagiarios')
     def welcome(self):
         return "Only Estagiario"
 
-
-
-
-
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.set_password(self.password)
+        super().save(*args, **kwargs)
 
 
 class Participante(models.Model):
