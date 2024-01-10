@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -15,8 +16,8 @@ class User(AbstractUser):
 
     email = models.EmailField(unique=True, verbose_name='Email')
     username = models.CharField(unique=True, verbose_name='Username', max_length=10)
-    biografia = models.CharField(verbose_name='Bio', max_length=50, default='')
-    outrasinformacoes = models.CharField(verbose_name='Bio', max_length=500, default='')
+    biografia = models.CharField(verbose_name='Bio', max_length=50, blank=True)
+    outrasinformacoes = models.CharField(verbose_name='OutrasInformacoes', max_length=500, blank=True)
     image = models.ImageField(upload_to='pics', default='padrao.png')
 
     USERNAME_FIELD = 'email'
@@ -27,10 +28,12 @@ class User(AbstractUser):
 
     class Meta:
         verbose_name_plural = "Supervisor"
-    def save(self, *arg, **kwargs):
+
+    def save(self, *args, **kwargs):
         if not self.pk:
+            self.set_password(self.password)
             self.role = self.base_role
-            return super().save(*arg, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class Orientador(User):
@@ -41,13 +44,12 @@ class Orientador(User):
     class Meta:
         verbose_name_plural = "Orientador"
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.set_password(self.password)
-            self.role = self.base_role
-        super().save(*args, **kwargs)
+
     def welcome(self):
         return "Only Orientador"
+
+    def get_absolute_url(self):
+        return reverse('orientadores')
 
 
 
@@ -63,11 +65,7 @@ class Estagiario(User):
     class Meta:
         verbose_name_plural = "Estagiario"
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.set_password(self.password)
-            self.role = self.base_role
-        super().save(*args, **kwargs)
+
     def welcome(self):
         return "Only Estagiario"
 

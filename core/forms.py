@@ -18,3 +18,11 @@ class OrientadorForm(forms.ModelForm):
         if password and password_confirm and password != password_confirm:
             raise forms.ValidationError("As senhas não coincidem. Por favor, tente novamente.")
 
+
+class OrientadorFormEdit(forms.ModelForm):
+    class Meta:
+        model = Orientador
+        exclude = ['role', 'user_permissions', 'groups', 'is_staff', 'is_superuser', 'last_login', 'is_active']
+        fields = ['username', 'first_name', 'last_name', 'data_de_nascimento', 'telefone', 'image']
+
+

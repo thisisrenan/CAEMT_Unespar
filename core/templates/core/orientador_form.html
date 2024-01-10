@@ -1,7 +1,7 @@
 {% extends 'layouts/admin.html' %}
 
 {% block content %}
-<form action="" method="post">
+<form  method="POST">
     {% csrf_token %}
     {{ form }}
     <button type="submit">Salvar </button>
