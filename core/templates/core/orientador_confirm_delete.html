@@ -1,0 +1,10 @@
+{% extends 'layouts/admin.html' %}
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    <h1>Deseja Realmente Deletar o Usuario {{ orientadores.username }}</h1>
+    {{ form }}
+    <button type="submit">Confirmar</button>
+</form>
+{% endblock %}

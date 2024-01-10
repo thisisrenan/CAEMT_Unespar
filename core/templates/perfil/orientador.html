@@ -36,10 +36,10 @@
                 <div class="w-50 h-25">
                     <h6 class="label">Estagiarios:</h6>
                     <ul class="list-group me-3">
-                        {% for estagiario in userProfile.estagiarios.all %}
+                        {% for estagiario in userProfile.orientador.estagiarios.all %}
                          <li class="list-group-item d-flex align-items-center">
-                            <img id="perfilimg" src="{{ estagiario.user.image.url }}" class="rounded-circle" style="object-fit: cover; width: 2em; height: 2em; border: 1px solid rgba(196,196,196,0.77);" alt="">
-                            <a class="mb-0 ms-2 text-dark text-decoration-none " target="_blank" href={% url "perfil" estagiario.user.username %} > {{ estagiario.user.username }}</a>
+                            <img id="perfilimg" src="{{ estagiario.image.url }}" class="rounded-circle" style="object-fit: cover; width: 2em; height: 2em; border: 1px solid rgba(196,196,196,0.77);" alt="">
+                            <a class="mb-0 ms-2 text-dark text-decoration-none " target="_blank" href={% url "perfil" estagiario.username %} > {{ estagiario.username }}</a>
                         </li>
                         {% endfor %}
                     </ul>
