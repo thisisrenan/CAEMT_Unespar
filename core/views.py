@@ -35,14 +35,14 @@ def PerfilProfile(request, username):
 class OrientadorCreate(CreateView):
     model = Orientador
     form_class = OrientadorForm
-    template_name = 'core/orientador_form.html'
+    template_name = 'orientadoreTemplate/orientador_form.html'
     success_url = reverse_lazy('orientadores')
 
 
 @method_decorator(user_passes_test(is_supervisor, login_url='home'), name='dispatch')
 class OrientadorList(ListView):
     model = Orientador
-    template_name = 'core/orientador_list.html'
+    template_name = 'orientadoreTemplate/orientador_list.html'
     context_object_name = 'orientadores'
 
 
@@ -51,10 +51,11 @@ class OrientadorList(ListView):
 
 class OrientadorEdit(UpdateView):
     model = Orientador
-    template_name = 'core/orientador_form.html'
+    template_name = 'orientadoreTemplate/orientador_form.html'
     form_class = OrientadorFormEdit
 
 class OrientadorDelete(DeleteView):
     model = Orientador
     context_object_name = 'orientadores'
+    template_name = 'orientadoreTemplate/orientador_confirm_delete.html'
     success_url = reverse_lazy('orientadores')
