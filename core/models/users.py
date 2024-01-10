@@ -31,7 +31,6 @@ class User(AbstractUser):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.set_password(self.password)
             self.role = self.base_role
         super().save(*args, **kwargs)
 
@@ -51,6 +50,10 @@ class Orientador(User):
     def get_absolute_url(self):
         return reverse('orientadores')
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.set_password(self.password)
+        super().save(*args, **kwargs)
 
 
 
