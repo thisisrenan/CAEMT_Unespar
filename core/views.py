@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 
-from .forms import OrientadorForm, OrientadorFormEdit
+from .forms import OrientadorForm, OrientadorFormEdit, EstagiarioForm, EstagiarioFormEdit
 
 from core.models.users import *
 from django.views import generic
@@ -59,3 +59,33 @@ class OrientadorDelete(DeleteView):
     context_object_name = 'orientadores'
     template_name = 'orientadoreTemplate/orientador_confirm_delete.html'
     success_url = reverse_lazy('orientadores')
+
+
+
+class EstagiarioCreate(CreateView):
+    model = Estagiario
+    form_class = EstagiarioForm
+    template_name = 'estagiarioTemplate/estagiario_form.html'
+    success_url = reverse_lazy('estagiarios')
+
+
+@method_decorator(user_passes_test(is_supervisor, login_url='home'), name='dispatch')
+class EstagiarioList(ListView):
+    model = Estagiario
+    template_name = 'estagiarioTemplate/estagiario_list.html'
+    context_object_name = 'estagiarios'
+
+
+    def get_queryset(self):
+        return Estagiario.objects.all()
+
+class EstagiarioEdit(UpdateView):
+    model = Estagiario
+    template_name = 'estagiarioTemplate/estagiario_form.html'
+    form_class = EstagiarioFormEdit
+
+class EstagiarioDelete(DeleteView):
+    model = Estagiario
+    context_object_name = 'estagiarios'
+    template_name = 'estagiarioTemplate/estagiario_confirm_delete.html'
+    success_url = reverse_lazy('estagiarios')
