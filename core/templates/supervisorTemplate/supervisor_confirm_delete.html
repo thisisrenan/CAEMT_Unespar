@@ -5,6 +5,7 @@
     {% csrf_token %}
     <h1>Deseja Realmente Deletar o Usuario {{ supervisores.username }}</h1>
     {{ form|bootstrap }}
+    {{ form  }}
     <button type="submit" class="bnt btn-danger">Confirmar</button>
 </form>
 {% endblock %}

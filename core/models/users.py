@@ -5,7 +5,11 @@ from django.dispatch import receiver
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 
-
+def user_directory_path(instance, filename):
+    ext = filename.split('.')[-1]
+    new_filename = f"{instance.username}"
+    full_path = f'pics/{new_filename}.{ext}'
+    return full_path
 
 
 class User(AbstractUser):
@@ -18,7 +22,7 @@ class User(AbstractUser):
     username = models.CharField(unique=True, verbose_name='Username', max_length=10)
     biografia = models.CharField(verbose_name='Bio', max_length=50, blank=True)
     outrasinformacoes = models.CharField(verbose_name='OutrasInformacoes', max_length=500, blank=True)
-    image = models.ImageField(upload_to='pics', default='padrao.png')
+    image = models.ImageField(upload_to=user_directory_path, default='padrao.png')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -38,6 +42,10 @@ class User(AbstractUser):
             if self.base_role == "SUPERVISOR":
                 self.set_password(self.password)
         super().save(*args, **kwargs)
+
+        if self.image:
+            self.image.name = user_directory_path(self, self.image.name)
+            super().save(*args, **kwargs)
 
 
 class Orientador(User):
