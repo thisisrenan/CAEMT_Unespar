@@ -1,0 +1,26 @@
+{% extends 'layouts/admin.html' %}
+
+{% block content %}
+  <h1>Supervisores</h1>
+    <a href='{%  url "Create_Supervisor" %}'> Criar Supervisor</a>
+<div class="row">
+  <div class="col-md-6 m-auto">
+    <div class="card card-body">
+      {% if supervisores %}
+      <ul class="list-group list-group-flush">
+        {% for supervisor in supervisores %}
+        <li class="list-group-item">
+          <a href='{% url "Edit_Supervisor" supervisor.id %}'> {{ supervisor.username }}</a>
+        <a href='{% url "Delete_Supervisor" supervisor.id %}'> Deletar</a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No supervisores</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

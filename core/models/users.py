@@ -29,9 +29,14 @@ class User(AbstractUser):
     class Meta:
         verbose_name_plural = "Supervisor"
 
+    def get_absolute_url(self):
+        return reverse('supervisores')
+
     def save(self, *args, **kwargs):
         if not self.pk:
             self.role = self.base_role
+            if self.base_role == "SUPERVISOR":
+                self.set_password(self.password)
         super().save(*args, **kwargs)
 
 
