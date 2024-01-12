@@ -108,7 +108,8 @@
   <div class="offcanvas-header">
       <div class="flex-col">
           <img class="navbar-brand" src="../../static/img/logo.png" height="40em" alt="">
-        <a class="navbar-brand navbar-brand" href="#offcanvasHome" data-bs-toggle="offcanvas" style="font-size: 1.1em; margin-top: 3px; font-family: 'Courier New'; font-weight: bold" >
+        <a class="navbar-brand navbar-brand" href="#offcanvasHome" data-bs-toggle="offcanvas" style="font-size: 1.1em; margin-top: 3px; font-family: 'Courier New'; font-weight: bold     text-decoration: none;
+    color: #000000" >
                 CAEMT
             </a>
       </div>
@@ -117,44 +118,42 @@
   <div class="offcanvas-body">
         <ul style="list-style: none; margin-bottom: 0;">
            <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="{% url "home" %}">Home</a>
+                    <a class="nav-link dropdown-item" aria-current="page" href="{% url "home" %}">Home</a>
                 </li>
         </ul>
         <hr class="dropdown-divider " style="color: lightgray; margin: 0.5em;">
         <ul style="list-style: none; margin-top: 0; margin-bottom: 0;">
            <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="{% url 'estagiarios' %}">Estagiarios</a>
+                    <a class="nav-link dropdown-item" aria-current="page" href="{% url 'estagiarios' %}">Estagiarios</a>
                 </li>
         </ul>
         <hr class="dropdown-divider " style="color: lightgray; margin: 0.5em;">
        <ul style="list-style: none; margin-bottom: 0;">
            <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="{% url 'orientadores' %}">Orientadores</a>
+                    <a class="nav-link dropdown-item" aria-current="page" href="{% url 'orientadores' %}">Orientadores</a>
                 </li>
         </ul>
        <hr class="dropdown-divider " style="color: lightgray; margin: 0.5em;">
        <ul style="list-style: none; margin-bottom: 0;">
            <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="{% url 'supervisores' %}">Supervisores</a>
+                    <a class="nav-link dropdown-item" aria-current="page" href="{% url 'supervisores' %}">Supervisores</a>
                 </li>
         </ul>
         <hr class="dropdown-divider " style="color: lightgray; margin: 0.5em;">
         <ul style="list-style: none; margin-top: 0; margin-bottom: 0;">
            <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="">Participantes</a>
+                    <a class="nav-link dropdown-item" aria-current="page" href="">Participantes</a>
                 </li>
         </ul>
         <hr class="dropdown-divider " style="color: lightgray; margin: 0.5em;">
        <ul style="list-style: none; margin-top: 0; margin-bottom: 0;">
            <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="">Calendario</a>
+                    <a class="nav-link dropdown-item" aria-current="page" href="">Calendario</a>
                 </li>
         </ul>
   </div>
 </div>
 <main class="container">
-
-
     {% block content %}
 
     {% endblock content %}
@@ -219,4 +218,19 @@ footer {
         width: auto;
         height: auto;
     }
+
+.offcanvas.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.offcanvas {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.offcanvas-backdrop.show {
+    opacity: 0.5; /* Ajuste a opacidade conforme necessário */
+    transition: opacity 0.3s ease;
+}
 </style>

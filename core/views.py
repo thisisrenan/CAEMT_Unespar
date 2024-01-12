@@ -93,6 +93,7 @@ class EstagiarioDelete(DeleteView):
 class SupervisorCreate(CreateView):
     model = User
     form_class = SupervisorForm
+    context_object_name = 'supervisores'
     template_name = 'supervisorTemplate/supervisor_form.html'
     success_url = reverse_lazy('supervisores')
 
@@ -109,6 +110,7 @@ class SupervisorList(ListView):
 
 class SupervisorEdit(UpdateView):
     model = User
+    context_object_name = 'supervisores'
     template_name = 'supervisorTemplate/supervisor_form.html'
     form_class = SupervisorFormEdit
 

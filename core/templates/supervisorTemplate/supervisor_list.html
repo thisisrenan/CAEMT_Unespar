@@ -10,8 +10,8 @@
       <ul class="list-group list-group-flush">
         {% for supervisor in supervisores %}
         <li class="list-group-item">
-          <a href='{% url "Edit_Supervisor" supervisor.id %}'> {{ supervisor.username }}</a>
-        <a href='{% url "Delete_Supervisor" supervisor.id %}'> Deletar</a>
+          <a href='{% url "Edit_Supervisor" supervisor.id %}' > {{ supervisor.username }}</a>
+        <a href='{% url "Delete_Supervisor" supervisor.id %}' > Deletar</a>
         </li>
         {% endfor %}
       </ul>
