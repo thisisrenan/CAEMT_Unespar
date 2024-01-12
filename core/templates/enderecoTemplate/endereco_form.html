@@ -1,0 +1,39 @@
+{% extends 'layouts/admin.html' %}
+{% load bootstrap %}
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    {{ form|bootstrap }}
+
+    <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Salvar</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#id_cep').on('blur', function() {
+            var cep = $(this).val().replace(/\D/g, '');
+        console.log('é isso q ta printando');
+            if (cep.length === 8) {
+                $.ajax({
+                    url: 'https://viacep.com.br/ws/' + cep + '/json/',
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log('Dados do ViaCEP:', data, 'é isso q ta printando');
+
+                        // Preencha automaticamente os campos do formulário com os dados retornados
+                        $('#id_cidade').val(data.localidade || '');
+                        $('#id_estado').val(data.uf || '');
+                        $('#id_bairro').val(data.bairro || '');
+                        $('#id_av_r').val(data.logradouro || '');
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('Erro na requisição ViaCEP:', error);
+                    }
+                });
+            }
+        });
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'layouts/admin.html' %}
+
+{% block content %}
+  <h1>Participantes</h1>
+    <a href='{%  url "Create_Participante" %}'>Criar Participante</a>
+<div class="row">
+  <div class="col-md-6 m-auto">
+    <div class="card card-body">
+      {% if participantes %}
+      <ul class="list-group list-group-flush">
+        {% for participante in participantes %}
+        <li class="list-group-item">
+          <a href='{% url "Edit_Participante" participante.id %}' > {{ participante.username }}</a>
+          {% if participante.endereco.id %}
+            <a href='{% url "Edit_Endereco" participante.endereco.id %}'>Editar Endereço</a>
+              {% else %}
+               <a href='{% url "Create_Endereco" participante.id %}'>Adicionar Endereço</a>
+          {% endif %}
+            <a href='{% url "Delete_Participante" participante.id %}' > Deletar</a>
+
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No Participantes</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
