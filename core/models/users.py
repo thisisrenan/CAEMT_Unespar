@@ -93,12 +93,22 @@ class Estagiario(User):
 
 
 class Participante(models.Model):
+    username = models.CharField(unique=True, verbose_name='Username', max_length=100)
     nome = models.CharField(max_length=100)
     sobrenome = models.CharField(max_length=100)
-    data_de_nascimento = models.DateField(verbose_name='Nascimento', blank=True)
     telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
     motivo_busca_atendimento = models.TextField(verbose_name='Motivo da Busca por Atendimento', blank=True)
     estagiarios = models.ManyToManyField(Estagiario, related_name='participante_profiles', blank=True)
+
+    def get_absolute_url(self):
+        return reverse('participantes')
+
+    def save(self, *args, **kwargs):
+        self.username = f"{self.nome.replace(' ', '').capitalize()}_{self.sobrenome.replace(' ', '').capitalize()}"
+
+        super().save(*args, **kwargs)
+    def __str__(self):
+        return self.nome
 
 
 class Endereco(models.Model):
@@ -109,4 +119,7 @@ class Endereco(models.Model):
     estado = models.CharField(verbose_name='estado', max_length=100, blank=True)
     bairro = models.CharField(verbose_name='Bairro', max_length=100, blank=True)
     av_r = models.CharField(verbose_name="AV", max_length=300,  blank=True)
-    participante = models.OneToOneField(Participante, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Endereço')
+    participante = models.OneToOneField(Participante, on_delete=models.CASCADE , null=True, blank=True, verbose_name='Endereço')
+
+    def get_absolute_url(self):
+        return reverse('participantes')

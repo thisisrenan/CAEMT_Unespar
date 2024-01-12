@@ -35,3 +35,17 @@ urlpatterns += [
     path('Estagiario/Deletar/<int:pk>', EstagiarioDelete.as_view(), name='Delete_Estagiario'),
     path("Estagiario", EstagiarioList.as_view(), name="estagiarios"),
 ]
+
+#URLS Participante
+urlpatterns += [
+    path('Participante/novo', ParticipanteCreate.as_view(), name='Create_Participante'),
+    path('Participante/editar/<int:pk>', ParticipanteEdit.as_view(), name='Edit_Participante'),
+    path('Participante/Deletar/<int:pk>', ParticipanterDelete.as_view(), name='Delete_Participante'),
+    path("Participante", ParticipanteList.as_view(), name="participantes"),
+]
+
+#URLS endereco
+urlpatterns += [
+    path('Endereco/novo/<int:pk>', EnderecoCreate.as_view(), name='Create_Endereco'),
+    path('Endereco/editar/<int:pk>', EnderecoEdit.as_view(), name='Edit_Endereco'),
+]

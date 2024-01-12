@@ -77,3 +77,18 @@ class SupervisorFormEdit(forms.ModelForm):
         fields = ['username', 'first_name', 'last_name','biografia','outrasinformacoes', 'image',]
 
 
+class ParticipanteForm(forms.ModelForm):
+    class Meta:
+        model = Participante
+        fields = '__all__'
+        exclude = ['estagiarios','username']
+
+class EnderecoForm(forms.ModelForm):
+    class Meta:
+        model = Endereco
+        fields = '__all__'
+        exclude = ['participante']
+
+    widgets = {
+        'cep': forms.TextInput(attrs={'class': 'cep-input'}),
+    }
