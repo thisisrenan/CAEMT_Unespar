@@ -81,7 +81,7 @@ class ParticipanteForm(forms.ModelForm):
     class Meta:
         model = Participante
         fields = '__all__'
-        exclude = ['estagiarios','username']
+        exclude = ['estagiarios','username','date_joined','date_final']
 
 class EnderecoForm(forms.ModelForm):
     class Meta:
