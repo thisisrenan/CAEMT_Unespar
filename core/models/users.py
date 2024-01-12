@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -94,6 +95,8 @@ class Estagiario(User):
 
 class Participante(models.Model):
     username = models.CharField(unique=True, verbose_name='Username', max_length=100)
+    date_joined = models.DateTimeField(verbose_name='Date Joined', auto_now_add=True)
+    date_final = models.DateTimeField(verbose_name='Date Final', blank=True, null=True)
     nome = models.CharField(max_length=100)
     sobrenome = models.CharField(max_length=100)
     telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
@@ -105,7 +108,8 @@ class Participante(models.Model):
 
     def save(self, *args, **kwargs):
         self.username = f"{self.nome.replace(' ', '').capitalize()}_{self.sobrenome.replace(' ', '').capitalize()}"
-
+        if not self.date_joined:
+            self.date_joined = timezone.now()
         super().save(*args, **kwargs)
     def __str__(self):
         return self.nome
