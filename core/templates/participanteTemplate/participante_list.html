@@ -18,6 +18,8 @@
           {% endif %}
             <a href='{% url "Delete_Participante" participante.id %}' > Deletar</a>
 
+            <a href="{% url 'List_Documetos' participante.id %}" class="btn btn-light">Documento</a>
+
         </li>
         {% endfor %}
       </ul>

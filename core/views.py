@@ -248,3 +248,42 @@ class SupervisorChangePasswordView(PasswordChangeView):
 
     def get_success_url(self):
         return reverse_lazy('edit_profile')
+
+
+class DocumentosCreate(CreateView):
+    model = Documentos
+    fields = ['titulo', 'descricao', 'arquivo']
+    template_name = 'documentosTemplate/documentos_form.html'
+
+    def form_valid(self, form):
+        participante_id = self.kwargs['participante_id']
+        participante = Participante.objects.get(id=participante_id)
+        form.instance.pertence = participante
+        form.instance.criado_por = self.request.user
+        return super().form_valid(form)
+
+class DocumentosList(ListView):
+    model = Documentos
+    template_name = 'documentosTemplate/documentos_list.html'
+    context_object_name = 'documentos'
+
+    def get_queryset(self):
+        participante_id = self.kwargs['participante_id']
+        participante = get_object_or_404(Participante, id=participante_id)
+        return participante.documentos_set.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        participante_id = self.kwargs['participante_id']
+        context['participante_id'] = participante_id
+        return context
+
+class DocumentosDelete(DeleteView):
+    model = Documentos
+    context_object_name = 'documento'
+    template_name = 'documentosTemplate/documento_confirm_delete.html'
+
+    def get_success_url(self):
+        participante_id = self.object.pertence.id
+        success_url = reverse_lazy('List_Documetos', kwargs={'participante_id': participante_id})
+        return success_url

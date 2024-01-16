@@ -23,7 +23,7 @@ class User(AbstractUser):
     username = models.CharField(unique=True, verbose_name='Username', max_length=10)
     biografia = models.CharField(verbose_name='Bio', max_length=50, blank=True)
     outrasinformacoes = models.CharField(verbose_name='OutrasInformacoes', max_length=500, blank=True)
-    image = models.ImageField(upload_to=user_directory_path, default='padrao.png')
+    image = models.ImageField(upload_to='pics', default='padrao.png')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -127,3 +127,17 @@ class Endereco(models.Model):
 
     def get_absolute_url(self):
         return reverse('participantes')
+
+
+class Documentos(models.Model):
+    titulo = models.CharField(max_length=255)
+    descricao = models.CharField(max_length=255)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    pertence = models.ForeignKey(Participante, on_delete=models.PROTECT)
+    criado_por = models.ForeignKey(User, on_delete=models.CASCADE)
+    arquivo = models.FileField(upload_to='Documentos')
+    def __str__(self):
+        return self.titulo
+
+    def get_absolute_url(self):
+        return reverse('List_Documetos',args=[self.pertence.id] )
