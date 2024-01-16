@@ -142,15 +142,17 @@ class ParticipanteList(ListView):
     template_name = 'participanteTemplate/participante_list.html'
     context_object_name = 'participantes'
 
-
     def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Participante.objects.filter(nome__icontains=query)
         return Participante.objects.all()
 
 class ParticipanteEdit(UpdateView):
     model = Participante
     form_class = ParticipanteForm
     context_object_name = 'participantes'
-    template_name = 'participanteTemplate/participante_form.html'
+    template_name = 'participanteTemplate/participante_form_edit.html'
 
 class ParticipanterDelete(DeleteView):
     model = Participante
@@ -285,5 +287,6 @@ class DocumentosDelete(DeleteView):
 
     def get_success_url(self):
         participante_id = self.object.pertence.id
+
         success_url = reverse_lazy('List_Documetos', kwargs={'participante_id': participante_id})
         return success_url

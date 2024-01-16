@@ -1,34 +1,56 @@
 {% extends 'layouts/admin.html' %}
 
 {% block content %}
-  <h1>Participantes</h1>
-    <a href='{%  url "Create_Participante" %}'>Criar Participante</a>
+  <h1 class="mt-3">Participantes</h1>
+    <div class="d-flex col mb-3 mt-3 justify-content-between">
+         <a href='{%  url "Create_Participante" %}' class="btn btn-light">Criar Participante</a>
+    <div>
+        <form method="get" action="{% url 'participantes' %}">
+        <input type="text" name="q" placeholder="Buscar participantes" >
+            <button type="submit" class="btn btn-light "><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+
+    </div>
+
+
 <div class="row">
-  <div class="col-md-6 m-auto">
-    <div class="card card-body">
+  <div class=" m-auto">
+    <table class="table">
+        <thead class="table-dark">
+             <th scope="col">#</th>
+              <th scope="col">Nome</th>
+              <th scope="col">Sobrenome</th>
+              <th scope="col">Telefone</th>
+            <th scope="col">Ações</th>
+        </thead>
       {% if participantes %}
-      <ul class="list-group list-group-flush">
-        {% for participante in participantes %}
-        <li class="list-group-item">
-          <a href='{% url "Edit_Participante" participante.id %}' > {{ participante.username }}</a>
-          {% if participante.endereco.id %}
-            <a href='{% url "Edit_Endereco" participante.endereco.id %}'>Editar Endereço</a>
-              {% else %}
-               <a href='{% url "Create_Endereco" participante.id %}'>Adicionar Endereço</a>
-          {% endif %}
-            <a href='{% url "Delete_Participante" participante.id %}' > Deletar</a>
-
-            <a href="{% url 'List_Documetos' participante.id %}" class="btn btn-light">Documento</a>
-
-        </li>
-        {% endfor %}
-      </ul>
+        <tbody>
+            {% for participante in participantes %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ participante.nome }}</td>
+                    <td>{{ participante.sobrenome }}</td>
+                    <td>{{ participante.telefone }}</td>
+                    <td>
+                        <a href='{% url "Edit_Participante" participante.id %}'>
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                        <a href='{% url "Delete_Participante" participante.id %}'>
+                            <i class="bi bi-trash-fill"></i>
+                        </a>
+                         <a href='{% url "List_Documetos" participante.id %}'>
+                            <i class="bi bi-folder-symlink-fill"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
       {% else %}
       <p>No Participantes</p>
       {% endif %}
     </div>
-  </div>
 </div>
-
 
 {% endblock %}

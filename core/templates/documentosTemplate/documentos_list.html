@@ -1,26 +1,44 @@
 {% extends 'layouts/admin.html' %}
-
 {% block content %}
-  <h1>Estagiarios</h1>
-    <<a href="{% url 'Create_Documetos' participante_id %}" class="btn btn-light">Adicionar Documento</a>
-<div class="row">
-  <div class="col-md-6 m-auto">
-    <div class="card card-body">
+  <h1 class="mt-5">Documentos</h1>
+    <div class="d-flex col mb-3 mt-3 justify-content-between">
+          <a class="fs-3 text-decoration-none text-dark"  data-bs-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
+              <i class="bi bi-caret-right">Documentos Pessoais</i>
+          </a>
+        <a href="{% url 'Create_Documetos' participante_id %}" class="btn btn-light">Adicionar Documento</a>
+    </div>
+<div class="collapse" id="collapse">
+  <div class="card card-body">
       {% if documentos %}
       <ul class="list-group list-group-flush">
         {% for documento in documentos %}
-        <li class="list-group-item">
-            <a href="{{ documento.arquivo.url }}">{{ documento.titulo }} - {{ documento.criado_por.username }} - {{ documento.data_criacao }}</a>
-        </li>
-            <a href="{% url 'Delete_Documetos' documento.id %}">Deletar</a>
+            <div class="card card-body m-2">
+                <li class=" d-flex  justify-content-between  ">
+                    <h5>{{ documento.titulo }} <a class="text-muted"> - Criado Por {{ documento.criado_por.username }} </a></h5>
+                    <div>
+                        <a href="{{ documento.arquivo.url }}" download="{{ documento.arquivo.url }}">
+                            <i class="bi bi-file-earmark-arrow-down-fill fs-4"></i>
+                        </a>
+                        <a href="{% url 'Delete_Documetos' documento.id %}"> <i class="bi bi-trash-fill fs-4"></i></a>
+                    </div>
+                </li>
+            </div>
+
         {% endfor %}
       </ul>
       {% else %}
       <p>No Documetos</p>
       {% endif %}
-    </div>
   </div>
 </div>
+
+
+
+
+
+
+
+
 
 
 {% endblock %}
