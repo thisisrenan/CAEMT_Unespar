@@ -3,12 +3,31 @@ from django.urls import path, include
 
 from . import views
 from .views import *
+
+def edit_profile_view(request):
+    # Determine a role do usuário
+    user_role = request.user.role
+
+    # Escolha a visualização com base na role do usuário
+    if user_role == User.Role.ORIENTADOR:
+        view_class = OrientadorEditProfile  # Substitua pelo nome da sua view para Orientador
+    elif user_role == User.Role.SUPERVISOR:
+        view_class = SupervisorEditProfile
+    else:
+        view_class = EstagiarioEditProfile
+    view_instance = view_class.as_view()
+
+    return view_instance(request)
+
 urlpatterns = [
     path("", views.home, name="home"),
 
 ]
 #URLS PERFIL
 urlpatterns += [
+    path('perfil/editarPerfil', edit_profile_view, name='edit_profile'),
+    path('perfil/editarFoto', SupervisorEditImage.as_view(), name='edit_photo'),
+    path('perfil/editarConta', SupervisorChangePasswordView.as_view(), name='edit_account'),
     path("perfil/<str:username>", views.PerfilProfile, name='perfil'),
 ]
 
@@ -48,4 +67,9 @@ urlpatterns += [
 urlpatterns += [
     path('Endereco/novo/<int:pk>', EnderecoCreate.as_view(), name='Create_Endereco'),
     path('Endereco/editar/<int:pk>', EnderecoEdit.as_view(), name='Edit_Endereco'),
+]
+
+#urls Perfil
+urlpatterns += [
+
 ]

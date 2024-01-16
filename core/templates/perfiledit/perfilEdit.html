@@ -1,0 +1,56 @@
+{% extends 'layouts/admin.html' %}
+{% load bootstrap %}
+
+{% block content %}
+<div class="d-flex flex-row mt-5 justify-content-evenly">
+    <div class="d-flex flex-column align-items-center w-25 rounded-3">
+        <img id="perfilimg" src="{{ userProfile.image.url }}" class="perfil-page rounded-circle mt-2" style="object-fit: cover; width: 10em; height: 10em;" alt="">
+        <div class="mt-2">
+            <h4 class="text-capitalize d-flex flex-column align-items-center">{{ userProfile.username }}</h4>
+            <p class="text-uppercase text-muted d-flex flex-column align-items-center">{{ userProfile.role }}</p>
+            <div class="list-group list-group-flush">
+                <a href="{% url 'perfil' userProfile.username %}" class="list-group-item list-group-item-action ">Visualizar perfil público</a>
+                <a href="{% url 'edit_profile' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'edit_profile'%} active{% endif %}">Perfil</a>
+                <a href="{% url 'edit_photo' %}" class="list-group-item list-group-item-action mb-0 {% if request.resolver_match.url_name == 'edit_photo'%} active{% endif %}">Foto</a>
+                <a href="{% url 'edit_account' %}" class="list-group-item list-group-item-action mb-0 ">Alterar Senha</a>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex row rounded-3 border w-75 align-items-stretch">
+    <div class="align-items-center mt-3 text-center border-bottom">
+        {% if request.resolver_match.url_name == 'edit_photo' %}
+            <h3 class="font-weight-bold">Photo</h3>
+            <p>Add a nice photo of yourself for your profile.</p>
+        {% elif request.resolver_match.url_name == 'edit_profile'  %}
+            <h3 class="font-weight-bold">Public profile</h3>
+            <p>Add information about yourself</p>
+            {% else %}
+        {% endif %}
+    </div>
+
+    <div class="d-flex flex-column p-2 mb-3 mt-3 rounded-3 align-items-center">
+        <form method="POST" enctype="multipart/form-data" class="w-75">
+            {% csrf_token %}
+
+            <!-- Mostrar a imagem atual -->
+            {% if userProfile.image and request.resolver_match.url_name == 'edit_photo' %}
+                <img id="previewImage" src="{{ userProfile.image.url }}" class="perfil-image mx-auto d-block" style="object-fit: cover; width: 15em; height: 15em;" alt="Current Photo">
+            {% endif %}
+            {{ form|bootstrap }}
+            <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Salvar</button>
+        </form>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+
+<style>
+
+    .perfil-page{
+        object-fit: cover;
+        width: 100px;
+        height: 100px;
+    }
+
+</style>

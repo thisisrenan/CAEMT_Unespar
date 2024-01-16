@@ -1,0 +1,30 @@
+
+{% load bootstrap %}
+
+{% block contentPerfil %}
+<div class="d-flex row rounded-3 border w-75 align-items-stretch">
+    <div class="align-items-center mt-3 text-center border-bottom">
+        {% if request.resolver_match.url_name == 'edit_photo' %}
+            <h3 class="font-weight-bold">Photo</h3>
+            <p>Add a nice photo of yourself for your profile.</p>
+        {% elif request.resolver_match.url_name == 'edit_profile'  %}
+            <h3 class="font-weight-bold">Public profile</h3>
+            <p>Add information about yourself</p>
+            {% else %}
+        {% endif %}
+    </div>
+
+    <div class="d-flex flex-column p-2 mb-3 mt-3 rounded-3 align-items-center">
+        <form method="POST" enctype="multipart/form-data" class="w-75">
+            {% csrf_token %}
+
+            <!-- Mostrar a imagem atual -->
+            {% if userProfile.image and request.resolver_match.url_name == 'edit_photo' %}
+                <img id="previewImage" src="{{ userProfile.image.url }}" class="perfil-image mx-auto d-block" style="object-fit: cover; width: 15em; height: 15em;" alt="Current Photo">
+            {% endif %}
+            {{ form|bootstrap }}
+            <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Salvar</button>
+        </form>
+    </div>
+</div>
+{% endblock contentPerfil %}

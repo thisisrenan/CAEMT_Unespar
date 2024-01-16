@@ -1,5 +1,8 @@
 from django import forms
 from .models.users import *
+from django.contrib.auth.forms import UserChangeForm
+from phonenumber_field.formfields import PhoneNumberField
+from django.contrib.auth.forms import PasswordChangeForm
 
 class OrientadorForm(forms.ModelForm):
     password_confirm = forms.CharField(widget=forms.PasswordInput, label='Confirme a Senha')
@@ -92,3 +95,17 @@ class EnderecoForm(forms.ModelForm):
     widgets = {
         'cep': forms.TextInput(attrs={'class': 'cep-input'}),
     }
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = '__all__'
+        exclude = ['role', 'user_permissions', 'groups', 'is_staff', 'is_superuser', 'last_login', 'is_active', 'image', 'password','date_joined','data_final','username']
+
+class OrientadorEditProfileForm(UserChangeForm):
+    telefone = PhoneNumberField(label='Telefone', required=False)
+    data_de_nascimento = forms.DateField(label='Data de Nascimento', required=False)
+
+    class Meta:
+        model = Orientador
+        fields = ['first_name', 'last_name', 'telefone', 'biografia', 'outrasinformacoes', 'data_de_nascimento']

@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from django.urls import reverse, reverse_lazy
+from django.contrib.auth.views import PasswordChangeView
 
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
@@ -41,7 +42,6 @@ class OrientadorCreate(CreateView):
     success_url = reverse_lazy('orientadores')
 
 
-@method_decorator(user_passes_test(is_supervisor, login_url='home'), name='dispatch')
 class OrientadorList(ListView):
     model = Orientador
     template_name = 'orientadoreTemplate/orientador_list.html'
@@ -181,3 +181,70 @@ class EnderecoEdit(UpdateView):
     form_class = EnderecoForm
     context_object_name = 'endereco'
     template_name = 'enderecoTemplate/endereco_form.html'
+
+
+#Edit Perfil
+class SupervisorEditProfile(UpdateView):
+    model = User
+    context_object_name = 'userProfile'
+    fields = ['first_name', 'last_name', 'biografia', 'outrasinformacoes']
+    template_name = 'perfiledit/perfilEdit.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_success_url(self):
+        return reverse_lazy('edit_profile')
+
+class OrientadorEditProfile(UpdateView):
+    model = Orientador
+    context_object_name = 'userProfile'
+    fields =['first_name', 'last_name','telefone','biografia', 'outrasinformacoes','data_de_nascimento']
+    template_name = 'perfiledit/perfilEdit.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user.orientador
+
+    def get_success_url(self):
+        return reverse_lazy('edit_profile')
+
+
+
+class EstagiarioEditProfile(UpdateView):
+    model = Estagiario
+    context_object_name = 'userProfile'
+    fields = ['first_name', 'last_name','telefone','ano_letivo','biografia', 'outrasinformacoes','data_de_nascimento']
+    template_name = 'perfiledit/perfilEdit.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user.estagiario
+
+    def get_success_url(self):
+        return reverse_lazy('edit_profile')
+class SupervisorEditImage(UpdateView):
+    model = User
+    context_object_name = 'userProfile'
+    fields = ['image']
+    template_name = 'perfiledit/perfilEdit.html'
+    def get_object(self, queryset=None):
+            return self.request.user
+
+    def get_success_url(self):
+        return reverse_lazy('edit_photo')
+
+class SupervisorChangePasswordView(PasswordChangeView):
+    template_name = 'perfiledit/changePassword.html'
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # Adicione lógica personalizada aqui se necessário
+
+        return response
+
+    def get_object(self, queryset=None):
+        # Retorna o usuário autenticado
+        return self.request.user
+
+    def get_success_url(self):
+        return reverse_lazy('edit_profile')
