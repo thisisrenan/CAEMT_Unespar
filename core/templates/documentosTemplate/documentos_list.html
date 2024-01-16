@@ -1,0 +1,26 @@
+{% extends 'layouts/admin.html' %}
+
+{% block content %}
+  <h1>Estagiarios</h1>
+    <<a href="{% url 'Create_Documetos' participante_id %}" class="btn btn-light">Adicionar Documento</a>
+<div class="row">
+  <div class="col-md-6 m-auto">
+    <div class="card card-body">
+      {% if documentos %}
+      <ul class="list-group list-group-flush">
+        {% for documento in documentos %}
+        <li class="list-group-item">
+            <a href="{{ documento.arquivo.url }}">{{ documento.titulo }} - {{ documento.criado_por.username }} - {{ documento.data_criacao }}</a>
+        </li>
+            <a href="{% url 'Delete_Documetos' documento.id %}">Deletar</a>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No Documetos</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

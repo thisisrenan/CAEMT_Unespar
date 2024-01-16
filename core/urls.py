@@ -1,6 +1,8 @@
 from django.urls import path
 from django.urls import path, include
+from django.conf.urls.static import static
 
+from CAEMTUnespar import settings
 from . import views
 from .views import *
 
@@ -67,9 +69,12 @@ urlpatterns += [
 urlpatterns += [
     path('Endereco/novo/<int:pk>', EnderecoCreate.as_view(), name='Create_Endereco'),
     path('Endereco/editar/<int:pk>', EnderecoEdit.as_view(), name='Edit_Endereco'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-#urls Perfil
+#urls Documentos
 urlpatterns += [
+    path('Documentos/novo/<int:participante_id>', DocumentosCreate.as_view(), name='Create_Documetos'),
+    path('Documentos/<int:participante_id>', DocumentosList.as_view(), name='List_Documetos'),
+    path('Documentos/Deletar/<int:pk>', DocumentosDelete.as_view(), name='Delete_Documetos'),
 
 ]
