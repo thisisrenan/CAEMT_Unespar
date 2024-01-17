@@ -1,26 +1,57 @@
 {% extends 'layouts/admin.html' %}
 
 {% block content %}
-  <h1>Supervisores</h1>
-    <a href='{%  url "Create_Supervisor" %}'> Criar Supervisor</a>
-<div class="row">
-  <div class="col-md-6 m-auto">
-    <div class="card card-body">
-      {% if supervisores %}
-      <ul class="list-group list-group-flush">
-        {% for supervisor in supervisores %}
-        <li class="list-group-item">
-          <a href='{% url "Edit_Supervisor" supervisor.id %}' > {{ supervisor.username }}</a>
-        <a href='{% url "Delete_Supervisor" supervisor.id %}' > Deletar</a>
-        </li>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <p>No supervisores</p>
-      {% endif %}
+  <h1 class="mt-3">Supervidores</h1>
+    <div class="d-flex col mb-3 mt-3 justify-content-between">
+         <a href='{%  url "Create_Supervisor" %}' class="btn btn-light">Criar Supervisor</a>
+    <div>
+        <form method="get" action="{% url 'supervisores' %}">
+        <input type="text" name="q" placeholder="Buscar Supervisor" >
+            <button type="submit" class="btn btn-light "><i class="bi bi-search"></i></button>
+        </form>
     </div>
-  </div>
-</div>
 
+    </div>
+<div class="row">
+  <div class=" m-auto">
+    <table class="table">
+        <thead class="table-dark">
+             <th scope="col">#</th>
+              <th scope="col">Nome</th>
+              <th scope="col">Sobrenome</th>
+            <th scope="col">Ações</th>
+        </thead>
+
+        <tbody>
+            {% if supervisores %}
+            {% for supervisor in supervisores %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ supervisor.first_name }}</td>
+                    <td>{{ supervisor.last_name }}</td>
+                    <td>
+                        <a href='{% url "Edit_Supervisor" supervisor.id %}'>
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                        <a href='{% url "Delete_Supervisor" supervisor.id %}'>
+                            <i class="bi bi-trash-fill"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% else %}
+                 <tr>
+                    <th scope="row">------</th>
+                    <td>------</td>
+                    <td>------</td>
+                    <td>------</td>
+                </tr>
+              {% endif %}
+        </tbody>
+      </table>
+
+
+    </div>
+</div>
 
 {% endblock %}

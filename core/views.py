@@ -47,8 +47,10 @@ class OrientadorList(ListView):
     template_name = 'orientadoreTemplate/orientador_list.html'
     context_object_name = 'orientadores'
 
-
     def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Orientador.objects.filter(username__icontains=query)
         return Orientador.objects.all()
 
 class OrientadorEdit(UpdateView):
@@ -109,9 +111,11 @@ class SupervisorList(ListView):
     template_name = 'supervisorTemplate/supervisor_list.html'
     context_object_name = 'supervisores'
 
-
     def get_queryset(self):
-        return User.objects.all()
+        query = self.request.GET.get('q')
+        if query:
+            return User.objects.filter(username__icontains=query, role='SUPERVISOR')
+        return User.objects.filter(role='SUPERVISOR')
 
 class SupervisorEdit(UpdateView):
     model = User

@@ -6,7 +6,7 @@
          <a href='{%  url "Create_Estagiario" %}' class="btn btn-light">Criar Estagiario</a>
     <div>
         <form method="get" action="{% url 'estagiarios' %}">
-        <input type="text" name="q" placeholder="Buscar estagiariosa" >
+        <input type="text" name="q" placeholder="Buscar estagiario" >
             <button type="submit" class="btn btn-light "><i class="bi bi-search"></i></button>
         </form>
     </div>
@@ -50,6 +50,7 @@
                     <td>------</td>
                     <td>------</td>
                     <td>------</td>
+                     <td>------</td>
                 </tr>
               {% endif %}
         </tbody>
