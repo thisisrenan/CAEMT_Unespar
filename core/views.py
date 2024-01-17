@@ -77,9 +77,12 @@ class EstagiarioList(ListView):
     template_name = 'estagiarioTemplate/estagiario_list.html'
     context_object_name = 'estagiarios'
 
-
     def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Estagiario.objects.filter(username__icontains=query)
         return Estagiario.objects.all()
+
 
 class EstagiarioEdit(UpdateView):
     model = Estagiario
@@ -277,8 +280,12 @@ class DocumentosList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         participante_id = self.kwargs['participante_id']
+        participante = get_object_or_404(Participante, id=participante_id)
         context['participante_id'] = participante_id
+        context['participante_nome'] = participante.username
+
         return context
+
 
 class DocumentosDelete(DeleteView):
     model = Documentos

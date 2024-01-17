@@ -75,6 +75,7 @@ urlpatterns += [
 urlpatterns += [
     path('Documentos/novo/<int:participante_id>', DocumentosCreate.as_view(), name='Create_Documetos'),
     path('Documentos/<int:participante_id>', DocumentosList.as_view(), name='List_Documetos'),
+    path('Documentos/<int:participante_id>/<str:participante_nome>', DocumentosList.as_view(), name='List_Documetos'),
     path('Documentos/Deletar/<int:pk>', DocumentosDelete.as_view(), name='Delete_Documetos'),
 
 ]
