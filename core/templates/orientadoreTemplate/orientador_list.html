@@ -26,21 +26,52 @@
         <tbody>
             {% if orientadores %}
             {% for orientador in orientadores %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ orientador.first_name }}</td>
-                    <td>{{ orientador.last_name }}</td>
-                    <td>{{ orientador.telefone }}</td>
-                    <td>
-                        <a href='{% url "Edit_Orientador" orientador.id %}'>
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
-                        <a href='{% url "Delete_Orientador" orientador.id %}'>
-                            <i class="bi bi-trash-fill"></i>
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
+    <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ orientador.first_name }}</td>
+        <td>{{ orientador.last_name }}</td>
+        <td>{{ orientador.telefone }}</td>
+        <td>
+            <a href='{% url "Edit_Orientador" orientador.id %}'>
+                <i class="bi bi-pencil-fill"></i>
+            </a>
+            <a href='' data-bs-toggle="modal" data-bs-target="#myModal{{ orientador.id }}">
+                <i class="bi bi-trash-fill"></i>
+            </a>
+        </td>
+    </tr>
+
+    <!-- The Modal for Deletion -->
+        <div class="modal" id="myModal{{ orientador.id }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Deletar o Usuario {{ orientador.username }}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <!-- Pode adicionar mais informações do orientador aqui se desejar -->
+                        Tem certeza que deseja deletar o usuário {{ orientador.username }}?
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                             <form method="POST" action="{% url 'Delete_Orientador' orientador.id %}">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-danger">Confirmar</button>
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
             {% else %}
                  <tr>
                     <th scope="row">------</th>
@@ -56,5 +87,6 @@
 
     </div>
 </div>
+
 
 {% endblock %}

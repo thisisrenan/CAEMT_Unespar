@@ -37,11 +37,39 @@
                         <a href='{% url "Edit_Estagiario" estagiario.id %}'>
                             <i class="bi bi-pencil-fill"></i>
                         </a>
-                        <a href='{% url "Delete_Estagiario" estagiario.id %}'>
-                            <i class="bi bi-trash-fill"></i>
-                        </a>
+                         <a href='#' data-bs-toggle="modal" data-bs-target="#myModal{{ estagiario.id }}">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
                     </td>
                 </tr>
+                    <div class="modal" id="myModal{{ estagiario.id }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Deletar o Usuario {{ estagiario.username }}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <!-- Pode adicionar mais informações do orientador aqui se desejar -->
+                        Tem certeza que deseja deletar o usuário {{ estagiario.username }}?
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                             <form method="POST" action="{% url 'Delete_Estagiario' estagiario.id %}">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-danger">Confirmar</button>
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
             {% endfor %}
             {% else %}
                  <tr>

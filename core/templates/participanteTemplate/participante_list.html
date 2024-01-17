@@ -35,14 +35,44 @@
                         <a href='{% url "Edit_Participante" participante.id %}'>
                             <i class="bi bi-pencil-fill"></i>
                         </a>
-                        <a href='{% url "Delete_Participante" participante.id %}'>
-                            <i class="bi bi-trash-fill"></i>
-                        </a>
+                           <a href='#' data-bs-toggle="modal" data-bs-target="#myModal{{ participante.id }}">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
                     <a href='{% url "List_Documetos" participante.id participante.username %}'>
                             <i class="bi bi-folder-symlink-fill"></i>
                         </a>
                     </td>
                 </tr>
+
+                 <!-- The Modal for Deletion -->
+        <div class="modal" id="myModal{{ participante.id }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Deletar o Usuario {{ participante.username }}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <!-- Pode adicionar mais informações do orientador aqui se desejar -->
+                        Tem certeza que deseja deletar o usuário {{ participante.username }}?
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                             <form method="POST" action="{% url 'Delete_Participante' participante.id %}">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-danger">Confirmar</button>
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
             {% endfor %}
             {% else %}
                  <tr>

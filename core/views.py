@@ -60,8 +60,6 @@ class OrientadorEdit(UpdateView):
 
 class OrientadorDelete(DeleteView):
     model = Orientador
-    context_object_name = 'orientadores'
-    template_name = 'orientadoreTemplate/orientador_confirm_delete.html'
     success_url = reverse_lazy('orientadores')
 
 

@@ -2,28 +2,57 @@
 {% block content %}
   <h1 class="mt-5">Documentos do Participante {{ participante_nome }}</h1>
     <div class="d-flex col mb-3 mt-3 justify-content-between">
-          <a class="fs-3 text-decoration-none text-dark"  data-bs-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
+          <a class="fs-3 text-decoration-none text-dark"  data-bs-toggle="collapse" href="#collapseDoc" role="button" aria-expanded="false" aria-controls="collapseDoc">
               <i class="bi bi-caret-right">Documentos Pessoais</i>
           </a>
         <a href="{% url 'Create_Documetos' participante_id %}" class="btn btn-light">Adicionar Documento</a>
     </div>
-<div class="collapse" id="collapse">
+<div class="collapse" id="collapseDoc">
   <div class="card card-body">
       {% if documentos %}
       <ul class="list-group list-group-flush">
         {% for documento in documentos %}
             <div class="card card-body m-2">
                 <li class=" d-flex  justify-content-between  ">
-                    <h5>{{ documento.titulo }} <a class="text-muted"> - Criado Por {{ documento.criado_por.username }} </a></h5>
+                    <h5 data-toggle="tooltip" title="Criado em {{ documento.data_criacao }}" > {{ documento.titulo }} <a class="text-muted" > - Criado Por {{ documento.criado_por.username }} </a></h5>
                     <div>
                         <a href="{{ documento.arquivo.url }}" download="{{ documento.arquivo.url }}">
                             <i class="bi bi-file-earmark-arrow-down-fill fs-4"></i>
                         </a>
-                        <a href="{% url 'Delete_Documetos' documento.id %}"> <i class="bi bi-trash-fill fs-4"></i></a>
+                        <a href='#' data-bs-toggle="modal" data-bs-target="#myModal{{ documento.id }}">
+                                <i class="bi bi-trash-fill fs-4"></i>
+                            </a>
                     </div>
                 </li>
             </div>
+            <div class="modal" id="myModal{{ documento.id }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Deletar o Documento {{ documento.titulo }}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <!-- Pode adicionar mais informações do orientador aqui se desejar -->
+                        Tem certeza que deseja deletar o Documento {{ documento.titulo }}?
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                             <form method="POST" action="{% url 'Delete_Documetos' documento.id %}">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-danger">Confirmar</button>
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
         {% endfor %}
       </ul>
       {% else %}
@@ -31,14 +60,5 @@
       {% endif %}
   </div>
 </div>
-
-
-
-
-
-
-
-
-
 
 {% endblock %}
