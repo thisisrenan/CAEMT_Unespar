@@ -1,26 +1,63 @@
 {% extends 'layouts/admin.html' %}
 
 {% block content %}
-  <h1>Estagiarios</h1>
-    <a href='{%  url "Create_Estagiario" %}'> Create_Estagiario</a>
-<div class="row">
-  <div class="col-md-6 m-auto">
-    <div class="card card-body">
-      {% if estagiarios %}
-      <ul class="list-group list-group-flush">
-        {% for estagiario in estagiarios %}
-        <li class="list-group-item">
-          <a href='{% url "Edit_Estagiario" estagiario.id %}'> {{ estagiario.username }}</a>
-        <a href='{% url "Delete_Estagiario" estagiario.id %}'> Deletar</a>
-        </li>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <p>No Estagiarios</p>
-      {% endif %}
+  <h1 class="mt-3">Estagiarios</h1>
+    <div class="d-flex col mb-3 mt-3 justify-content-between">
+         <a href='{%  url "Create_Estagiario" %}' class="btn btn-light">Criar Estagiario</a>
+    <div>
+        <form method="get" action="{% url 'estagiarios' %}">
+        <input type="text" name="q" placeholder="Buscar estagiario" >
+            <button type="submit" class="btn btn-light "><i class="bi bi-search"></i></button>
+        </form>
     </div>
-  </div>
-</div>
 
+    </div>
+<div class="row">
+  <div class=" m-auto">
+    <table class="table">
+        <thead class="table-dark">
+             <th scope="col">#</th>
+              <th scope="col">Nome</th>
+              <th scope="col">Sobrenome</th>
+              <th scope="col">Telefone</th>
+             <th scope="col">Ano Letivo</th>
+            <th scope="col">Ações</th>
+        </thead>
+
+        <tbody>
+            {% if estagiarios %}
+            {% for estagiario in estagiarios %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ estagiario.first_name }}</td>
+                    <td>{{ estagiario.last_name }}</td>
+                    <td>{{ estagiario.telefone }}</td>
+                    <td>{{ estagiario.ano_letivo }}</td>
+                    <td>
+                        <a href='{% url "Edit_Estagiario" estagiario.id %}'>
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                        <a href='{% url "Delete_Estagiario" estagiario.id %}'>
+                            <i class="bi bi-trash-fill"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% else %}
+                 <tr>
+                    <th scope="row">------</th>
+                    <td>------</td>
+                    <td>------</td>
+                    <td>------</td>
+                    <td>------</td>
+                     <td>------</td>
+                </tr>
+              {% endif %}
+        </tbody>
+      </table>
+
+
+    </div>
+</div>
 
 {% endblock %}

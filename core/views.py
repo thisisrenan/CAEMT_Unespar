@@ -47,8 +47,10 @@ class OrientadorList(ListView):
     template_name = 'orientadoreTemplate/orientador_list.html'
     context_object_name = 'orientadores'
 
-
     def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Orientador.objects.filter(username__icontains=query)
         return Orientador.objects.all()
 
 class OrientadorEdit(UpdateView):
@@ -77,9 +79,12 @@ class EstagiarioList(ListView):
     template_name = 'estagiarioTemplate/estagiario_list.html'
     context_object_name = 'estagiarios'
 
-
     def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Estagiario.objects.filter(username__icontains=query)
         return Estagiario.objects.all()
+
 
 class EstagiarioEdit(UpdateView):
     model = Estagiario
@@ -106,9 +111,11 @@ class SupervisorList(ListView):
     template_name = 'supervisorTemplate/supervisor_list.html'
     context_object_name = 'supervisores'
 
-
     def get_queryset(self):
-        return User.objects.all()
+        query = self.request.GET.get('q')
+        if query:
+            return User.objects.filter(username__icontains=query, role='SUPERVISOR')
+        return User.objects.filter(role='SUPERVISOR')
 
 class SupervisorEdit(UpdateView):
     model = User
@@ -142,15 +149,17 @@ class ParticipanteList(ListView):
     template_name = 'participanteTemplate/participante_list.html'
     context_object_name = 'participantes'
 
-
     def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Participante.objects.filter(nome__icontains=query)
         return Participante.objects.all()
 
 class ParticipanteEdit(UpdateView):
     model = Participante
     form_class = ParticipanteForm
     context_object_name = 'participantes'
-    template_name = 'participanteTemplate/participante_form.html'
+    template_name = 'participanteTemplate/participante_form_edit.html'
 
 class ParticipanterDelete(DeleteView):
     model = Participante
@@ -275,8 +284,12 @@ class DocumentosList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         participante_id = self.kwargs['participante_id']
+        participante = get_object_or_404(Participante, id=participante_id)
         context['participante_id'] = participante_id
+        context['participante_nome'] = participante.username
+
         return context
+
 
 class DocumentosDelete(DeleteView):
     model = Documentos
@@ -285,5 +298,6 @@ class DocumentosDelete(DeleteView):
 
     def get_success_url(self):
         participante_id = self.object.pertence.id
+
         success_url = reverse_lazy('List_Documetos', kwargs={'participante_id': participante_id})
         return success_url

@@ -1,0 +1,16 @@
+{% extends 'layouts/admin.html' %}
+{% load bootstrap %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|bootstrap }}
+
+    <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Salvar</button>
+        {% if participantes.endereco.id %}
+            <a href='{% url "Edit_Endereco" participantes.endereco.id %}' class="btn btn-dark" >Editar Endereço</a>
+              {% else %}
+               <a href='{% url "Create_Endereco" participantes.id %}' class="btn btn-light">Adicionar Endereço</a>
+          {% endif %}
+</form>
+{% endblock %}
