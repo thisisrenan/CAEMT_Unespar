@@ -262,6 +262,13 @@ class DocumentosCreate(CreateView):
     fields = ['titulo', 'descricao', 'arquivo']
     template_name = 'documentosTemplate/documentos_form.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        participante_id = self.kwargs.get('participante_id')
+        participante = get_object_or_404(Participante, id=participante_id)
+        context['participante'] = participante
+        return context
+
     def form_valid(self, form):
         participante_id = self.kwargs['participante_id']
         participante = Participante.objects.get(id=participante_id)

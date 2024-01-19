@@ -27,7 +27,7 @@
             {% for supervisor in supervisores %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ supervisor.first_name }}</td>
+                    <td><a href="{% url 'perfil' supervisor.username %}"> {{ supervisor.first_name }} </a></td>
                     <td>{{ supervisor.last_name }}</td>
                     <td>
                         <a href='{% url "Edit_Supervisor" supervisor.id %}'>

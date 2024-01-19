@@ -5,5 +5,6 @@
     {% csrf_token %}
     {{ form|bootstrap }}
     <button type="submit" class="btn btn-success" >Salvar </button>
+    <a class="btn btn-danger" href="{% url 'estagiarios' %}">Cancelar</a>
 </form>
 {% endblock %}

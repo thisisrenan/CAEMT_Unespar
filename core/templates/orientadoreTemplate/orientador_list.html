@@ -28,7 +28,7 @@
             {% for orientador in orientadores %}
     <tr>
         <th scope="row">{{ forloop.counter }}</th>
-        <td>{{ orientador.first_name }}</td>
+        <td> <a href="{% url 'perfil' orientador.username %}">  {{ orientador.first_name }} </a></td>
         <td>{{ orientador.last_name }}</td>
         <td>{{ orientador.telefone }}</td>
         <td>

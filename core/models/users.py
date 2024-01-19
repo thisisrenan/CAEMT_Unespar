@@ -44,10 +44,6 @@ class User(AbstractUser):
                 self.set_password(self.password)
         super().save(*args, **kwargs)
 
-        if self.image:
-            self.image.name = user_directory_path(self, self.image.name)
-            super().save(*args, **kwargs)
-
 
 class Orientador(User):
     base_role = User.Role.ORIENTADOR

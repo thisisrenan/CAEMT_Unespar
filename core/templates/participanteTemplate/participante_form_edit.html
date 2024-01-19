@@ -12,5 +12,7 @@
               {% else %}
                <a href='{% url "Create_Endereco" participantes.id %}' class="btn btn-light">Adicionar Endereço</a>
           {% endif %}
-</form>
+    <a class="btn btn-danger" href="{% url 'participantes' %}">Cancelar</a>
+
+    </form>
 {% endblock %}

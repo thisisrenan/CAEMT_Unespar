@@ -29,7 +29,7 @@
             {% for estagiario in estagiarios %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ estagiario.first_name }}</td>
+                    <td><a href="{% url 'perfil' estagiario.username %}"> {{ estagiario.first_name }}</a></td>
                     <td>{{ estagiario.last_name }}</td>
                     <td>{{ estagiario.telefone }}</td>
                     <td>{{ estagiario.ano_letivo }}</td>
