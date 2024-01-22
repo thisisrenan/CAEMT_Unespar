@@ -1,6 +1,60 @@
 
+
 {% block contentPerfil %}
-    <div class="p-5 mt-1 rounded-3 border w-75">
-        <h1>{{ userProfile.username }}</h1>
+<div class="d-flex row p-5 mt-1 rounded-3 border w-75">
+    <div class="d-flex">
+          <div class="w-100 h-25">
+            <h6 class="label">Nome:</h6>
+            {% if userProfile.first_name %}
+                <p class="me-3 rounded-3 border p-2">{{ userProfile.first_name }}</p>
+            {% else %}
+                <p class="me-3 rounded-3 border p-2 text-muted">Sem nome</p>
+            {% endif %}
+        </div>
+       <div class="w-100 h-25">
+                <h6 class="label">Sobrenome:</h6>
+                {% if userProfile.last_name %}
+                    <p class="me-3 rounded-3 border p-2">{{ userProfile.last_name }}</p>
+                {% else %}
+                    <p class="me-3 rounded-3 border p-2 text-muted">Sem sobrenome</p>
+                {% endif %}
+       </div>
+
     </div>
+    <div class="d-flex">
+
+     <div class="w-100 h-25">
+                <h6 class="label">Ano Letivo:</h6>
+                {% if userProfile.last_name %}
+                    <p class="me-3 rounded-3 border p-2">{{ userProfile.estagiario.ano_letivo }}º Ano</p>
+                {% else %}
+                    <p class="me-3 rounded-3 border p-2 text-muted">Sem sobrenome</p>
+                {% endif %}
+       </div>
+    </div>
+        <div class="d-flex">
+          <div class="w-50 h-25">
+            <h6 class="label">Nascimento:</h6>
+            {% if userProfile.first_name %}
+                <p class="me-3 rounded-3 border p-2">{{ userProfile.estagiario.data_de_nascimento|date:"d/m/Y"  }}</p>
+            {% else %}
+                <p class="me-3 rounded-3 border p-2 text-muted">Sem nome</p>
+            {% endif %}
+        </div>
+        <div class="h-25 w-50">
+            <h6 class="label">Telefone:</h6>
+            {% if userProfile.last_name %}
+                <p class="me-3 rounded-3 border p-2">{{ userProfile.estagiario.telefone  }}</p>
+            {% else %}
+                <p class="me-3 rounded-3 border p-2 text-muted">Sem sobrenome</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="d-flex">
+        <div class="w-100 h-25 mr-3">
+            <h6 class="label">Outras Informações:</h6>
+            <textarea class="form-control  rounded-3 border bg-transparent" rows="6" readonly style="resize: none; pointer-events: none;"> {{ userProfile.outrasinformacoes }} </textarea>
+        </div>
+    </div>
+</div>
 {% endblock contentPerfil %}
