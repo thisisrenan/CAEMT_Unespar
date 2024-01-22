@@ -9,7 +9,7 @@
             <h4 class="text-capitalize d-flex flex-column align-items-center">{{ userProfile.username }}</h4>
             <p class="text-uppercase text-muted d-flex flex-column align-items-center">{{ userProfile.role }}</p>
             <div class="list-group list-group-flush">
-                <a href="{% url 'perfil' userProfile.username %}" class="list-group-item list-group-item-action ">Visualizar perfil público</a>
+                <a href="{% url 'perfil' userProfile.username %}" class=" list-group-item list-group-item-action ">Visualizar perfil público</a>
                 <a href="{% url 'edit_profile' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'edit_profile'%} active{% endif %}">Perfil</a>
                 <a href="{% url 'edit_photo' %}" class="list-group-item list-group-item-action mb-0 {% if request.resolver_match.url_name == 'edit_photo'%} active{% endif %}">Foto</a>
                 <a href="{% url 'edit_account' %}" class="list-group-item list-group-item-action mb-0 ">Alterar Senha</a>
@@ -35,7 +35,11 @@
             <!-- Mostrar a imagem atual -->
             {% if userProfile.image and request.resolver_match.url_name == 'edit_photo' %}
                 <img id="previewImage" src="{{ userProfile.image.url }}" class="perfil-image mx-auto d-block" style="object-fit: cover; width: 15em; height: 15em;" alt="Current Photo">
+            {% else %}
+                <span class="mb-2">Email</span>
+            <input type="email" class="form-control mb-3 mt-2" disabled  placeholder="{{ userProfile.email }}">
             {% endif %}
+
             {{ form|bootstrap }}
             <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Salvar</button>
         </form>
@@ -52,5 +56,12 @@
         width: 100px;
         height: 100px;
     }
+    /* Seu arquivo de estilo personalizado (por exemplo, styles.css) */
+.listmy.active {
+    background-color: #28a745; /* Verde do Bootstrap */
+    color: #fff; /* Texto branco para contrastar */
+    border-color: #28a745; /* Cor da borda igual à cor de fundo (opcional) */
+}
+
 
 </style>

@@ -148,7 +148,14 @@ class ParticipanteList(ListView):
     context_object_name = 'participantes'
 
     def get_queryset(self):
+
         query = self.request.GET.get('q')
+        user = self.request.user
+        if user.role == 'ESTAGIARIO':
+            if query:
+                return Participante.objects.filter(estagiarios=user.estagiario, nome__icontains=query)
+            return Participante.objects.filter(estagiarios=user.estagiario)
+
         if query:
             return Participante.objects.filter(nome__icontains=query)
         return Participante.objects.all()

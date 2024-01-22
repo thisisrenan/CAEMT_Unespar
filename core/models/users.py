@@ -69,8 +69,12 @@ class Orientador(User):
 
 
 class Estagiario(User):
+    ANO_CHOICES = [
+        (3, '3º Ano'),
+        (4, '4º Ano'),
+    ]
     base_role = User.Role.ESTAGIARIO
-    ano_letivo = models.IntegerField(verbose_name='Ano', blank=True, default=3)
+    ano_letivo = models.IntegerField(verbose_name='Ano', blank=True, default=3, choices=ANO_CHOICES)
     data_de_nascimento = models.DateField(verbose_name='Nascimento', blank=True)
     telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
     orientador_responsavel = models.ForeignKey(Orientador, on_delete=models.SET_NULL, null=True, blank=True, related_name='estagiarios', verbose_name='Orientador')
