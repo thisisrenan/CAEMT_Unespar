@@ -1,10 +1,16 @@
-from django.urls import path
+
 from django.urls import path, include
 from django.conf.urls.static import static
 
 from CAEMTUnespar import settings
 from . import views
-from .views import *
+from .views.estagiario import *
+from .views.orientador import *
+from .views.participante import *
+from .views.supervisor import *
+from .views.documentos import *
+from .views.core import *
+
 
 def edit_profile_view(request):
     # Determine a role do usuário
@@ -22,15 +28,16 @@ def edit_profile_view(request):
     return view_instance(request)
 
 urlpatterns = [
-    path("", views.home, name="home"),
+    path("", home, name="home"),
 
 ]
+
 #URLS PERFIL
 urlpatterns += [
     path('perfil/editarPerfil', edit_profile_view, name='edit_profile'),
     path('perfil/editarFoto', SupervisorEditImage.as_view(), name='edit_photo'),
     path('perfil/editarConta', SupervisorChangePasswordView.as_view(), name='edit_account'),
-    path("perfil/<str:username>", views.PerfilProfile, name='perfil'),
+    path("perfil/<str:username>", PerfilProfile, name='perfil'),
 ]
 
 #URLS SUPERVISOR
@@ -57,7 +64,7 @@ urlpatterns += [
     path("Estagiario", EstagiarioList.as_view(), name="estagiarios"),
 ]
 
-#URLS Participante
+#URLS PARTICIPANTE
 urlpatterns += [
     path('Participante/novo', ParticipanteCreate.as_view(), name='Create_Participante'),
     path('Participante/editar/<int:pk>', ParticipanteEdit.as_view(), name='Edit_Participante'),
@@ -65,13 +72,13 @@ urlpatterns += [
     path("Participante", ParticipanteList.as_view(), name="participantes"),
 ]
 
-#URLS endereco
+#URLS ENDERECO
 urlpatterns += [
     path('Endereco/novo/<int:pk>', EnderecoCreate.as_view(), name='Create_Endereco'),
     path('Endereco/editar/<int:pk>', EnderecoEdit.as_view(), name='Edit_Endereco'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-#urls Documentos
+#urls DOCUMENTOS
 urlpatterns += [
     path('Documentos/novo/<int:participante_id>', DocumentosCreate.as_view(), name='Create_Documetos'),
     path('Documentos/<int:participante_id>', DocumentosList.as_view(), name='List_Documetos'),
