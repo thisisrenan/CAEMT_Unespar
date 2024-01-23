@@ -76,6 +76,7 @@ urlpatterns += [
     path('Participante/editar/<int:pk>', ParticipanteEdit.as_view(), name='Edit_Participante'),
     path('Participante/Deletar/<int:pk>', ParticipanterDelete.as_view(), name='Delete_Participante'),
     path("Participante", ParticipanteList.as_view(), name="participantes"),
+    path('ReativarParticipante/<int:pk>', reativarParticipante, name='reativar_participante'),
 ]
 
 #URLS ENDERECO

@@ -33,12 +33,18 @@
         <td>{{ orientador.last_name }}</td>
         <td>{{ orientador.telefone }}</td>
         <td>
+            {% if orientador.is_active %}
             <a href='{% url "Edit_Orientador" orientador.id %}'>
                 <i class="bi bi-pencil-fill"></i>
             </a>
             <a href='' data-bs-toggle="modal" data-bs-target="#myModal{{ orientador.id }}">
                 <i class="bi bi-trash-fill"></i>
             </a>
+            {% else %}
+                <a href='{% url "reativar_user" orientador.id %}' class="btn btn-danger btn-sm">
+                    Ativar
+                </a>
+            {% endif %}
         </td>
     </tr>
 

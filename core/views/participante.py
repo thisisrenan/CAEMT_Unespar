@@ -6,6 +6,8 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponseRedirect
+
 
 from django.views import View
 
@@ -49,10 +51,15 @@ class ParticipanteList(ListView):
             if query:
                 return Participante.objects.filter(estagiarios=user.estagiario, nome__icontains=query,is_active=True)
             return Participante.objects.filter(estagiarios=user.estagiario,is_active=True)
-
-        if query:
-            return Participante.objects.filter(nome__icontains=query,is_active=True)
-        return Participante.objects.filter(is_active=True)
+        else:
+            if user.role == 'ORIENTADOR':
+                if query:
+                    return Participante.objects.filter(nome__icontains=query,is_active=True).order_by('-is_active')
+                return Participante.objects.filter(is_active=True).order_by('-is_active')
+            else:
+                if query:
+                    return Participante.objects.filter(nome__icontains=query).order_by('-is_active')
+                return Participante.objects.all().order_by('-is_active')
 
 class ParticipanteEdit(UpdateView):
     model = Participante
@@ -110,3 +117,10 @@ class EnderecoEdit(UpdateView):
         return super().form_valid(form)
 
 
+def reativarParticipante(request, pk):
+    user = get_object_or_404(Participante, id=pk)
+    user.is_active = True
+    user.save()
+    messages.success(request, "Participante ativado com sucesso.")
+
+    return redirect('participantes')

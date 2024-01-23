@@ -46,7 +46,8 @@ def reativarUsuario(request, pk):
     user = get_object_or_404(User, id=pk)
     user.is_active = True
     user.save()
-    messages.success(request, "Usuario ativado sucesso.")
+    messages.success(request, f"{user.role.capitalize()} ativado com sucesso.")
+
 
     referer = request.META.get('HTTP_REFERER')
 

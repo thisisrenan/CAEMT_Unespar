@@ -7,6 +7,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
 
+from django.views import View
+
 from core.forms import SupervisorForm, SupervisorFormEdit
 from core.models import User
 
@@ -38,11 +40,20 @@ class SupervisorEdit(UpdateView):
     template_name = 'supervisorTemplate/supervisor_form.html'
     form_class = SupervisorFormEdit
 
-class SupervisorDelete(DeleteView):
-    model = User
-    context_object_name = 'supervisores'
-    template_name = 'supervisorTemplate/supervisor_confirm_delete.html'
+class SupervisorDelete(View):
     success_url = reverse_lazy('supervisores')
+
+    def get(self, request, pk):
+        supervisor = get_object_or_404(User, pk=pk)
+        return render(request, self.template_name, {'supervisor': supervisor})
+
+    def post(self, request, pk):
+        supervisor = get_object_or_404(User, pk=pk)
+        supervisor.is_active = False
+        supervisor.save()
+
+        messages.success(request, "Supervisor excluído com sucesso.")
+        return redirect(self.success_url)
 
 
 #edit Perfil
@@ -58,3 +69,5 @@ class SupervisorEditProfile(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('edit_profile')
+
+

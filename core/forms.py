@@ -18,8 +18,14 @@ class OrientadorForm(forms.ModelForm):
         password = cleaned_data.get("password")
         password_confirm = cleaned_data.get("password_confirm")
 
+
         if password and password_confirm and password != password_confirm:
-            raise forms.ValidationError("As senhas não coincidem. Por favor, tente novamente.")
+            self.add_error('password', forms.ValidationError("As senhas não coincidem."))
+            self.add_error('password_confirm', forms.ValidationError("As senhas não coincidem."))
+
+
+
+
 
 
 class OrientadorFormEdit(forms.ModelForm):

@@ -32,6 +32,7 @@
                     <td>{{ participante.sobrenome }}</td>
                     <td>{{ participante.telefone }}</td>
                     <td>
+                        {% if participante.is_active %}
                             {% if user.role != 'ESTAGIARIO' %}
                                 <a href='{% url "Edit_Participante" participante.id %}'>
                                     <i class="bi bi-pencil-fill"></i>
@@ -40,9 +41,14 @@
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
                             {% endif %}
-                    <a href='{% url "List_Documetos" participante.id participante.username %}'>
+                            <a href='{% url "List_Documetos" participante.id participante.username %}'>
                             <i class="bi bi-folder-symlink-fill"></i>
-                        </a>
+                            </a>
+                       {% else %}
+                        <a href='{% url "reativar_participante" participante.id %}' class="btn btn-danger btn-sm">
+                                Ativar
+                         </a>
+                        {% endif %}
                     </td>
                 </tr>
 
