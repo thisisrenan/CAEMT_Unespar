@@ -1,14 +1,18 @@
+
 from django.utils import timezone
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.views import PasswordChangeView
-
+from django.views import View
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.shortcuts import render, redirect
+
+
 
 
 from .forms import OrientadorForm, OrientadorFormEdit, EstagiarioForm, EstagiarioFormEdit, SupervisorForm, SupervisorFormEdit, ParticipanteForm, EnderecoForm
@@ -57,10 +61,19 @@ class OrientadorEdit(UpdateView):
     model = Orientador
     template_name = 'orientadoreTemplate/orientador_form.html'
     form_class = OrientadorFormEdit
+    success_url = reverse_lazy('orientadores')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Orientador atualizado com sucesso.")
+        return super().form_valid(form)
 
 class OrientadorDelete(DeleteView):
     model = Orientador
     success_url = reverse_lazy('orientadores')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Orientadores excluído com sucesso.")
+        return super().delete(request, *args, **kwargs)
 
 
 
@@ -136,11 +149,19 @@ class ParticipanteCreate(CreateView):
     success_url = reverse_lazy('participantes')
 
     def form_valid(self, form):
-        # Sobrescreva o método form_valid para adicionar lógica personalizada
-        response = super().form_valid(form)
+        nome = form.cleaned_data['nome']
+        sobrenome = form.cleaned_data['sobrenome']
+        username = f"{nome.replace(' ', '').capitalize()}_{sobrenome.replace(' ', '').capitalize()}"
+        if Participante.objects.filter(username=username).exists():
+            messages.error(self.request, f"Erro ao criar o participante. O Participante '{username}' já está em uso.")
+            return self.render_to_response(self.get_context_data(form=form))
 
-        # Após criar o participante, redirecione para a visão de edição de endereço com o ID do participante
+        form.instance.username = username
+
+        response = super().form_valid(form)
+        messages.success(self.request, "Participante Criado com sucesso.")
         return redirect('Create_Endereco', pk=self.object.id)
+
 
 class ParticipanteList(ListView):
     model = Participante
@@ -153,12 +174,12 @@ class ParticipanteList(ListView):
         user = self.request.user
         if user.role == 'ESTAGIARIO':
             if query:
-                return Participante.objects.filter(estagiarios=user.estagiario, nome__icontains=query)
-            return Participante.objects.filter(estagiarios=user.estagiario)
+                return Participante.objects.filter(estagiarios=user.estagiario, nome__icontains=query,is_active=True)
+            return Participante.objects.filter(estagiarios=user.estagiario,is_active=True)
 
         if query:
-            return Participante.objects.filter(nome__icontains=query)
-        return Participante.objects.all()
+            return Participante.objects.filter(nome__icontains=query,is_active=True)
+        return Participante.objects.filter(is_active=True)
 
 class ParticipanteEdit(UpdateView):
     model = Participante
@@ -166,12 +187,26 @@ class ParticipanteEdit(UpdateView):
     context_object_name = 'participantes'
     template_name = 'participanteTemplate/participante_form_edit.html'
 
-class ParticipanterDelete(DeleteView):
-    model = Participante
-    context_object_name = 'participantes'
+    def form_valid(self, form):
+        messages.success(self.request, "Participante atualizado com sucesso.")
+        return super().form_valid(form)
+
+
+class ParticipanterDelete(View):
     template_name = 'participanteTemplate/participante_confirm_delete.html'
     success_url = reverse_lazy('participantes')
 
+    def get(self, request, pk):
+        participante = get_object_or_404(Participante, pk=pk)
+        return render(request, self.template_name, {'participante': participante})
+
+    def post(self, request, pk):
+        participante = get_object_or_404(Participante, pk=pk)
+        participante.is_active = False
+        participante.save()
+
+        messages.success(request, "Participante desativado com sucesso.")
+        return redirect(self.success_url)
 
 class EnderecoCreate(CreateView):
     model = Endereco
@@ -184,6 +219,7 @@ class EnderecoCreate(CreateView):
         participante_id = self.kwargs['pk']
         participante = Participante.objects.get(pk=participante_id)
         form.instance.participante = participante
+        messages.success(self.request, "Endereço cadastrato com sucesso.")
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -196,6 +232,9 @@ class EnderecoEdit(UpdateView):
     context_object_name = 'endereco'
     template_name = 'enderecoTemplate/endereco_form.html'
 
+    def form_valid(self, form):
+        messages.success(self.request, "Endereço atualizado com sucesso.")
+        return super().form_valid(form)
 
 #Edit Perfil
 class SupervisorEditProfile(UpdateView):
@@ -281,7 +320,10 @@ class DocumentosCreate(CreateView):
         participante = Participante.objects.get(id=participante_id)
         form.instance.pertence = participante
         form.instance.criado_por = self.request.user
+        messages.success(self.request, "Documento Adicionado com sucesso.")
         return super().form_valid(form)
+
+
 
 class DocumentosList(ListView):
     model = Documentos
@@ -313,3 +355,7 @@ class DocumentosDelete(DeleteView):
 
         success_url = reverse_lazy('List_Documetos', kwargs={'participante_id': participante_id})
         return success_url
+
+    def form_valid(self, form):
+        messages.success(self.request, "Documento excluído com sucesso.")
+        return super().form_valid(form)

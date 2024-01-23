@@ -102,6 +102,8 @@ class Participante(models.Model):
     telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
     motivo_busca_atendimento = models.TextField(verbose_name='Motivo da Busca por Atendimento', blank=True)
     estagiarios = models.ManyToManyField(Estagiario, related_name='participante_profiles', blank=True)
+    is_active = models.BooleanField(default=True, verbose_name='Ativo')
+
 
     def get_absolute_url(self):
         return reverse('participantes')
@@ -133,7 +135,7 @@ class Documentos(models.Model):
     titulo = models.CharField(max_length=255)
     descricao = models.CharField(max_length=255)
     data_criacao = models.DateTimeField(auto_now_add=True)
-    pertence = models.ForeignKey(Participante, on_delete=models.PROTECT)
+    pertence = models.ForeignKey(Participante, on_delete=models.CASCADE)
     criado_por = models.ForeignKey(User, on_delete=models.CASCADE)
     arquivo = models.FileField(upload_to='Documentos')
     def __str__(self):

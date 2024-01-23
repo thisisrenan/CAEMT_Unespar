@@ -1,0 +1,77 @@
+{% load static %}
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'js/jquery-3.7.0.min.js' %}"></script>
+<script src="{% static 'js/jquery.blockUI.js' %}"></script>
+<script src="{% static 'js/htmx.min.js' %}"></script>
+
+{% if messages %}
+  {% for message in messages %}
+    <script>
+      Swal.fire({
+        width: '35em',
+        icon: '{{ message.tags }}',
+        toast: true,
+        position: 'top-end',
+          timer: 4000,
+        timerProgressBar: true,
+        showCloseButton: true,
+        showConfirmButton: false,
+        title: '{{ message }}'
+      })
+    </script>
+  {% endfor %}
+{% endif %}
+
+<script>
+  function confirmarExclusao(url) {
+    Swal.fire({
+      title: 'Deseja realmente excluir o registro?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Não',
+      focusCancel: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        location.href = url
+      }
+    })
+  }
+</script>
+
+<script>
+  document.body.addEventListener('msg_success', function (evt) {
+    console.log(evt)
+    Swal.fire({
+      width: '35em',
+      icon: 'success',
+      toast: true,
+      position: 'top-end',
+        timer: 4000,
+        timerProgressBar: true,
+      showCloseButton: true,
+      showConfirmButton: false,
+      title: evt.detail.value
+    })
+  })
+</script>
+
+<script>
+  document.body.addEventListener('msg_error', function (evt) {
+    console.log(evt)
+    Swal.fire({
+      width: '35em',
+      icon: 'error',
+      toast: true,
+      position: 'top-end',
+                timer: 4000,
+        timerProgressBar: true,
+      showCloseButton: true,
+      showConfirmButton: false,
+      title: evt.detail.value
+    })
+  })
+</script>
