@@ -7,6 +7,9 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
 
+from django.views import View
+
+
 from core.forms import EstagiarioForm, EstagiarioFormEdit
 from core.models.users import Estagiario
 
@@ -18,8 +21,16 @@ class EstagiarioCreate(CreateView):
     template_name = 'estagiarioTemplate/estagiario_form.html'
     success_url = reverse_lazy('estagiarios')
 
+    def form_valid(self, form):
+        messages.success(self.request, "Estagiario criado com sucesso.")
+        return super().form_valid(form)
 
-@method_decorator(user_passes_test(is_supervisor, login_url='home'), name='dispatch')
+
+    def form_invalid(self, form):
+        errors = form.errors.as_text()
+        messages.error(self.request, "Erro ao criar estagiário. Por favor, corrija os erros no formulário")
+        return render(self.request, self.template_name, {'form': form})
+
 class EstagiarioList(ListView):
     model = Estagiario
     template_name = 'estagiarioTemplate/estagiario_list.html'
@@ -27,22 +38,48 @@ class EstagiarioList(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get('q')
-        if query:
-            return Estagiario.objects.filter(username__icontains=query)
-        return Estagiario.objects.all()
+        role_do_usuario = self.request.user.role
 
+        estagiarios_ativos = Estagiario.objects.filter(is_active=True)
+
+        if query:
+            estagiarios_ativos = estagiarios_ativos.filter(username__icontains=query)
+
+        if role_do_usuario == 'SUPERVISOR':
+            estagiarios_desativados = Estagiario.objects.filter(is_active=False)
+            estagiarios = estagiarios_ativos.union(estagiarios_desativados)
+        else:
+            estagiarios = estagiarios_ativos
+
+        estagiarios = estagiarios.order_by('-is_active')
+
+        return estagiarios
 
 class EstagiarioEdit(UpdateView):
     model = Estagiario
     template_name = 'estagiarioTemplate/estagiario_form.html'
     form_class = EstagiarioFormEdit
 
-class EstagiarioDelete(DeleteView):
-    model = Estagiario
-    context_object_name = 'estagiarios'
+    def form_valid(self, form):
+        messages.success(self.request, "Estagiario atualizado com sucesso.")
+        return super().form_valid(form)
+
+
+class EstagiarioDelete(View):
     template_name = 'estagiarioTemplate/estagiario_confirm_delete.html'
     success_url = reverse_lazy('estagiarios')
 
+    def get(self, request, pk):
+        estagiario = get_object_or_404(Estagiario, pk=pk)
+        return render(request, self.template_name, {'estagiario': estagiario})
+
+    def post(self, request, pk):
+        estagiario = get_object_or_404(Estagiario, pk=pk)
+        estagiario.is_active = False
+        estagiario.save()
+
+        messages.success(request, "Estagiario deletado com sucesso.")
+        return redirect(self.success_url)
 
 class EstagiarioEditProfile(UpdateView):
     model = Estagiario
@@ -53,5 +90,9 @@ class EstagiarioEditProfile(UpdateView):
     def get_object(self, queryset=None):
         return self.request.user.estagiario
 
+    def form_valid(self, form):
+        messages.success(self.request, "Perfil atualizado com sucesso.")
+        return super().form_valid(form)
     def get_success_url(self):
         return reverse_lazy('edit_profile')
+

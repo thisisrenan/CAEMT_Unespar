@@ -33,13 +33,20 @@
                     <td>{{ estagiario.last_name }}</td>
                     <td>{{ estagiario.telefone }}</td>
                     <td>{{ estagiario.ano_letivo }}</td>
+
                     <td>
+                        {% if estagiario.is_active %}
                         <a href='{% url "Edit_Estagiario" estagiario.id %}'>
                             <i class="bi bi-pencil-fill"></i>
                         </a>
                          <a href='#' data-bs-toggle="modal" data-bs-target="#myModal{{ estagiario.id }}">
                                 <i class="bi bi-trash-fill"></i>
-                            </a>
+                         </a>
+                        {% else %}
+                        <a href='{% url "reativar_user" estagiario.id %}' class="btn btn-danger btn-sm">
+                                Ativar
+                         </a>
+                        {% endif %}
                     </td>
                 </tr>
                     <div class="modal" id="myModal{{ estagiario.id }}">

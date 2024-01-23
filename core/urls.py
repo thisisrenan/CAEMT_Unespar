@@ -40,6 +40,12 @@ urlpatterns += [
     path("perfil/<str:username>", PerfilProfile, name='perfil'),
 ]
 
+#URLS CORE
+urlpatterns += [
+    path('Reativar/<int:pk>', reativarUsuario, name='reativar_user'),
+]
+
+
 #URLS SUPERVISOR
 urlpatterns += [
     path('Supervisor/novo', SupervisorCreate.as_view(), name='Create_Supervisor'),

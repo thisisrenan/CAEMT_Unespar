@@ -3,6 +3,7 @@
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -18,6 +19,12 @@ from core.models import User
 
 def is_supervisor(user):
     return user.is_authenticated and user.role == 'SUPERVISOR'
+
+def is_orientador(user):
+    return user.is_authenticated and user.role == 'ORIENTADOR'
+
+def is_estagiario(user):
+    return user.is_authenticated and user.role == 'ESTAGIARIO'
 
 def index(request):
     return render(request, 'registration/login.html', {})
@@ -35,6 +42,22 @@ def PerfilProfile(request, username):
     return render(request, 'perfil/perfil.html', context)
 
 #edit perfil
+def reativarUsuario(request, pk):
+    user = get_object_or_404(User, id=pk)
+    user.is_active = True
+    user.save()
+    messages.success(request, "Usuario ativado sucesso.")
+
+    referer = request.META.get('HTTP_REFERER')
+
+    if referer:
+        return HttpResponseRedirect(referer)
+    else:
+        return HttpResponseRedirect(reverse('home'))
+
+
+
+
 class SupervisorEditImage(UpdateView):
     model = User
     context_object_name = 'userProfile'
@@ -45,6 +68,7 @@ class SupervisorEditImage(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('edit_photo')
+
 
 class SupervisorChangePasswordView(PasswordChangeView):
     template_name = 'perfiledit/changePassword.html'
