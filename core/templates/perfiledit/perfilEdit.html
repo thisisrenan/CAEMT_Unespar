@@ -2,6 +2,7 @@
 {% load bootstrap %}
 
 {% block content %}
+    <main class="container">
 <div class="d-flex flex-row mt-5 justify-content-evenly">
     <div class="d-flex flex-column align-items-center w-25 rounded-3">
         <img id="perfilimg" src="{{ userProfile.image.url }}" class="perfil-page rounded-circle mt-2" style="object-fit: cover; width: 10em; height: 10em;" alt="">
@@ -46,7 +47,7 @@
     </div>
 </div>
 </div>
-
+    </main>
 {% endblock %}
 
 <style>

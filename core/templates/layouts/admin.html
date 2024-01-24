@@ -151,16 +151,16 @@
         <hr class="dropdown-divider " style="color: lightgray; margin: 0.5em;">
        <ul style="list-style: none; margin-top: 0; margin-bottom: 0;">
            <li class="nav-item">
-                    <a class="nav-link dropdown-item" aria-current="page" href="">Calendario</a>
+                    <a class="nav-link dropdown-item" aria-current="page" href="{% url 'agendas' %}">Agendamento</a>
                 </li>
         </ul>
   </div>
 </div>
-<main class="container">
+
     {% block content %}
 
     {% endblock content %}
-</main>
+
     {% include 'layouts/script.html' %}
 
 

@@ -1,0 +1,79 @@
+{% extends 'layouts/admin.html' %}
+
+
+
+{% block content %}
+<main class="container-fluid w-75">
+<h1 class="text-center mt-4">Calendario de Reservas</h1>
+    <div class="row align-items-center">
+        <div class="col-lg-3 ">
+            <div class="text-center">
+                <h4>{{ dia }}</h4>
+                <h4>{{ data_completa }}</h4>
+            </div>
+
+            <div class="list-group">
+                {% for data in datas_semana %}
+                    <a href="{% url 'agenda' data %}" class="list-group-item list-group-item-action mt-2 border border-dark text-center rounded-pill {% if dia|lower == data|lower %}active{% endif %}" aria-current="true">
+                        {{ data }}
+                    </a>
+                 {% endfor %}
+            </div>
+        </div>
+         <div class="col-lg-9 ">
+            <div class="container mt-3">
+              <table class="table table-bordered border-primary">
+                  <thead>
+                        <tr class="text-center">
+                            <th class="col-1">HORARIOS</th>
+                            <th class="col-6">RESERVAS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hora in horarios_reservados %}
+
+                                {% if hora.reserva %}
+                                    <tr class="text-center">
+                                         <td class="table-secondary">
+                                        {{ hora.hora }}
+                                        </td>
+                                        <td class="table-active">
+
+                                                <a href=''>
+                                                        <i class="bi bi-info-circle"></i>
+                                                    </a>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                     <tr class="text-center">
+                                        <td>
+                                            {{ hora.hora }}
+                                        </td>
+                                            <td class="">
+                                                <a href=''>
+                                                        <i class="bi bi-plus-square"></i>
+                                                </a>
+                                        </td>
+                                     </tr>
+                            {% endif %}
+
+                        {% endfor %}
+                    </tbody>
+              </table>
+            </div>
+        </div>
+    </div>
+    </main>
+{% endblock %}
+
+
+{% block styles %}
+<style>
+    .reset-container {
+        margin: 0; /* Defina as propriedades desejadas para substituir ou remover */
+        padding: 0; /* Defina as propriedades desejadas para substituir ou remover */
+        width: auto; /* Se necessário, substitua ou remova a largura fixa do container */
+    }
+</style>
+
+{% endblock %}

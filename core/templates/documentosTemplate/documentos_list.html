@@ -1,6 +1,6 @@
 {% extends 'layouts/admin.html' %}
 {% block content %}
-
+<main class="container">
   <h1 class="mt-5"><a class="btn btn-group-vertical" href='{% url "participantes" %}'><i class="bi bi-arrow-return-left"></i></a> Documentos do Participante {{ participante_nome }}</h1>
     <div class="d-flex col mb-3 mt-3 justify-content-between">
 
@@ -63,5 +63,5 @@
   </div>
 </div>
 
-
+</main>
 {% endblock %}

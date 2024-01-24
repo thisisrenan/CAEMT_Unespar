@@ -149,13 +149,13 @@ class Documentos(models.Model):
 
 class agenda(models.Model):
     SEMANA_CHOICES = [
-        (0, 'DOMINGO'),
-        (1, 'SEGUNDA'),
-        (2, 'TERÇA'),
-        (3, 'QUARTA'),
-        (4, 'QUINTA'),
-        (5, 'SEXTA'),
-        (6, 'SABADO'),
+        (0, 'SEGUNDA-FEIRA'),
+        (1, 'TERÇA-FEIRA'),
+        (2, 'QUARTA-FEIRA'),
+        (3, 'QUINTA-FEIRA'),
+        (4, 'SEXTA-FEIRA'),
+        (5, 'SÁBADO'),
+        (6, 'DOMINGO'),
     ]
 
     HORARIO_CHOICES = [

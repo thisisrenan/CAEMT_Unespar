@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 
 from CAEMTUnespar import settings
 from . import views
+from .views.agenda import *
 from .views.estagiario import *
 from .views.orientador import *
 from .views.participante import *
@@ -29,6 +30,8 @@ def edit_profile_view(request):
 
 urlpatterns = [
     path("", home, name="home"),
+    path("agenda", rediAgenda, name='agendas'),
+    path("agenda/<str:semana>", agendaHome, name='agenda'),
 
 ]
 
