@@ -33,15 +33,11 @@ def rediAgenda(request):
     return redirect('agenda/' + dia)
 
 def agendaHome(request, semana):
-    # Mapeando a string para o valor numérico equivalente
     dia_da_semana_valor = [x[0] for x in agenda.SEMANA_CHOICES if x[1].upper() == semana.upper()]
 
     if dia_da_semana_valor:
-        # Obtendo a lista de objetos Agenda para um dia específico da semana
         horarios_reservados = agenda.objects.filter(dia_da_semana=dia_da_semana_valor[0]).order_by('horario')
 
-
-        # Dias da semana em português
         dias_semana = {
             0: 'SEGUNDA-FEIRA',
             1: 'TERÇA-FEIRA',
@@ -54,19 +50,18 @@ def agendaHome(request, semana):
         horarios = agenda.HORARIO_CHOICES
         horarios_formatados = [horario[0].strftime('%H:%M:%S') for horario in horarios]
 
-        print(horarios)
         hoje = datetime.now().date()
+        dia_da_semana_atual = hoje.weekday()
         datas_semana = {
-            dias_semana[(hoje + timedelta(days=i)).weekday() % 7]: {
+            dias_semana[(i) % 7]: {
                 'dia': (hoje + timedelta(days=i)).day,
                 'data_completa': hoje + timedelta(days=i),
             }
             for i in range(7)
         }
         dia = dias_semana[dia_da_semana_valor[0]]
-        dia_da_semana_atual = hoje.weekday()
-        diferenca_dias = (dia_da_semana_valor[0] - dia_da_semana_atual + 7) % 7
-        data_completa = hoje + timedelta(days=diferenca_dias)
+
+
 
         j = 0
         horariosAux = []
@@ -84,7 +79,6 @@ def agendaHome(request, semana):
         context = {
             "horarios_reservados": horariosAux,
             "dia": dia,
-            "data_completa": data_completa,
             "datas_semana": datas_semana,
         }
         return render(request, "agenda/index.html", context)

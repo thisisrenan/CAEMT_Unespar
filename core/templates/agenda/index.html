@@ -3,18 +3,13 @@
 
 
 {% block content %}
-<main class="container-fluid w-75">
+<main class="container-fluid w-75 mt-2">
 <h1 class="text-center mt-4">Calendario de Reservas</h1>
     <div class="row align-items-center">
         <div class="col-lg-3 ">
-            <div class="text-center">
-                <h4>{{ dia }}</h4>
-                <h4>{{ data_completa }}</h4>
-            </div>
-
             <div class="list-group">
                 {% for data in datas_semana %}
-                    <a href="{% url 'agenda' data %}" class="list-group-item list-group-item-action mt-2 border border-dark text-center rounded-pill {% if dia|lower == data|lower %}active{% endif %}" aria-current="true">
+                    <a href="{% url 'agenda' data %}" class="btnmy list-group-item list-group-item-action mt-2 p-3 border border-dark text-center rounded-pill {% if dia|lower == data|lower %}active{% endif %}"  aria-current="true">
                         {{ data }}
                     </a>
                  {% endfor %}
@@ -22,8 +17,11 @@
         </div>
          <div class="col-lg-9 ">
             <div class="container mt-3">
-              <table class="table table-bordered border-primary">
+              <table class="table table-bordered border-primary table-sm" style="font-size: 1.2em;">
                   <thead>
+                         <tr class="text-center">
+                            <th class="col-7 font-weight-bold table-primary " colspan="2">{{ dia }}</th>
+                        </tr>
                         <tr class="text-center">
                             <th class="col-1">HORARIOS</th>
                             <th class="col-6">RESERVAS</th>
@@ -33,11 +31,11 @@
                         {% for hora in horarios_reservados %}
 
                                 {% if hora.reserva %}
-                                    <tr class="text-center">
-                                         <td class="table-secondary">
+                                    <tr class="text-center ">
+                                         <td class="table-secondary ">
                                         {{ hora.hora }}
                                         </td>
-                                        <td class="table-active">
+                                        <td class="table-active p-0 ">
 
                                                 <a href=''>
                                                         <i class="bi bi-info-circle"></i>
@@ -45,11 +43,11 @@
                                         </td>
                                     </tr>
                                 {% else %}
-                                     <tr class="text-center">
+                                     <tr class="text-center pb-0">
                                         <td>
                                             {{ hora.hora }}
                                         </td>
-                                            <td class="">
+                                            <td class="pb-0">
                                                 <a href=''>
                                                         <i class="bi bi-plus-square"></i>
                                                 </a>
@@ -64,16 +62,20 @@
         </div>
     </div>
     </main>
+
+    <style>
+    .btnmy{
+        color: black;
+    }
+    .btnmy.active {
+        background-color: #CFE2FF;
+        color: black;
+    }
+</style>
 {% endblock %}
 
 
 {% block styles %}
-<style>
-    .reset-container {
-        margin: 0; /* Defina as propriedades desejadas para substituir ou remover */
-        padding: 0; /* Defina as propriedades desejadas para substituir ou remover */
-        width: auto; /* Se necessário, substitua ou remova a largura fixa do container */
-    }
-</style>
+
 
 {% endblock %}
