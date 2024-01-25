@@ -1,6 +1,7 @@
 {% extends 'layouts/admin.html' %}
 
 {% block content %}
+    <main class="container">
     <div x-data="{count: 0}" class="mb-xxl-5 mt-5">
         <input type="number" x-model="count"/>
         <br/>
@@ -12,6 +13,7 @@
         <h1 x-text="count"></h1>
 
     </div>
+    </main>
 {% endblock %}
 
 <style>

@@ -67,6 +67,9 @@ class SupervisorEditImage(UpdateView):
     def get_object(self, queryset=None):
             return self.request.user
 
+    def form_valid(self, form):
+        messages.success(self.request, "Imagem atualizada com sucesso.")
+        return super().form_valid(form)
     def get_success_url(self):
         return reverse_lazy('edit_photo')
 

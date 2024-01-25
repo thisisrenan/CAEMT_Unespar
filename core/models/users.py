@@ -1,8 +1,10 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from datetime import time
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -143,3 +145,46 @@ class Documentos(models.Model):
 
     def get_absolute_url(self):
         return reverse('List_Documetos',args=[self.pertence.id] )
+
+
+class agenda(models.Model):
+    SEMANA_CHOICES = [
+        (0, 'SEGUNDA-FEIRA'),
+        (1, 'TERÇA-FEIRA'),
+        (2, 'QUARTA-FEIRA'),
+        (3, 'QUINTA-FEIRA'),
+        (4, 'SEXTA-FEIRA'),
+        (5, 'SÁBADO'),
+        (6, 'DOMINGO'),
+    ]
+
+    HORARIO_CHOICES = [
+        (time(8, 10), '8:10'),
+        (time(9, 10), '9:10'),
+        (time(10, 10), '10:10'),
+        (time(11, 10), '11:10'),
+        (time(12, 10), '12:10'),
+        (time(13, 10), '13:10'),
+        (time(14, 10), '14:10'),
+        (time(15, 10), '15:10'),
+        (time(16, 10), '16:10'),
+        (time(17, 10), '17:10'),
+
+    ]
+
+    dia_da_semana = models.IntegerField(verbose_name='Semana', blank=True, choices=SEMANA_CHOICES)
+    horario = models.TimeField(choices=HORARIO_CHOICES)
+    participante = models.ForeignKey(Participante, on_delete=models.CASCADE, null=True, blank=True ,related_name='agendas_participante')
+    estagiario = models.ManyToManyField(Estagiario,  null=True, blank=True, related_name='agendas_estagiario')
+    reservadoPor = models.ForeignKey(User, on_delete=models.SET_NULL,  null=True, blank=True)
+
+    def clean(self):
+        existing_record = agenda.objects.filter(dia_da_semana=self.dia_da_semana, horario=self.horario).exclude(
+            pk=self.pk).first()
+        if existing_record:
+            raise ValidationError(
+                f"Já existe um registro para o dia {self.get_dia_da_semana_display()} e horário {self.horario}.")
+
+
+    def __str__(self):
+        return f"{self.get_dia_da_semana_display()} - {self.horario} - {self.participante}"

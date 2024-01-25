@@ -2,6 +2,7 @@
 {% load bootstrap %}
 
 {% block content %}
+    <main class="container">
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form|bootstrap }}
@@ -15,4 +16,5 @@
     <a class="btn btn-danger" href="{% url 'participantes' %}">Cancelar</a>
 
     </form>
+    </main>
 {% endblock %}

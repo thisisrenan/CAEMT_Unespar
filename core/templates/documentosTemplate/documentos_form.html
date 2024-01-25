@@ -1,11 +1,12 @@
 {% extends 'layouts/admin.html' %}
 {% load bootstrap %}
 {% block content %}
+    <main class="container">
 <form  method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form|bootstrap }}
     <button type="submit" class="btn btn-success" >Salvar </button>
     <a class="btn btn-danger" href='{% url "List_Documetos" participante.id participante.username %}'>Cancelar</a>
 </form>
-
+    </main>
 {% endblock %}
