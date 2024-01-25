@@ -209,7 +209,11 @@
                     <!-- Modal footer -->
                     <div class="modal-footer">
                             {% if hora.info.id %}
-                            <a class="btn btn-danger" href="{% url 'deletar_agenda' hora.info.id %}">Confirmar</a>
+                                <form method="POST" action="{% url 'deletar_agenda' hora.info.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="semana" value="{{ dia }}">
+                                <button type="submit" class="btn btn-danger">Confirmar</button>
+                                </form>
                             {% endif %}
                             <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">Cancelar</button>
 

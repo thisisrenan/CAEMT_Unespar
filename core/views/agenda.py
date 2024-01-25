@@ -112,14 +112,15 @@ def criar_agenda(request, semana):
         nova_agenda.estagiario.add(estagiario)
 
         nova_agenda.save()
+        messages.success(request, "Agendado com sucesso.")
         return redirect(reverse('agenda', args=[semana]))
 
 
 def deletar_agenda(request,pk):
-
+    semana = request.POST.get("semana")
     agendamento = agenda.objects.get(id=pk)
     agendamento.delete()
-
-    return redirect('agendas')
+    messages.success(request, "Agendamento deletado com sucesso.")
+    return redirect(reverse('agenda', args=[semana]))
 
 
