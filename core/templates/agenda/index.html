@@ -28,30 +28,33 @@
                     </thead>
                     <tbody>
                         {% for hora in horarios_reservados %}
-                        {% if hora.reserva %}
-                        <tr class="text-center">
-                            <td class="table-secondary">
-                                {{ hora.hora }}
-                            </td>
-                            <td class="table-active p-0">
-                                <a href='' data-toggle="modal" data-target="#ModalInfo{{ forloop.counter }}">
-                                    <i class="bi bi-info-circle"></i>
-                                </a>
+                            {% if hora.reserva %}
+                                <tr class="text-center">
+                                    <td class="table-secondary">
+                                        {{ hora.hora }}
+                                    </td>
+                                    <td class="table-active p-0">
+                                        <a href='' data-toggle="modal" data-target="#ModalInfo{{ forloop.counter  }}">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a>
+                                         <a href='' data-toggle="modal" data-target="#ModalDelete{{ forloop.counter }}">
+                                            <i class="bi bi-trash3"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr class="text-center pb-0">
+                                    <td>
+                                        {{ hora.hora }}
+                                    </td>
+                                    <td class="pb-0">
+                                        <a href='' data-toggle="modal" data-target="#ModalCreate{{ forloop.counter }}">
+                                            <i class="bi bi-plus-square"></i>
+                                        </a>
 
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr class="text-center pb-0">
-                            <td>
-                                {{ hora.hora }}
-                            </td>
-                            <td class="pb-0">
-                                <a href='' data-toggle="modal" data-target="#ModalCreate{{ forloop.counter }}">
-                                    <i class="bi bi-plus-square"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -130,46 +133,91 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header p-3">
-                <h5 class="modal-title h3">Horário Reservado</h5>
+                <h5 class="modal-title h3">Fazer Reserva</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body p-4">
-                <div class="row">
-                    <div class="col-6">
-                        <span>Inicio:</span>
-                        <input name='horario' class="form-control" type="text" value="{{ hora.hora }}" readonly>
+            {% if participantes_sem_agenda and estagiarios_sem_agenda %}
+                <form method="POST" action="{% url 'create_agenda' dia %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="semana" value="{{ dia }}">
+                    <div class="row">
+                        <div class="col-6">
+                            <span>Inicio:</span>
+                            <input name='horario' class="form-control" type="text" value="{{ hora.hora }}" readonly>
+                        </div>
+                        <div class="col-6">
+                            <span>Final:</span>
+                            <input class="form-control" type="text" value="{{ hora.hora|add_minutes:60 }}" readonly>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <span>Final:</span>
-                        <input class="form-control" type="text" value="{{ hora.hora|add_minutes:60 }}" readonly>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <span>Participante:</span>
+                            <select name='participante' class="form-select" aria-label="Default select example">
+                                {% for participante in participantes_sem_agenda %}
+                                    <option value="{{ participante.id }}">{{ participante.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-12">
-                        <span>Participante:</span>
-                        <input class="form-control" type="text" value="" readonly>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <span>Estagiarios:</span>
+                            <select name='estagiario' class="form-select" aria-label="Default select example">
+                                   {% for estagiario in estagiarios_sem_agenda %}
+                                        <option value="{{ estagiario.id }}">{{ estagiario.username }}</option>
+                                    {% endfor %}
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-12">
-                        <span>Estagiarios:</span>
-                            <input class="form-control my-2" type="text" value="" readonly>
+                    <div class="row mt-3 text-center d-flex align-items-center">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-danger px-5 w-75" data-dismiss="modal" aria-label="Close">Cancelar</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-success px-5 w-75">Criar</button>
+                        </div>
                     </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-12">
-                        <span>Orientador Responsável:</span>
-                        <input class="form-control my-2" type="text" value="" readonly>
-                    </div>
-                </div>
-            </div>
+                </form>
+            {% else %}
+                <p class="text-danger">Não há Participante para ser agendado ou não há estagiarios disponiveis  </p>
+            {% endif %}
         </div>
     </div>
 </div>
+</div>
 
+    <!-- Modal Delete-->
+    <div class="modal" id="ModalDelete{{ forloop.counter }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Deletar o Agendamento</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        Tem certeza que deseja deletar o agendamento das {{ hora.hora }}?
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                            {% if hora.info.id %}
+                            <a class="btn btn-danger" href="{% url 'deletar_agenda' hora.info.id %}">Confirmar</a>
+                            {% endif %}
+                            <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">Cancelar</button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
 {% endfor %}
 {% endblock %}
 

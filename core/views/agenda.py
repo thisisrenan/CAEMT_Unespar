@@ -78,17 +78,48 @@ def agendaHome(request, semana):
         estagiarios_sem_agenda = Estagiario.objects.annotate(num_agendas=Count('agendas_estagiario')).filter(
             Q(num_agendas=0)  & Q(is_active=1) | (Q(num_agendas=1) & Q(ano_letivo__gt=3) & Q(is_active=1))
         )
-        participantes_com_agenda = Participante.objects.filter(agendas_participante__isnull=False).distinct()
-        participantes_com_agenda = participantes_com_agenda.distinct()
 
-        print(estagiarios_sem_agenda)
+
         context = {
             "horarios_reservados": horariosAux,
+            "estagiarios_sem_agenda": estagiarios_sem_agenda,
             "participantes_sem_agenda": participantes_sem_agenda,
-            "participantes_com_agenda": participantes_com_agenda,
             "dia": dia,
             "datas_semana": datas_semana,
         }
         return render(request, "agenda/index.html", context)
     else:
         return HttpResponse("Dia da semana inválido. Página de erro aqui.")
+
+def criar_agenda(request, semana):
+    if request.method == 'POST':
+        semana = request.POST.get("semana")
+        dia_da_semana= 0
+        horario = request.POST.get("horario")
+        estagiario = Estagiario.objects.get(id=request.POST.get("estagiario"))
+        participante = Participante.objects.get(id=request.POST.get("participante"))
+
+        for numero, nome in agenda.SEMANA_CHOICES:
+            if nome.lower() == semana.lower():
+                dia_da_semana = numero
+
+        nova_agenda = agenda.objects.create(
+            dia_da_semana=dia_da_semana,
+            horario=horario,
+            participante=participante,
+            reservadoPor = request.user
+        )
+        nova_agenda.estagiario.add(estagiario)
+
+        nova_agenda.save()
+        return redirect(reverse('agenda', args=[semana]))
+
+
+def deletar_agenda(request,pk):
+
+    agendamento = agenda.objects.get(id=pk)
+    agendamento.delete()
+
+    return redirect('agendas')
+
+
