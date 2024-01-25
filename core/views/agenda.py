@@ -7,7 +7,7 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
-
+from django.db.models import Count, Q
 from core.models.users import agenda, Participante, Estagiario
 from .core import is_supervisor
 
@@ -15,7 +15,6 @@ def horario_reservado(self, horario, reserva):
     return self.horario == horario
 
 def rediAgenda(request):
-    # Dias da semana em português
     dias_semana = {
         0: 'SEGUNDA-FEIRA',
         1: 'TERÇA-FEIRA',
@@ -69,15 +68,24 @@ def agendaHome(request, semana):
         for i in range(len(horarios_formatados)):
             if j < len(horarios_reservados) and str(horarios_reservados[j].horario) == str(horarios_formatados[i]):
                 horario_sem_segundos = horarios_formatados[i].split(":")[:-1]
-                horariosAux.append({"reserva": True, "hora": ":".join(horario_sem_segundos)})
+                horariosAux.append({"reserva": True, "info": horarios_reservados[j],"hora": ":".join(horario_sem_segundos)})
                 j += 1
             else:
                 horario_sem_segundos = horarios_formatados[i].split(":")[:-1]
                 horariosAux.append({"reserva": False, "hora": ":".join(horario_sem_segundos)})
 
+        participantes_sem_agenda = Participante.objects.annotate(num_agendas=Count('agendas_participante')).filter(num_agendas=0)
+        estagiarios_sem_agenda = Estagiario.objects.annotate(num_agendas=Count('agendas_estagiario')).filter(
+            Q(num_agendas=0)  & Q(is_active=1) | (Q(num_agendas=1) & Q(ano_letivo__gt=3) & Q(is_active=1))
+        )
+        participantes_com_agenda = Participante.objects.filter(agendas_participante__isnull=False).distinct()
+        participantes_com_agenda = participantes_com_agenda.distinct()
 
+        print(estagiarios_sem_agenda)
         context = {
             "horarios_reservados": horariosAux,
+            "participantes_sem_agenda": participantes_sem_agenda,
+            "participantes_com_agenda": participantes_com_agenda,
             "dia": dia,
             "datas_semana": datas_semana,
         }

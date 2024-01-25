@@ -169,7 +169,7 @@ class agenda(models.Model):
         (time(15, 10), '15:10'),
         (time(16, 10), '16:10'),
         (time(17, 10), '17:10'),
-        (time(18, 10), '18:10'),
+
     ]
 
     dia_da_semana = models.IntegerField(verbose_name='Semana', blank=True, choices=SEMANA_CHOICES)

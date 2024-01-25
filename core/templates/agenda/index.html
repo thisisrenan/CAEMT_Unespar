@@ -1,26 +1,25 @@
 {% extends 'layouts/admin.html' %}
-
-
+{% load custom_filters %}
 
 {% block content %}
 <main class="container-fluid w-75 mt-2">
-<h1 class="text-center mt-4">Calendario de Reservas</h1>
+    <h1 class="text-center mt-4">Calendario de Reservas</h1>
     <div class="row align-items-center">
-        <div class="col-lg-3 ">
+        <div class="col-lg-3">
             <div class="list-group">
                 {% for data in datas_semana %}
-                    <a href="{% url 'agenda' data %}" class="btnmy list-group-item list-group-item-action mt-2 p-3 border border-dark text-center rounded-pill {% if dia|lower == data|lower %}active{% endif %}"  aria-current="true">
+                    <a href="{% url 'agenda' data %}" class="btnmy list-group-item list-group-item-action mt-2 p-3 border border-dark text-center rounded-pill {% if dia|lower == data|lower %}active{% endif %}" aria-current="true">
                         {{ data }}
                     </a>
-                 {% endfor %}
+                {% endfor %}
             </div>
         </div>
-         <div class="col-lg-9 ">
+        <div class="col-lg-9">
             <div class="container mt-3">
-              <table class="table table-bordered border-primary table-sm" style="font-size: 1.2em;">
-                  <thead>
-                         <tr class="text-center">
-                            <th class="col-7 font-weight-bold table-primary " colspan="2">{{ dia }}</th>
+                <table class="table table-bordered border-primary table-sm" style="font-size: 1.2em;">
+                    <thead>
+                        <tr class="text-center">
+                            <th class="col-7 font-weight-bold table-primary" colspan="2">{{ dia }}</th>
                         </tr>
                         <tr class="text-center">
                             <th class="col-1">HORARIOS</th>
@@ -29,53 +28,148 @@
                     </thead>
                     <tbody>
                         {% for hora in horarios_reservados %}
+                        {% if hora.reserva %}
+                        <tr class="text-center">
+                            <td class="table-secondary">
+                                {{ hora.hora }}
+                            </td>
+                            <td class="table-active p-0">
+                                <a href='' data-toggle="modal" data-target="#ModalInfo{{ forloop.counter }}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
 
-                                {% if hora.reserva %}
-                                    <tr class="text-center ">
-                                         <td class="table-secondary ">
-                                        {{ hora.hora }}
-                                        </td>
-                                        <td class="table-active p-0 ">
-
-                                                <a href=''>
-                                                        <i class="bi bi-info-circle"></i>
-                                                    </a>
-                                        </td>
-                                    </tr>
-                                {% else %}
-                                     <tr class="text-center pb-0">
-                                        <td>
-                                            {{ hora.hora }}
-                                        </td>
-                                            <td class="pb-0">
-                                                <a href=''>
-                                                        <i class="bi bi-plus-square"></i>
-                                                </a>
-                                        </td>
-                                     </tr>
-                            {% endif %}
-
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr class="text-center pb-0">
+                            <td>
+                                {{ hora.hora }}
+                            </td>
+                            <td class="pb-0">
+                                <a href='' data-toggle="modal" data-target="#ModalCreate{{ forloop.counter }}">
+                                    <i class="bi bi-plus-square"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endif %}
                         {% endfor %}
                     </tbody>
-              </table>
+                </table>
             </div>
         </div>
     </div>
-    </main>
+</main>
 
-    <style>
-    .btnmy{
+<style>
+    .btnmy {
         color: black;
     }
+
     .btnmy.active {
         background-color: #CFE2FF;
         color: black;
     }
+
+    .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.61) !important; /* Fundo semi-transparente */
+}
+
 </style>
+
+
+{% for hora in horarios_reservados %}
+
+<!-- MODAL INFO-->
+<div class="modal" id="ModalInfo{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header p-3">
+                <h5 class="modal-title h3">Horário Reservado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-6">
+                        <span>Inicio:</span>
+                        <input class="form-control" type="text" value="{{ hora.info.horario }}" readonly>
+                    </div>
+                    <div class="col-6">
+                        <span>Final:</span>
+                        <input class="form-control" type="text" value="{{ hora.info.horario|add_minutes:60 }}" readonly>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <span>Participante:</span>
+                        <input class="form-control" type="text" value="{{ hora.info.participante.username }}" readonly>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <span>Estagiarios:</span>
+                        {% for estagiario in hora.info.estagiario.all %}
+                            <input class="form-control my-2" type="text" value="{{ estagiario.username }}" readonly>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <span>Orientador Responsável:</span>
+                        <input class="form-control my-2" type="text" value="{{ hora.info.estagiario.first.orientador_responsavel.username }}" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Create -->
+<div class="modal" id="ModalCreate{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header p-3">
+                <h5 class="modal-title h3">Horário Reservado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-6">
+                        <span>Inicio:</span>
+                        <input name='horario' class="form-control" type="text" value="{{ hora.hora }}" readonly>
+                    </div>
+                    <div class="col-6">
+                        <span>Final:</span>
+                        <input class="form-control" type="text" value="{{ hora.hora|add_minutes:60 }}" readonly>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <span>Participante:</span>
+                        <input class="form-control" type="text" value="" readonly>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <span>Estagiarios:</span>
+                            <input class="form-control my-2" type="text" value="" readonly>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <span>Orientador Responsável:</span>
+                        <input class="form-control my-2" type="text" value="" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endfor %}
 {% endblock %}
 
-
-{% block styles %}
-
-
-{% endblock %}
