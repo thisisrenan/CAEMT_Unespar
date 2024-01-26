@@ -32,7 +32,8 @@ urlpatterns = [
     path("", home, name="home"),
     path("agenda", rediAgenda, name='agendas'),
     path("agenda/<str:semana>", agendaHome, name='agenda'),
-    path('agenda/criar/<str:semana>', criar_agenda, name='create_agenda'),
+    path("agendas/<str:semana>/<str:username>", agendaEdit, name='agendaEdit'),
+    path('agenda/criar/', criar_agenda, name='create_agenda'),
     path('agenda/deletar/<int:pk>', deletar_agenda, name='deletar_agenda'),
 
 ]

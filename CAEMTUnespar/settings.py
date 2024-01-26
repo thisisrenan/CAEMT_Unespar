@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
+    'core.middleware.middleware.UpdateUserActivityMiddleware',
 ]
 
 ROOT_URLCONF = 'CAEMTUnespar.urls'
