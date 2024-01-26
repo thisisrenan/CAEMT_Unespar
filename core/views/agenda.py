@@ -91,13 +91,18 @@ def agendaHome(request, semana):
     else:
         return HttpResponse("Dia da semana inválido. Página de erro aqui.")
 
-def criar_agenda(request, semana):
+def criar_agenda(request):
     if request.method == 'POST':
         semana = request.POST.get("semana")
         dia_da_semana= 0
         horario = request.POST.get("horario")
         estagiario = Estagiario.objects.get(id=request.POST.get("estagiario"))
         participante = Participante.objects.get(id=request.POST.get("participante"))
+
+        agenda_existente = agenda.objects.filter(participante=participante).first()
+
+        if agenda_existente:
+            agenda_existente.delete()
 
         for numero, nome in agenda.SEMANA_CHOICES:
             if nome.lower() == semana.lower():
@@ -113,7 +118,10 @@ def criar_agenda(request, semana):
 
         nova_agenda.save()
         messages.success(request, "Agendado com sucesso.")
-        return redirect(reverse('agenda', args=[semana]))
+        if request.POST.get('edit') == 'True':
+            return redirect(reverse('agendaEdit', args=[semana, participante.username]))
+        else:
+            return redirect(reverse('agenda', args=[semana]))
 
 
 def deletar_agenda(request,pk):
@@ -124,3 +132,73 @@ def deletar_agenda(request,pk):
     return redirect(reverse('agenda', args=[semana]))
 
 
+def agendaEdit(request, semana, username):
+    dia_da_semana_valor = [x[0] for x in agenda.SEMANA_CHOICES if x[1].upper() == semana.upper()]
+    try:
+        participante = Participante.objects.get(username=username)
+    except Participante.DoesNotExist:
+        participante = False
+    if dia_da_semana_valor and participante:
+        horarios_reservados = agenda.objects.filter(dia_da_semana=dia_da_semana_valor[0]).order_by('horario')
+
+        dias_semana = {
+            0: 'SEGUNDA-FEIRA',
+            1: 'TERÇA-FEIRA',
+            2: 'QUARTA-FEIRA',
+            3: 'QUINTA-FEIRA',
+            4: 'SEXTA-FEIRA',
+            5: 'SÁBADO',
+            6: 'DOMINGO',
+        }
+        horarios = agenda.HORARIO_CHOICES
+        horarios_formatados = [horario[0].strftime('%H:%M:%S') for horario in horarios]
+
+        hoje = datetime.now().date()
+        dia_da_semana_atual = hoje.weekday()
+        datas_semana = {
+            dias_semana[(i) % 7]: {
+                'dia': (hoje + timedelta(days=i)).day,
+                'data_completa': hoje + timedelta(days=i),
+            }
+            for i in range(7)
+        }
+        dia = dias_semana[dia_da_semana_valor[0]]
+
+
+
+        j = 0
+        horariosAux = []
+
+        for i in range(len(horarios_formatados)):
+            if j < len(horarios_reservados) and str(horarios_reservados[j].horario) == str(horarios_formatados[i]):
+                horario_sem_segundos = horarios_formatados[i].split(":")[:-1]
+                horariosAux.append({"reserva": True, "info": horarios_reservados[j],"hora": ":".join(horario_sem_segundos)})
+                j += 1
+            else:
+                horario_sem_segundos = horarios_formatados[i].split(":")[:-1]
+                horariosAux.append({"reserva": False, "hora": ":".join(horario_sem_segundos)})
+
+
+        agenda_do_participante = agenda.objects.filter(participante=participante)
+
+
+
+        estagiarios_sem_agenda = Estagiario.objects.annotate(num_agendas=Count('agendas_estagiario')).filter(
+            Q(num_agendas=0)  & Q(is_active=1) | (Q(num_agendas=1) & Q(ano_letivo__gt=3) & Q(is_active=1))
+        )
+        agenda_participante = agenda_do_participante.first()
+        if agenda_participante:
+            estagiario_da_agenda = agenda_do_participante.first().estagiario.all()
+            estagiarios_sem_agenda = list(estagiario_da_agenda) + list(estagiarios_sem_agenda)
+
+        context = {
+            "horarios_reservados": horariosAux,
+            "estagiarios_sem_agenda": estagiarios_sem_agenda,
+            "participantes_sem_agenda": [participante],
+            "dia": dia,
+            "datas_semana": datas_semana,
+            "users": participante.username,
+        }
+        return render(request, "agenda/index.html", context)
+    else:
+        return HttpResponse("Dia da semana inválido. Página de erro aqui.")

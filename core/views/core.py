@@ -2,7 +2,9 @@
 
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
+from django.utils import timezone
 from django.shortcuts import get_object_or_404, render
+from django.contrib.auth import get_user
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic.list import ListView
@@ -15,6 +17,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.views import PasswordChangeView
 
 from core.models import User
+from core.models.users import UserActivity
 
 
 def is_supervisor(user):
@@ -26,12 +29,21 @@ def is_orientador(user):
 def is_estagiario(user):
     return user.is_authenticated and user.role == 'ESTAGIARIO'
 
+
+def get_logged_in_users():
+    users_activity = UserActivity.objects.all().order_by('-last_activity')
+
+    return users_activity
+
 def index(request):
+
     return render(request, 'registration/login.html', {})
 
 @login_required
 def home(request):
-    return render(request, "index.html", {})
+    users = get_logged_in_users()
+    print(users)
+    return render(request, "index.html", {"users":users})
 
 @login_required
 def PerfilProfile(request, username):
@@ -86,4 +98,7 @@ class SupervisorChangePasswordView(PasswordChangeView):
 
     def get_success_url(self):
         return reverse_lazy('edit_profile')
+
+
+
 

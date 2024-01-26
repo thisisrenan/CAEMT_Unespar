@@ -13,6 +13,12 @@
         <h1 x-text="count"></h1>
 
     </div>
+     <h2>Usuários Logados:</h2>
+        <ul>
+          {% for user in users %}
+            <li>{{ user }}</li>
+          {% endfor %}
+        </ul>
     </main>
 {% endblock %}
 

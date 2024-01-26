@@ -8,9 +8,15 @@
         <div class="col-lg-3">
             <div class="list-group">
                 {% for data in datas_semana %}
-                    <a href="{% url 'agenda' data %}" class="btnmy list-group-item list-group-item-action mt-2 p-3 border border-dark text-center rounded-pill {% if dia|lower == data|lower %}active{% endif %}" aria-current="true">
+                    {% if users %}
+                    <a href="{% url 'agendaEdit' data users %}" class="btnmy list-group-item list-group-item-action mt-2 p-3 border border-dark text-center rounded-pill {% if dia|lower == data|lower %}active{% endif %}" aria-current="true">
                         {{ data }}
                     </a>
+                    {% else %}
+                       <a href="{% url 'agenda' data  %}" class="btnmy list-group-item list-group-item-action mt-2 p-3 border border-dark text-center rounded-pill {% if dia|lower == data|lower %}active{% endif %}" aria-current="true">
+                        {{ data }}
+                    </a>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
@@ -140,8 +146,13 @@
             </div>
             <div class="modal-body p-4">
             {% if participantes_sem_agenda and estagiarios_sem_agenda %}
-                <form method="POST" action="{% url 'create_agenda' dia %}">
+                <form method="POST" action="{% url 'create_agenda' %}">
                     {% csrf_token %}
+                    {% if users %}
+                        <input type="hidden" name="edit" value="True">
+                        {% else %}
+                        <input type="hidden" name="edit" value="False">
+                        {% endif %}
                     <input type="hidden" name="semana" value="{{ dia }}">
                     <div class="row">
                         <div class="col-6">

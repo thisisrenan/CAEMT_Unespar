@@ -188,3 +188,17 @@ class agenda(models.Model):
 
     def __str__(self):
         return f"{self.get_dia_da_semana_display()} - {self.horario} - {self.participante}"
+
+
+
+
+
+class UserActivity(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    last_activity = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.username}"
+    def update_activity(self):
+        self.last_activity = timezone.now()
+        self.save()
