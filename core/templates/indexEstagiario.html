@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-3">
                 <div class=" border border-muted" style="border-radius: 0.5em">
-                     <h5 class="mx-3">
+                     <h5 class="mx-3 p-2">
                          <i class="bi bi-people-fill"> Participantes</i>
                          {% for participante in participantes %}
                           <div class=" border border-dark mt-2" style="border-radius: 0.5em">
@@ -22,7 +22,7 @@
                     </h5>
                  </div>
                 <div class=" border border-muted mt-3" style="border-radius: 0.5em">
-                     <h5 class="mx-3">
+                     <h5 class="mx-3 p-1">
                          <i class="bi bi-file-earmark-medical-fill"> Relatórios em Análise</i>
                           <div class=" border border-dark mt-2" style="border-radius: 0.5em">
                              <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
@@ -53,7 +53,7 @@
 
                                      <span>Atendimento</span><br>
 
-                                        {% if atendimento.data_atendimento|date:'d F Y' < data_hj|date:'d F Y' %}
+                                        {% if atendimento.data_atendimento|date:'d F Y' <= data_hj|date:'d F Y' %}
                                         <span class="text-muted">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
                                      {% else %}
                                         <span class="text-danger">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
@@ -81,7 +81,7 @@
                           </div>
                           </div>
                           {% empty %}
-                            <p class="text-danger"> Não há nenhum atendimento previsto</p>
+                            <p class="text-danger"> Até o momento, não está previsto nenhum atendimento.</p>
                          {% endfor %}
                     </h5>
 
@@ -125,7 +125,7 @@
                             </div>
                         </div>
                         {% empty %}
-                            <p class="text-danger"> Não houve nenhum atendimento ocorrido</p>
+                            <p class="text-danger">Não ocorreu nenhum atendimento até o momento.</p>
                         {% endfor %}
                     </h5>
                  </div>
