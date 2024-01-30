@@ -17,7 +17,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.views import PasswordChangeView
 
 from core.models import User
-from core.models.users import UserActivity
+from core.models.users import UserActivity, Atendimentos, agenda, Participante
 
 
 def is_supervisor(user):
@@ -40,10 +40,65 @@ def index(request):
     return render(request, 'registration/login.html', {})
 
 @login_required
-def home(request):
+def homeEstagiario(request):
+    user = request.user
+    data_atual = timezone.now().date()
+    datas_proximos_7_dias = [data_atual + timezone.timedelta(days=i) for i in range(7)]
+    agendamentos = agenda.objects.filter(estagiario=user,
+                                         dia_da_semana__in=[data.weekday() for data in datas_proximos_7_dias])
+    #fazer os atendimentos atualizar, ele busca os proximos 7 dias
+    data = []
+    for n in agendamentos:
+        # Calcula a data usando o dia da semana e a data atual
+        dia_atual = data_atual.weekday()
+        dias_para_frente = (n.dia_da_semana - dia_atual + 7) % 7
+        data_calculada = data_atual + timezone.timedelta(days=dias_para_frente)
+
+        data.append(f"{data_calculada.strftime('%d/%m/%Y')} - {agenda.SEMANA_CHOICES[n.dia_da_semana][1]}")
+    ids_atendimentos_para_excluir = []
+    for atendimento in Atendimentos.objects.filter(estagiario=user, ocorreu=False):
+        dia_semana_atendimento = atendimento.data_atendimento.weekday()
+
+        if dia_semana_atendimento not in [agendamento.dia_da_semana for agendamento in agendamentos] or \
+                atendimento.data_atendimento.time() not in [agendamento.horario for agendamento in agendamentos]:
+            ids_atendimentos_para_excluir.append(atendimento.id)
+    Atendimentos.objects.filter(id__in=ids_atendimentos_para_excluir).delete()
+    for agendamento in agendamentos:
+        data_calculada = data_atual + timezone.timedelta(
+            days=(agendamento.dia_da_semana - data_atual.weekday() + 7) % 7)
+
+        atendimento_existente = Atendimentos.objects.filter(
+            participante=agendamento.participante,
+            data_atendimento=timezone.make_aware(timezone.datetime.combine(data_calculada, agendamento.horario)),
+            estagiario__in=agendamento.estagiario.all()
+        ).first()
+
+        if not atendimento_existente:
+            novo_atendimento = Atendimentos.objects.create(
+                participante=agendamento.participante,
+                data_atendimento=timezone.make_aware(timezone.datetime.combine(data_calculada, agendamento.horario))
+            )
+            for estagiario in agendamento.estagiario.all():
+                novo_atendimento.estagiario.add(estagiario)
+            novo_atendimento.save()
+
+
+    participantes = []
+
+    for agendamento in agenda.objects.filter(estagiario=user):
+        participantes.append(agendamento.participante)
+
+    atendimentos_previstos = Atendimentos.objects.filter(ocorreu=False, estagiario=user).order_by('data_atendimento')
+    atendimentos_ocorridos = Atendimentos.objects.filter(ocorreu=True, estagiario=user).order_by('data_atendimento')
     users = get_logged_in_users()
-    print(users)
-    return render(request, "indexEstagiario.html", {"users":users})
+    context = {
+        "data_hj": data_atual,
+        "atendimentos_previstos":atendimentos_previstos,
+        "atendimentos_ocorridos":atendimentos_ocorridos,
+        "participantes": participantes
+    }
+    print(participantes)
+    return render(request, "indexEstagiario.html", context)
 
 @login_required
 def PerfilProfile(request, username):
