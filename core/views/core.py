@@ -43,7 +43,7 @@ def index(request):
 def home(request):
     users = get_logged_in_users()
     print(users)
-    return render(request, "index.html", {"users":users})
+    return render(request, "indexEstagiario.html", {"users":users})
 
 @login_required
 def PerfilProfile(request, username):
