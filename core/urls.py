@@ -11,7 +11,7 @@ from .views.participante import *
 from .views.supervisor import *
 from .views.documentos import *
 from .views.core import *
-
+from .views.atendimento import *
 
 def edit_profile_view(request):
     # Determine a role do usuário
@@ -29,13 +29,17 @@ def edit_profile_view(request):
     return view_instance(request)
 
 urlpatterns = [
-    path("", home, name="home"),
+    path("", homeEstagiario, name="home"),
     path("agenda", rediAgenda, name='agendas'),
     path("agenda/<str:semana>", agendaHome, name='agenda'),
     path("agendas/<str:semana>/<str:username>", agendaEdit, name='agendaEdit'),
     path('agenda/criar/', criar_agenda, name='create_agenda'),
     path('agenda/deletar/<int:pk>', deletar_agenda, name='deletar_agenda'),
 
+]
+
+urlpatterns += [
+    path("atendimento/faltou",presencaFalta, name='faltou'),
 ]
 
 #URLS PERFIL

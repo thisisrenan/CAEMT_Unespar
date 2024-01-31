@@ -105,7 +105,7 @@ class Participante(models.Model):
     motivo_busca_atendimento = models.TextField(verbose_name='Motivo da Busca por Atendimento', blank=True)
     estagiarios = models.ManyToManyField(Estagiario, related_name='participante_profiles', blank=True)
     is_active = models.BooleanField(default=True, verbose_name='Ativo')
-
+    qtd_atendimentos = models.IntegerField(default=0)
 
     def get_absolute_url(self):
         return reverse('participantes')
@@ -191,6 +191,13 @@ class agenda(models.Model):
 
 
 
+class Atendimentos(models.Model):
+    participante = models.ForeignKey(Participante, on_delete=models.CASCADE)
+    estagiario = models.ManyToManyField(Estagiario, related_name='atendimentos')
+    data_atendimento = models.DateTimeField(verbose_name='Data do Atendimento')
+    motivoFalta = models.CharField(max_length=100, verbose_name='Motivo da Falta', null=True, blank=True)
+    presenca = models.BooleanField(default=False)
+    ocorreu = models.BooleanField(default=False)
 
 
 class UserActivity(models.Model):

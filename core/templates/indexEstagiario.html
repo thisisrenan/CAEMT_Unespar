@@ -2,63 +2,83 @@
 
 {% block content %}
     <main class="container-fluid w-75 mt-5">
+    <h1>Painel</h1>
         <div class="row">
             <div class="col-3">
-                <div class=" border border-dark" style="border-radius: 0.5em">
-                     <h3 class="mx-3">
+                <div class=" border border-muted" style="border-radius: 0.5em">
+                     <h5 class="mx-3 p-2sour">
                          <i class="bi bi-people-fill"> Participantes</i>
+                         {% for participante in participantes %}
                           <div class=" border border-dark mt-2" style="border-radius: 0.5em">
-                             <h5 class="mx-1 p-1 mt-2 d-flex justify-content-between">
-                                 <span>Participante1</span>
-                                 <span class="text-muted">terça-feira</span>
-                             </h5>
+                             <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
+                                 <span  data-toggle="tooltip" title="{{ participante.username }}" >
+                                    {% if participante.username|length > 20 %}
+                                      {{ participante.username|slice:":20" }}...
+                                    {% else %}
+                                      {{ participante.username }}
+                                    {% endif %}
+                                 </span>
+                             </div>
                           </div>
-                          <div class=" border border-dark mt-2" style="border-radius: 0.5em">
-                             <h5 class="mx-1 p-1 mt-2 d-flex justify-content-between">
-                                 <span>Participante2</span>
-                                 <span class="text-muted">terça-feira</span>
-                             </h5>
-                          </div>
+                          {% empty %}
+                            <p class="text-danger">Até o momento, não há nenhum participante registrado.</p>
+                           {% endfor %}
 
-                    </h3>
+
+                    </h5>
                  </div>
-                <div class=" border border-dark mt-3" style="border-radius: 0.5em">
-                     <h3 class="mx-3">
+                <div class=" border border-muted mt-3" style="border-radius: 0.5em">
+                     <h5 class="mx-3 p-1">
                          <i class="bi bi-file-earmark-medical-fill"> Relatórios em Análise</i>
                           <div class=" border border-dark mt-2" style="border-radius: 0.5em">
-                             <h5 class="mx-1 p-1 mt-2 d-flex justify-content-between">
+                             <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
                                  <span>Participante1</span>
                                  <span class="text-muted"><i class="bi bi-x-lg" style="color: red"></i></span>
-                             </h5>
+                             </div>
                           </div>
                           <div class=" border border-dark mt-2" style="border-radius: 0.5em">
-                                <h5 class="mx-1 p-1 mt-2 d-flex justify-content-between">
+                                <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
                                     <span>Participante2</span>
                                     <span class="text-muted "><i class="bi bi-arrow-counterclockwise" style="color: blue"></i></span>
-                                </h5>
+                                </div>
                           </div>
 
-                    </h3>
+                    </h5>
                  </div>
             </div>
             <div class="col-9">
-                <div class=" border border-dark" style="border-radius: 0.5em">
-                     <h3 class="m-5">
+                <div class=" border border-muted" style="border-radius: 0.5em">
+                     <h5 class="m-5">
                          <div class="mb-4">
-                             <i class="bi bi-clock mx-1"> Atendimentos Previstos</i>
+                             <h4><i class="bi bi-clock mx-1"> Atendimentos Previstos</i></h4>
                          </div>
+                         {% for atendimento in atendimentos_previstos %}
                           <div class="borda-trasejada  border-dark mt-3" style="border-radius: 0.5em">
-                             <h5 class="mx-1 p-1 mt-2 d-flex justify-content-between">
+                             <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
                                  <div>
-                                     <span>Atendimento</span><br><span class="text-muted">20/01/2024 - 18:10 </span>
+
+                                     <span>Atendimento</span><br>
+
+                                        {% if atendimento.data_atendimento|date:'d F Y' <= data_hj|date:'d F Y' %}
+                                        <span class="text-muted">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
+                                     {% else %}
+                                        <span class="text-danger">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
+                                     {% endif %}
                                  </div>
                                  <div>
-                                    <span>Participante</span><br><span class="text-muted">Participante1</span>
+                                    <span>Participante</span><br>
+                                     <span class="text-muted"  data-toggle="tooltip"  title="{{ atendimento.participante.username }}" >
+                                    {% if atendimento.participante.username|length > 20 %}
+                                      {{ atendimento.participante.username|slice:":20" }}...
+                                    {% else %}
+                                      {{ atendimento.participante.username }}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                    {% endif %}
+                                 </span>
                                  </div>
-                                 <div id="conteudoDesativo" class="d-none">
-                                     <span>Motivo da Falta</span><br><a href="" class="text-muted"><i class="bi bi-plus-square"> Adicionar</i></a>
+                                 <div id="conteudoDesativo{{ forloop.counter }}" class="d-none">
+                                     <span>Motivo da Falta</span><br><a href='' data-toggle="modal" data-target="#ModalFaltou{{ forloop.counter }}" class="text-muted"><i class="bi bi-plus-square"> Adicionar</i></a>
                                  </div>
-                                  <div id="conteudoAtivo" class="d-none">
+                                  <div id="conteudoAtivo{{ forloop.counter }}" class="d-none">
                                      <span>Anexar Documentos</span><br><a href="" class="text-muted"><i class="bi bi-paperclip"> Arquivo</i></a>
                                  </div>
 
@@ -67,43 +87,112 @@
                                     <br>
                                     <span>
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input " type="checkbox" id="flexSwitchCheckDefault">
+                                            <input class="form-check-input " type="checkbox" id="flexSwitchCheckDefault{{ forloop.counter }}">
                                         </div>
                                     </span>
                                  </div>
                           </div>
-                    </h3>
+                          </div>
+                          {% empty %}
+                            <p class="text-danger"> Até o momento, não está previsto nenhum atendimento.</p>
+                         {% endfor %}
+                    </h5>
+
                  </div>
-                <div class=" border border-dark mt-3" style="border-radius: 0.5em">
-                     <h3 class="m-5">
+                <div class=" border border-muted mt-3" style="border-radius: 0.5em">
+                     <h5 class="m-5">
                          <div class="mb-4">
-                             <i class="bi bi-clock-history mx-1"> Atendimentos Ocorridos</i>
+                             <h4><i class="bi bi-clock-history mx-1"> Atendimentos Ocorridos</i></h4>
                          </div>
+                         {% for atendimento in atendimentos_ocorridos %}
                           <div class="borda-trasejada border-dark mt-3" style="border-radius: 0.5em">
-                            <h5 class="mx-1 p-1 mt-2 d-flex justify-content-between align-items-center">
+                            <div class="mx-1 p-1 mt-2 d-flex justify-content-between align-items-center">
                                 <div>
-                                    <span>Atendimento</span><br><span class="text-muted">20/01/2024 - 18:10 </span>
+                                    <span>Atendimento</span><br><span class="text-muted">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
                                 </div>
                                 <div>
-                                    <span>Participante</span><br><span class="text-muted">Participante1</span>
+                                    <span>Participante</span><br>
+                                     <span class="text-muted"  data-toggle="tooltip"  title="{{ atendimento.participante.username }}" >
+                                    {% if atendimento.participante.username|length > 20 %}
+                                      {{ atendimento.participante.username|slice:":20" }}...
+                                    {% else %}
+                                      {{ atendimento.participante.username }}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                    {% endif %}
+                                 </span>
                                 </div>
+
                                 <div>
                                     <span>Motivo da Falta</span><br>
-                                    <textarea class="text-muted"  style="border: none; resize: none; height: calc(1.5em * 2); overflow-y: auto; background-color: white;" disabled>Faltou por conta disso disso disso dissodisso</textarea>
+                                     {% if atendimento.presenca %}
+                                     <a href="" class="text-muted" style="margin-right: 8em"><i class="bi bi-paperclip"> Arquivos</i></a>
+                                    {% else %}
+                                    <textarea class="text-muted"  style="border: none; resize: none; height: calc(1.5em * 2); overflow-y: auto; background-color: white;" disabled>{{ atendimento.motivoFalta }}</textarea>
+                                    {% endif %}
                                 </div>
+
                                 <div>
                                     <span style="margin-left: -1.5em">Presença</span><br>
-                                    <span>
-                                        <i class="bi bi-x-lg" style="color: red"></i>
-                                    </span>
+                                    {% if atendimento.presenca %}
+                                        <span>
+                                            <i class="bi bi-check2" style="color: green"></i>
+                                        </span>
+                                    {% else %}
+                                         <span>
+                                            <i class="bi bi-x-lg" style="color: red"></i>
+                                        </span>
+                                    {% endif %}
                                 </div>
-                            </h5>
+                            </div>
                         </div>
-
-                    </h3>
+                        {% empty %}
+                            <p class="text-danger">Não ocorreu nenhum atendimento até o momento.</p>
+                        {% endfor %}
+                    </h5>
                  </div>
             </div>
         </div>
+
+     {% for atendimento in atendimentos_previstos %}
+        <!--ModalFaltou-->
+    <div class="modal" id="ModalFaltou{{ forloop.counter }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header p-3">
+                <h5 class="modal-title h3">Motivo da falta</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-4">
+
+                <form method="POST" action="{% url 'faltou' %}">
+                    {% csrf_token %}
+                    <input name="data" type="datetime-local" hidden value="{{ atendimento.data_atendimento|date:'Y-m-d\TH:i' }}">
+                    <input name="participante" type="text"  hidden value="{{  atendimento.participante.id }}">
+                    <div class="row">
+                        <div class="col-12">
+                            <span>Motivo da Falta:</span>
+                            <textarea name="motivo" id="motivo" class="form-control" maxlength="100" rows="3" style="resize: none; font-size: 1.1em"></textarea>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row mt-3 text-center d-flex align-items-center">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-danger px-5 w-75" data-dismiss="modal" aria-label="Close">Cancelar</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-success px-5 w-75">Enviar</button>
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+</div>
+    {% endfor %}
+
     </main>
 
       <style>
@@ -121,28 +210,59 @@
     background-color: #28a745;
     border-color: #28a745;
   }
+ .btnmy {
+        color: black;
+    }
 
+    .btnmy.active {
+        background-color: #CFE2FF;
+        color: black;
+    }
+
+    .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.61) !important; /* Fundo semi-transparente */
+}
   </style>
 
 <script>
   $(document).ready(function(){
-    // Verificar o estado do switch quando a página é carregada
-    if ($('#flexSwitchCheckDefault').prop("checked")) {
-      $('#conteudoAtivo').removeClass('d-none');
-    } else {
-      $('#conteudoDesativo').removeClass('d-none');
-    }
+    // Verificar o estado dos switches quando a página é carregada
+    $('[id^="flexSwitchCheckDefault"]').each(function() {
+      // Obtenha o número do conteúdo relacionado ao switch
+      let contentNumber = $(this).attr('id').replace('flexSwitchCheckDefault', '');
 
-    // Atualizar o conteúdo quando o switch é alterado
-    $('#flexSwitchCheckDefault').change(function(){
+      // Exemplo de seleção de conteúdo relacionado com base no número
+      let conteudoAtivo = $(`#conteudoAtivo${contentNumber}`);
+      let conteudoDesativo = $(`#conteudoDesativo${contentNumber}`);
+
       if ($(this).prop("checked")) {
         // Switch está ativo
-        $('#conteudoAtivo').removeClass('d-none');
-        $('#conteudoDesativo').addClass('d-none');
+        conteudoAtivo.removeClass('d-none');
+        conteudoDesativo.addClass('d-none');
       } else {
         // Switch está desativado
-        $('#conteudoAtivo').addClass('d-none');
-        $('#conteudoDesativo').removeClass('d-none');
+        conteudoAtivo.addClass('d-none');
+        conteudoDesativo.removeClass('d-none');
+      }
+    });
+
+    // Atualizar o conteúdo quando um switch é alterado
+    $('[id^="flexSwitchCheckDefault"]').change(function(){
+      // Obtenha o número do conteúdo relacionado ao switch
+      let contentNumber = $(this).attr('id').replace('flexSwitchCheckDefault', '');
+
+      // Exemplo de seleção de conteúdo relacionado com base no número
+      let conteudoAtivo = $(`#conteudoAtivo${contentNumber}`);
+      let conteudoDesativo = $(`#conteudoDesativo${contentNumber}`);
+
+      if ($(this).prop("checked")) {
+        // Switch está ativo
+        conteudoAtivo.removeClass('d-none');
+        conteudoDesativo.addClass('d-none');
+      } else {
+        // Switch está desativado
+        conteudoAtivo.addClass('d-none');
+        conteudoDesativo.removeClass('d-none');
       }
     });
   });
