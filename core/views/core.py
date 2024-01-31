@@ -17,7 +17,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.views import PasswordChangeView
 
 from core.models import User
-from core.models.users import UserActivity, Atendimentos, agenda, Participante
+from core.models.users import UserActivity, Atendimentos, agenda, Participante, Estagiario
 
 
 def is_supervisor(user):
@@ -99,6 +99,33 @@ def homeEstagiario(request):
     }
     print(participantes)
     return render(request, "indexEstagiario.html", context)
+
+
+@login_required
+def homeOrientador(request):
+    user = request.user
+    estagiarios = Estagiario.objects.filter(orientador_responsavel=user.id)
+
+
+    participantes = []
+    atendimentos_ocorridos = []
+    for estagiario in estagiarios:
+        atendimentos = Atendimentos.objects.filter(estagiario=estagiario, ocorreu=True)
+        for atendimento in atendimentos:
+            atendimentos_ocorridos.append(atendimento)
+
+        agendas = agenda.objects.filter(estagiario=estagiario)
+        for agendas in agendas:
+            participantes.append(agendas.participante)
+
+    users = get_logged_in_users()
+    context = {
+        "estagiarios": estagiarios,
+        "participantes": participantes,
+        "atendimentos_ocorridos": atendimentos_ocorridos
+    }
+    print(participantes)
+    return render(request, "indexOrientador.html", context)
 
 @login_required
 def PerfilProfile(request, username):

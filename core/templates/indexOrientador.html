@@ -1,0 +1,257 @@
+{% extends 'layouts/admin.html' %}
+
+{% block content %}
+    <main class="container-fluid mt-5" style="width: 88%">
+    <h1>Painel</h1>
+        <div class="row">
+            <div class="col-2">
+                <div class=" border border-muted" style="border-radius: 0.5em">
+                     <h5 class="mx-3 p-2">
+                         <i class="bi bi-gear-wide"> Ações</i>
+                          <div class="mt-2">
+                             <a href="" type="button" class="btn btn-outline-primary btn-block">Triagem</a>
+                          </div>
+                           <div class="mt-2">
+                             <a href="" type="button" class="btn btn-outline-primary btn-block">Agendamento</a>
+                          </div>
+                           <div class="mt-2">
+                             <a href="" type="button" class="btn btn-outline-primary btn-block">Participantes</a>
+                          </div>
+                          <div class="mt-2">
+                             <a href="" type="button" class="btn btn-outline-primary btn-block">Estagiarios</a>
+                          </div>
+                    </h5>
+                 </div>
+
+            </div>
+            <div class="col-7">
+                <div class=" border border-muted" style="border-radius: 0.5em">
+                     <h5 class="m-5">
+                         <div class="mb-4">
+                             <h4><i class="bi bi-file-earmark-medical-fill"> relatórios Para análise</i></h4>
+                         </div>
+                         {% for atendimento in atendimentos_previstos %}
+                          <div class="borda-trasejada  border-dark mt-3" style="border-radius: 0.5em">
+                             <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
+                                 <div>
+
+                                     <span>Atendimento</span><br>
+
+                                        {% if atendimento.data_atendimento|date:'d F Y' <= data_hj|date:'d F Y' %}
+                                        <span class="text-muted">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
+                                     {% else %}
+                                        <span class="text-danger">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
+                                     {% endif %}
+                                 </div>
+                                 <div>
+                                    <span>Participante</span><br>
+                                     <span class="text-muted"  data-toggle="tooltip"  title="{{ atendimento.participante.username }}" >
+                                    {% if atendimento.participante.username|length > 20 %}
+                                      {{ atendimento.participante.username|slice:":20" }}...
+                                    {% else %}
+                                      {{ atendimento.participante.username }}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                    {% endif %}
+                                 </span>
+                                 </div>
+                                 <div id="conteudoDesativo{{ forloop.counter }}" class="d-none">
+                                     <span>Motivo da Falta</span><br><a href='' data-toggle="modal" data-target="#ModalFaltou{{ forloop.counter }}" class="text-muted"><i class="bi bi-plus-square"> Adicionar</i></a>
+                                 </div>
+                                  <div id="conteudoAtivo{{ forloop.counter }}" class="d-none">
+                                     <span>Anexar Documentos</span><br><a href="" class="text-muted"><i class="bi bi-paperclip"> Arquivo</i></a>
+                                 </div>
+
+                                 <div>
+                                      <span style="margin-left: -1.5em">Presença</span>
+                                    <br>
+                                    <span>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input " type="checkbox" id="flexSwitchCheckDefault{{ forloop.counter }}">
+                                        </div>
+                                    </span>
+                                 </div>
+                          </div>
+                          </div>
+                          {% empty %}
+                            <p class="text-danger"> Até o momento, não há nenhum relatório.</p>
+                         {% endfor %}
+                    </h5>
+
+                 </div>
+                <div class=" border border-muted mt-3" style="border-radius: 0.5em">
+                     <h5 class="m-5">
+                         <div class="mb-4">
+                             <h4><i class="bi bi-clock-history mx-1"> Atendimentos Ocorridos</i></h4>
+                         </div>
+                         {% for atendimento in atendimentos_ocorridos %}
+                          <div class="borda-trasejada border-dark mt-3" style="border-radius: 0.5em">
+                            <div class="mx-1 p-1 mt-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span>Atendimento</span><br><span class="text-muted">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
+                                </div>
+                                <div>
+                                    <span>Participante</span><br>
+                                     <span class="text-muted"  data-toggle="tooltip"  title="{{ atendimento.participante.username }}" >
+                                    {% if atendimento.participante.username|length > 20 %}
+                                      {{ atendimento.participante.username|slice:":20" }}...
+                                    {% else %}
+                                      {{ atendimento.participante.username }}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                    {% endif %}
+                                 </span>
+                                </div>
+
+                                <div>
+                                    <span>Motivo da Falta</span><br>
+                                     {% if atendimento.presenca %}
+                                     <a href="" class="text-muted" style="margin-right: 8em"><i class="bi bi-paperclip"> Arquivos</i></a>
+                                    {% else %}
+                                    <textarea class="text-muted"  style="border: none; resize: none; height: calc(1.5em * 2); overflow-y: auto; background-color: white;" disabled>{{ atendimento.motivoFalta }}</textarea>
+                                    {% endif %}
+                                </div>
+
+                                <div>
+                                    <span style="margin-left: -1.5em">Presença</span><br>
+                                    {% if atendimento.presenca %}
+                                        <span>
+                                            <i class="bi bi-check2" style="color: green"></i>
+                                        </span>
+                                    {% else %}
+                                         <span>
+                                            <i class="bi bi-x-lg" style="color: red"></i>
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                            <p class="text-danger">Não ocorreu nenhum atendimento até o momento.</p>
+                        {% endfor %}
+                    </h5>
+                 </div>
+            </div>
+            <div class="col-3">
+                <div class=" border border-muted" style="border-radius: 0.5em">
+                     <h5 class="mx-3 p-2">
+                         <i class="bi bi-people-fill"> Estagiarios</i>
+                         {% for estagiario in estagiarios %}
+                          <div class=" border border-dark mt-2" style="border-radius: 0.5em">
+                             <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
+                                 <span  data-toggle="tooltip" title="{{ estagiario.username }}" >
+                                    {% if estagiario.username|length > 20 %}
+                                      {{ estagiario.username|slice:":20" }}...
+                                    {% else %}
+                                      {{ estagiario.username }}
+                                    {% endif %}
+                                 </span>
+                             </div>
+                          </div>
+                          {% empty %}
+                            <p class="text-danger">Até o momento, não há nenhum estagiario registrado.</p>
+                           {% endfor %}
+
+
+                    </h5>
+                 </div>
+                 <div class=" border border-muted mt-3" style="border-radius: 0.5em">
+                     <h5 class="mx-3 p-2">
+                         <i class="bi bi-people-fill"> Participantes</i>
+                         {% for participante in participantes %}
+                          <div class=" border border-dark mt-2" style="border-radius: 0.5em">
+                             <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
+                                 <span  data-toggle="tooltip" title="{{ participante.username }}" >
+                                    {% if participante.username|length > 20 %}
+                                      {{ participante.username|slice:":20" }}...
+                                    {% else %}
+                                      {{ participante.username }}
+                                    {% endif %}
+                                 </span>
+                             </div>
+                          </div>
+                          {% empty %}
+                            <p class="text-danger">Até o momento, não há nenhum participante registrado.</p>
+                           {% endfor %}
+
+
+                    </h5>
+                 </div>
+
+            </div>
+        </div>
+
+
+
+    </main>
+
+      <style>
+    .borda-trasejada {
+      border: 1px dashed #000;
+      padding: 10px;
+    }
+      .form-check-input {
+    background-color: #d9534f;
+    border-color: #d9534f;
+  }
+
+  /* Estilo quando o switch está ativado */
+  .form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+ .btnmy {
+        color: black;
+    }
+
+    .btnmy.active {
+        background-color: #CFE2FF;
+        color: black;
+    }
+
+    .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.61) !important; /* Fundo semi-transparente */
+}
+  </style>
+
+<script>
+  $(document).ready(function(){
+    // Verificar o estado dos switches quando a página é carregada
+    $('[id^="flexSwitchCheckDefault"]').each(function() {
+      // Obtenha o número do conteúdo relacionado ao switch
+      let contentNumber = $(this).attr('id').replace('flexSwitchCheckDefault', '');
+
+      // Exemplo de seleção de conteúdo relacionado com base no número
+      let conteudoAtivo = $(`#conteudoAtivo${contentNumber}`);
+      let conteudoDesativo = $(`#conteudoDesativo${contentNumber}`);
+
+      if ($(this).prop("checked")) {
+        // Switch está ativo
+        conteudoAtivo.removeClass('d-none');
+        conteudoDesativo.addClass('d-none');
+      } else {
+        // Switch está desativado
+        conteudoAtivo.addClass('d-none');
+        conteudoDesativo.removeClass('d-none');
+      }
+    });
+
+    // Atualizar o conteúdo quando um switch é alterado
+    $('[id^="flexSwitchCheckDefault"]').change(function(){
+      // Obtenha o número do conteúdo relacionado ao switch
+      let contentNumber = $(this).attr('id').replace('flexSwitchCheckDefault', '');
+
+      // Exemplo de seleção de conteúdo relacionado com base no número
+      let conteudoAtivo = $(`#conteudoAtivo${contentNumber}`);
+      let conteudoDesativo = $(`#conteudoDesativo${contentNumber}`);
+
+      if ($(this).prop("checked")) {
+        // Switch está ativo
+        conteudoAtivo.removeClass('d-none');
+        conteudoDesativo.addClass('d-none');
+      } else {
+        // Switch está desativado
+        conteudoAtivo.addClass('d-none');
+        conteudoDesativo.removeClass('d-none');
+      }
+    });
+  });
+</script>
+{% endblock %}
+
