@@ -31,6 +31,9 @@ def presencaFalta(request):
         atendimento.ocorreu = True
         atendimento.save()
 
+        participanteObj = Participante.objects.get(pk=participante)
+        participanteObj.qtd_atendimentos += 1
+        participanteObj.save()
         messages.success(request, "presença feita com sucesso")
 
     return redirect("home")

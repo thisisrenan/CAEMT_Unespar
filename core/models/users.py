@@ -105,7 +105,7 @@ class Participante(models.Model):
     motivo_busca_atendimento = models.TextField(verbose_name='Motivo da Busca por Atendimento', blank=True)
     estagiarios = models.ManyToManyField(Estagiario, related_name='participante_profiles', blank=True)
     is_active = models.BooleanField(default=True, verbose_name='Ativo')
-
+    qtd_atendimentos = models.IntegerField(default=0)
 
     def get_absolute_url(self):
         return reverse('participantes')

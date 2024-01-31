@@ -6,12 +6,18 @@
         <div class="row">
             <div class="col-3">
                 <div class=" border border-muted" style="border-radius: 0.5em">
-                     <h5 class="mx-3 p-2">
+                     <h5 class="mx-3 p-2sour">
                          <i class="bi bi-people-fill"> Participantes</i>
                          {% for participante in participantes %}
                           <div class=" border border-dark mt-2" style="border-radius: 0.5em">
                              <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
-                                 <span>{{ participante.username }}</span>
+                                 <span  data-toggle="tooltip" title="{{ participante.username }}" >
+                                    {% if participante.username|length > 20 %}
+                                      {{ participante.username|slice:":20" }}...
+                                    {% else %}
+                                      {{ participante.username }}
+                                    {% endif %}
+                                 </span>
                              </div>
                           </div>
                           {% empty %}
@@ -60,7 +66,14 @@
                                      {% endif %}
                                  </div>
                                  <div>
-                                    <span>Participante</span><br><span class="text-muted">{{ atendimento.participante.nome }}</span>
+                                    <span>Participante</span><br>
+                                     <span class="text-muted"  data-toggle="tooltip"  title="{{ atendimento.participante.username }}" >
+                                    {% if atendimento.participante.username|length > 20 %}
+                                      {{ atendimento.participante.username|slice:":20" }}...
+                                    {% else %}
+                                      {{ atendimento.participante.username }}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                    {% endif %}
+                                 </span>
                                  </div>
                                  <div id="conteudoDesativo{{ forloop.counter }}" class="d-none">
                                      <span>Motivo da Falta</span><br><a href='' data-toggle="modal" data-target="#ModalFaltou{{ forloop.counter }}" class="text-muted"><i class="bi bi-plus-square"> Adicionar</i></a>
@@ -98,7 +111,14 @@
                                     <span>Atendimento</span><br><span class="text-muted">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
                                 </div>
                                 <div>
-                                    <span>Participante</span><br><span class="text-muted">{{ atendimento.participante.nome }}</span>
+                                    <span>Participante</span><br>
+                                     <span class="text-muted"  data-toggle="tooltip"  title="{{ atendimento.participante.username }}" >
+                                    {% if atendimento.participante.username|length > 20 %}
+                                      {{ atendimento.participante.username|slice:":20" }}...
+                                    {% else %}
+                                      {{ atendimento.participante.username }}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                    {% endif %}
+                                 </span>
                                 </div>
 
                                 <div>
