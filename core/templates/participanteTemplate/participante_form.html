@@ -1,14 +1,52 @@
 {% extends 'layouts/admin.html' %}
 {% load bootstrap %}
-
+{% load custom_filters %}
 {% block content %}
     <main class="container">
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form|bootstrap }}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h2 class="mt-5"> Cadastro Participante </h2>
+            {{ form|bootstrap }}
 
-    <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Continuar</button>
-    <a class="btn btn-danger" href="{% url 'participantes' %}">Cancelar</a>
-</form>
+           <div id="responsavel-form-container" style="display: none;">
+                <h2 class="mt-5"> Cadastro Responsavel </h2>
+                {{ responsavel_form|bootstrap }}
+            </div>
+
+            <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Continuar</button>
+            <a class="btn btn-danger" href="{% url 'participantes' %}">Cancelar</a>
+        </form>
     </main>
+
+    <script>
+    $(document).ready(function () {
+        function verificarIdade() {
+            var dataNascimento = $('#id_data_de_nascimento').val();  // Substitua pelo ID real do campo de data de nascimento
+
+            if (dataNascimento) {
+                var idade = calcularIdade(dataNascimento);
+                if (idade < 18) {
+                    $('#responsavel-form-container').show();
+                } else {
+                    $('#responsavel-form-container').hide();
+                }
+            }
+        }
+
+        function calcularIdade(dataNascimento) {
+            var hoje = new Date();
+            var dataNascimento = new Date(dataNascimento);
+            var idade = hoje.getFullYear() - dataNascimento.getFullYear();
+
+            if (hoje.getMonth() < dataNascimento.getMonth() || (hoje.getMonth() === dataNascimento.getMonth() && hoje.getDate() < dataNascimento.getDate())) {
+                idade--;
+            }
+
+            return idade;
+        }
+
+        $('#id_data_de_nascimento').change(verificarIdade);
+        verificarIdade();
+    });
+</script>
 {% endblock %}

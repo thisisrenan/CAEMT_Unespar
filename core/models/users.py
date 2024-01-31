@@ -44,6 +44,9 @@ class User(AbstractUser):
             self.role = self.base_role
             if self.base_role == "SUPERVISOR":
                 self.set_password(self.password)
+            else:
+                self.set_password(self.password)  # Defina uma senha padrão ou lógica adequada para outros papéis
+        super().save(*args, **kwargs)
         super().save(*args, **kwargs)
 
 
@@ -95,15 +98,21 @@ class Estagiario(User):
         super().save(*args, **kwargs)
 
 
+
+
+
 class Participante(models.Model):
     username = models.CharField(unique=True, verbose_name='Username', max_length=100)
     date_joined = models.DateTimeField(verbose_name='Date Joined', auto_now_add=True)
     date_final = models.DateTimeField(verbose_name='Date Final', blank=True, null=True)
     nome = models.CharField(max_length=100)
     sobrenome = models.CharField(max_length=100)
-    telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
+    telefone = PhoneNumberField(verbose_name='Telefone', blank=True, null=True)
     motivo_busca_atendimento = models.TextField(verbose_name='Motivo da Busca por Atendimento', blank=True)
-    estagiarios = models.ManyToManyField(Estagiario, related_name='participante_profiles', blank=True)
+    data_de_nascimento = models.DateField( blank=True, null=True)
+    escola = models.CharField(max_length=100,blank=True, null=True)
+    serie = models.IntegerField(verbose_name='serie', blank=True, null=True)
+
     is_active = models.BooleanField(default=True, verbose_name='Ativo')
     qtd_atendimentos = models.IntegerField(default=0)
 
@@ -111,12 +120,34 @@ class Participante(models.Model):
         return reverse('participantes')
 
     def save(self, *args, **kwargs):
-        self.username = f"{self.nome.replace(' ', '').capitalize()}_{self.sobrenome.replace(' ', '').capitalize()}"
+        self.username = f"{self.nome.replace(' ', '-').capitalize()}-{self.sobrenome.replace(' ', '-').capitalize()}"
         if not self.date_joined:
             self.date_joined = timezone.now()
         super().save(*args, **kwargs)
     def __str__(self):
         return self.nome
+
+
+class Responsavel(models.Model):
+
+    nome = models.CharField(max_length=100)
+    sobrenome = models.CharField(max_length=100)
+    telefone = PhoneNumberField(verbose_name='Telefone', blank=True, null=True)
+    email = models.EmailField()
+    participante = models.ForeignKey(Participante, blank=True, null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nome
+
+
+
+
+
+
+
+
+
+
 
 
 class Endereco(models.Model):
