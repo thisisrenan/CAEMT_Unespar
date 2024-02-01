@@ -2,7 +2,9 @@
 {% load bootstrap %}
 {% load custom_filters %}
 {% block content %}
-    <main class="container">
+    <main class="container-fluid" style="width: 40%">
+        {{ responsavel_form.non_field_errors }}
+        {{ responsavel_form.field.errors }}
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <h2 class="mt-5"> Cadastro Participante </h2>

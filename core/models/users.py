@@ -120,7 +120,7 @@ class Participante(models.Model):
         return reverse('participantes')
 
     def save(self, *args, **kwargs):
-        self.username = f"{self.nome.replace(' ', '-').capitalize()}-{self.sobrenome.replace(' ', '-').capitalize()}"
+        self.username = f"{self.nome.replace(' ', '-')}-{self.sobrenome.replace(' ', '-')}"
         if not self.date_joined:
             self.date_joined = timezone.now()
         super().save(*args, **kwargs)
@@ -134,18 +134,14 @@ class Responsavel(models.Model):
     sobrenome = models.CharField(max_length=100)
     telefone = PhoneNumberField(verbose_name='Telefone', blank=True, null=True)
     email = models.EmailField()
-    participante = models.ForeignKey(Participante, blank=True, null=True, on_delete=models.CASCADE)
+    participante = models.OneToOneField(Participante, blank=True, null=True, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('participantes')
+
 
     def __str__(self):
         return self.nome
-
-
-
-
-
-
-
-
 
 
 
@@ -205,7 +201,7 @@ class agenda(models.Model):
 
     dia_da_semana = models.IntegerField(verbose_name='Semana', blank=True, choices=SEMANA_CHOICES)
     horario = models.TimeField(choices=HORARIO_CHOICES)
-    participante = models.ForeignKey(Participante, on_delete=models.CASCADE, null=True, blank=True ,related_name='agendas_participante')
+    participante = models.OneToOneField(Participante, on_delete=models.CASCADE, null=True, blank=True ,related_name='agendas_participante')
     estagiario = models.ManyToManyField(Estagiario,  null=True, blank=True, related_name='agendas_estagiario')
     reservadoPor = models.ForeignKey(User, on_delete=models.SET_NULL,  null=True, blank=True)
 
@@ -218,7 +214,7 @@ class agenda(models.Model):
 
 
     def __str__(self):
-        return f"{self.get_dia_da_semana_display()} - {self.horario} - {self.participante}"
+        return f"{self.get_dia_da_semana_display()}"
 
 
 

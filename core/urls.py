@@ -29,7 +29,7 @@ def edit_profile_view(request):
     return view_instance(request)
 
 urlpatterns = [
-    path("", homeEstagiario, name="home"),
+    path("", homeOrientador, name="home"),
     path("agenda", rediAgenda, name='agendas'),
     path("agenda/<str:semana>", agendaHome, name='agenda'),
     path("agendas/<str:semana>/<str:username>", agendaEdit, name='agendaEdit'),
@@ -84,6 +84,7 @@ urlpatterns += [
 urlpatterns += [
     path('Participante/novo', ParticipanteCreate.as_view(), name='Create_Participante'),
     path('Participante/editar/<int:pk>', ParticipanteEdit.as_view(), name='Edit_Participante'),
+    path('Participante/Responsavel/editar/<int:pk>', ResponsalveEdit.as_view(), name='Edit_Responsavel'),
     path('Participante/Deletar/<int:pk>', ParticipanterDelete.as_view(), name='Delete_Participante'),
     path("Participante", ParticipanteList.as_view(), name="participantes"),
     path('ReativarParticipante/<int:pk>', reativarParticipante, name='reativar_participante'),

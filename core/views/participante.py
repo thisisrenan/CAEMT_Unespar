@@ -14,7 +14,7 @@ from django.http import HttpResponseRedirect
 from django.views import View
 
 from core.forms import ParticipanteForm, EnderecoForm, ResponsavelForm
-from core.models.users import Participante, Endereco, Responsavel
+from core.models.users import Participante, Endereco, Responsavel, agenda
 
 from .core import is_supervisor
 
@@ -31,17 +31,18 @@ class ParticipanteCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['responsavel_form'] = ResponsavelForm(prefix='responsavel')
+        context['form'] = kwargs.get('form', ParticipanteForm)
+        context['responsavel_form'] = kwargs.get('responsavel_form', ResponsavelForm(prefix='responsavel'))
         return context
 
     def form_valid(self, form):
-
+        responsavel_form = ResponsavelForm(self.request.POST, prefix='responsavel')
         for field_name, field_value in form.cleaned_data.items():
             item = form.cleaned_data[field_name]
             if field_name not in ['serie', 'escola', 'telefone']:
                 if not item:
                     messages.warning(self.request, "O Campo'" + field_name + "'é obrigatorio")
-                    return self.render_to_response(self.get_context_data(form=form))
+                    return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
 
         nome = form.cleaned_data['nome']
         sobrenome = form.cleaned_data['sobrenome']
@@ -51,7 +52,7 @@ class ParticipanteCreate(CreateView):
         participante = Participante.objects.filter(nome=nome, sobrenome=sobrenome).first()
         if participante:
             messages.warning(self.request, "Participante já existe.")
-            return self.render_to_response(self.get_context_data(form=form))
+            return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
 
         form.instance.username = username
 
@@ -59,12 +60,12 @@ class ParticipanteCreate(CreateView):
         today = datetime.today()
         age = today.year - data_nascimento.year - ((today.month, today.day) < (data_nascimento.month, data_nascimento.day))
         if age < 18:
-            responsavel_form = ResponsavelForm(self.request.POST, prefix='responsavel')
+
             for field_name, field_value in responsavel_form.data.items():
                 if field_name not in ['serie', 'escola','participante']:
                     if not field_value:
                         messages.warning(self.request, f"O Campo '{field_name}' é obrigatório")
-                        return self.render_to_response(self.get_context_data(form=form))
+                        return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
 
             participante = form.save()
             if responsavel_form.is_valid():
@@ -85,7 +86,7 @@ class ParticipanteCreate(CreateView):
                 for field, errors in responsavel_form.errors.items():
                     for error in errors:
                         messages.warning(self.request, f"Erro no campo '{field}': {error}")
-                return self.render_to_response(self.get_context_data(form=form))
+                return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
 
             messages.success(self.request, "Responsável Criado com sucesso.")
         else:
@@ -129,6 +130,15 @@ class ParticipanteEdit(UpdateView):
         return super().form_valid(form)
 
 
+class ResponsalveEdit(UpdateView):
+    model = Responsavel
+    form_class = ResponsavelForm
+    context_object_name = 'responsavel'
+    template_name = 'participanteTemplate/responsavel_form_edit.html'
+    def form_valid(self, form):
+        messages.success(self.request, "responsavel atualizado com sucesso.")
+        return super().form_valid(form)
+
 class ParticipanterDelete(View):
     template_name = 'participanteTemplate/participante_confirm_delete.html'
     success_url = reverse_lazy('participantes')
@@ -139,6 +149,9 @@ class ParticipanterDelete(View):
 
     def post(self, request, pk):
         participante = get_object_or_404(Participante, pk=pk)
+        agendaParticipante = agenda.objects.get(participante=participante)
+        if agendaParticipante:
+            agendaParticipante.delete()
         participante.is_active = False
         participante.save()
 
@@ -157,7 +170,9 @@ class EnderecoCreate(CreateView):
         participante = Participante.objects.get(pk=participante_id)
         form.instance.participante = participante
         messages.success(self.request, "Endereço cadastrato com sucesso.")
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        return redirect(reverse('agendaEdit', args=['segunda-feira', participante.username]))
 
     def get_success_url(self):
         return reverse_lazy('participantes')  # Substitua 'sua_pagina_desejada' pela URL desejada

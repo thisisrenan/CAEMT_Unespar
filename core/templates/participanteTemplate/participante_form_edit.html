@@ -10,9 +10,19 @@
     <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Salvar</button>
         {% if participantes.endereco.id %}
             <a href='{% url "Edit_Endereco" participantes.endereco.id %}' class="btn btn-dark" >Editar Endereço</a>
-              {% else %}
+        {% else %}
                <a href='{% url "Create_Endereco" participantes.id %}' class="btn btn-light">Adicionar Endereço</a>
-          {% endif %}
+        {% endif %}
+
+              {% if participantes.responsavel.id %}
+               <a href='{% url "Edit_Responsavel" participantes.responsavel.id %}' class="btn btn-dark">Editar Responsavel</a>
+            {% endif %}
+
+            {% if participantes.agendas_participante %}
+                <a href='{% url "agendaEdit" participantes.agendas_participante participantes.username %}' class="btn btn-dark">Editar Agendamento</a>
+            {% else %}
+                <a href='{% url "agendaEdit" 'segunda-feira' participantes.username %}' class="btn btn-light">Agendar Horario</a>
+            {% endif %}
     <a class="btn btn-danger" href="{% url 'participantes' %}">Cancelar</a>
 
     </form>
