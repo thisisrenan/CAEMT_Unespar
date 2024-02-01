@@ -90,7 +90,19 @@ class ParticipanteForm(forms.ModelForm):
     class Meta:
         model = Participante
         fields = '__all__'
-        exclude = ['estagiarios','username','date_joined','date_final']
+        exclude = ['username','date_joined','date_final', 'responsavel', 'qtd_atendimentos', 'is_active']
+
+
+class ResponsavelForm(forms.ModelForm):
+    class Meta:
+        model = Responsavel
+        fields = '__all__'
+        exclude = ['participante']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.required = False
 
 class EnderecoForm(forms.ModelForm):
     class Meta:

@@ -15,3 +15,10 @@ def add_minutes(value, minutes):
         return new_datetime.time()
 
     return value
+
+
+@register.filter
+def calculate_age(birthdate):
+    today = datetime.today()
+    age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    return age

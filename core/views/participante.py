@@ -1,3 +1,5 @@
+from datetime import datetime, time, timedelta
+
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
@@ -11,10 +13,14 @@ from django.http import HttpResponseRedirect
 
 from django.views import View
 
-from core.forms import ParticipanteForm, EnderecoForm
-from core.models.users import Participante, Endereco
+from core.forms import ParticipanteForm, EnderecoForm, ResponsavelForm
+from core.models.users import Participante, Endereco, Responsavel, agenda
 
 from .core import is_supervisor
+
+
+
+
 
 class ParticipanteCreate(CreateView):
     model = Participante
@@ -23,20 +29,72 @@ class ParticipanteCreate(CreateView):
     template_name = 'participanteTemplate/participante_form.html'
     success_url = reverse_lazy('participantes')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = kwargs.get('form', ParticipanteForm)
+        context['responsavel_form'] = kwargs.get('responsavel_form', ResponsavelForm(prefix='responsavel'))
+        return context
+
     def form_valid(self, form):
+        responsavel_form = ResponsavelForm(self.request.POST, prefix='responsavel')
+        for field_name, field_value in form.cleaned_data.items():
+            item = form.cleaned_data[field_name]
+            if field_name not in ['serie', 'escola', 'telefone']:
+                if not item:
+                    messages.warning(self.request, "O Campo'" + field_name + "'é obrigatorio")
+                    return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
+
         nome = form.cleaned_data['nome']
         sobrenome = form.cleaned_data['sobrenome']
+        data_nascimento = form.cleaned_data['data_de_nascimento']
         username = f"{nome.replace(' ', '').capitalize()}_{sobrenome.replace(' ', '').capitalize()}"
-        if Participante.objects.filter(username=username).exists():
-            messages.error(self.request, f"Erro ao criar o participante. O Participante '{username}' já está em uso.")
-            return self.render_to_response(self.get_context_data(form=form))
+
+        participante = Participante.objects.filter(nome=nome, sobrenome=sobrenome).first()
+        if participante:
+            messages.warning(self.request, "Participante já existe.")
+            return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
 
         form.instance.username = username
+
+
+        today = datetime.today()
+        age = today.year - data_nascimento.year - ((today.month, today.day) < (data_nascimento.month, data_nascimento.day))
+        if age < 18:
+
+            for field_name, field_value in responsavel_form.data.items():
+                if field_name not in ['serie', 'escola','participante']:
+                    if not field_value:
+                        messages.warning(self.request, f"O Campo '{field_name}' é obrigatório")
+                        return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
+
+            participante = form.save()
+            if responsavel_form.is_valid():
+                nome_responsavel = responsavel_form.cleaned_data['nome']
+                sobrenome_responsavel = responsavel_form.cleaned_data['sobrenome']
+                telefone_responsavel = responsavel_form.cleaned_data['telefone']
+                email_responsavel = responsavel_form.cleaned_data['email']
+
+                responsavel = Responsavel.objects.create(
+                    nome=nome_responsavel,
+                    sobrenome=sobrenome_responsavel,
+                    telefone=telefone_responsavel,
+                    email=email_responsavel,
+                    participante=participante
+                )
+
+            else:
+                for field, errors in responsavel_form.errors.items():
+                    for error in errors:
+                        messages.warning(self.request, f"Erro no campo '{field}': {error}")
+                return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
+
+            messages.success(self.request, "Responsável Criado com sucesso.")
+        else:
+            participante = form.save()
 
         response = super().form_valid(form)
         messages.success(self.request, "Participante Criado com sucesso.")
         return redirect('Create_Endereco', pk=self.object.id)
-
 
 class ParticipanteList(ListView):
     model = Participante
@@ -72,6 +130,15 @@ class ParticipanteEdit(UpdateView):
         return super().form_valid(form)
 
 
+class ResponsalveEdit(UpdateView):
+    model = Responsavel
+    form_class = ResponsavelForm
+    context_object_name = 'responsavel'
+    template_name = 'participanteTemplate/responsavel_form_edit.html'
+    def form_valid(self, form):
+        messages.success(self.request, "responsavel atualizado com sucesso.")
+        return super().form_valid(form)
+
 class ParticipanterDelete(View):
     template_name = 'participanteTemplate/participante_confirm_delete.html'
     success_url = reverse_lazy('participantes')
@@ -82,6 +149,9 @@ class ParticipanterDelete(View):
 
     def post(self, request, pk):
         participante = get_object_or_404(Participante, pk=pk)
+        agendaParticipante = agenda.objects.get(participante=participante)
+        if agendaParticipante:
+            agendaParticipante.delete()
         participante.is_active = False
         participante.save()
 
@@ -100,7 +170,9 @@ class EnderecoCreate(CreateView):
         participante = Participante.objects.get(pk=participante_id)
         form.instance.participante = participante
         messages.success(self.request, "Endereço cadastrato com sucesso.")
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        return redirect(reverse('agendaEdit', args=['segunda-feira', participante.username]))
 
     def get_success_url(self):
         return reverse_lazy('participantes')  # Substitua 'sua_pagina_desejada' pela URL desejada
