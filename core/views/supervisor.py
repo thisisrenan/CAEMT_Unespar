@@ -78,14 +78,6 @@ class SupervisorEdit(UpdateView):
                     messages.error(self.request, "O Campo'" + field_name + "'é obrigatorio")
                     return self.render_to_response(self.get_context_data(form=form))
 
-        nome = form.cleaned_data['first_name']
-        sobrenome = form.cleaned_data['last_name']
-
-        supervisor = User.objects.filter(first_name=nome, last_name=sobrenome).first()
-        if supervisor:
-            messages.error(self.request, "Supervisor já existe.")
-            return self.render_to_response(self.get_context_data(form=form))
-
         messages.success(self.request, "Supervisor atualizado com sucesso.")
         return super().form_valid(form)
 
@@ -116,13 +108,6 @@ class SupervisorEditProfile(UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
     def form_valid(self, form):
-        nome = form.cleaned_data['first_name']
-        sobrenome = form.cleaned_data['last_name']
-
-        username = User.objects.filter(first_name=nome, last_name=sobrenome).first()
-        if username:
-            messages.error(self.request, "username já utilizado.")
-            return self.render_to_response(self.get_context_data(form=form))
 
         messages.success(self.request, "Perfil atualizado com sucesso.")
         return super().form_valid(form)

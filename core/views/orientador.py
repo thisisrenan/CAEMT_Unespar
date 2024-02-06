@@ -81,14 +81,6 @@ class OrientadorEdit(UpdateView):
                     messages.error(self.request, "O Campo'" + field_name + "'é obrigatorio")
                     return self.render_to_response(self.get_context_data(form=form))
 
-        nome = form.cleaned_data['first_name']
-        sobrenome = form.cleaned_data['last_name']
-
-        orientador = Orientador.objects.filter(first_name=nome, last_name=sobrenome).first()
-        if orientador:
-            messages.error(self.request, "Orientador já existe.")
-            return self.render_to_response(self.get_context_data(form=form))
-
         messages.success(self.request, "Orientador atualizado com sucesso.")
         return super().form_valid(form)
 
@@ -124,13 +116,6 @@ class OrientadorEditProfile(UpdateView):
         return reverse_lazy('edit_profile')
 
     def form_valid(self, form):
-        nome = form.cleaned_data['first_name']
-        sobrenome = form.cleaned_data['last_name']
-
-        username = User.objects.filter(first_name=nome, last_name=sobrenome).first()
-        if username:
-            messages.error(self.request, "username já utilizado.")
-            return self.render_to_response(self.get_context_data(form=form))
         messages.success(self.request, "Perfil Editado com sucesso.")
         return super().form_valid(form)
 

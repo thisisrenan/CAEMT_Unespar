@@ -41,7 +41,8 @@ class User(AbstractUser):
         return reverse('supervisores')
 
     def save(self, *args, **kwargs):
-        self.username = f"{self.first_name.replace(' ', '-')}-{self.last_name.replace(' ', '-')}"
+        if not self.username:
+            self.username = f"{self.first_name.replace(' ', '-')}-{self.last_name.replace(' ', '-')}"
         if not self.pk:
             self.role = self.base_role
             generated_password = secrets.token_urlsafe(6)
@@ -119,9 +120,11 @@ class Participante(models.Model):
         return reverse('participantes')
 
     def save(self, *args, **kwargs):
-        self.username = f"{self.nome.replace(' ', '-')}-{self.sobrenome.replace(' ', '-')}"
+        if not self.username:
+            self.username = f"{self.nome.replace(' ', '-')}-{self.sobrenome.replace(' ', '-')}"
         if not self.date_joined:
             self.date_joined = timezone.now()
+
         super().save(*args, **kwargs)
     def __str__(self):
         return self.nome
