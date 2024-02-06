@@ -1,21 +1,21 @@
 {% extends 'layouts/admin.html' %}
-
+{% load custom_filters %}
 {% block content %}
     <main class="container-fluid w-75 mt-5">
     <h1>Painel</h1>
         <div class="row">
             <div class="col-3">
                 <div class=" border border-muted" style="border-radius: 0.5em">
-                     <h5 class="mx-3 p-2sour">
+                     <h5 class="mx-3 mt-2 p-2sour">
                          <i class="bi bi-people-fill"> Participantes</i>
                          {% for participante in participantes %}
                           <div class=" border border-dark mt-2" style="border-radius: 0.5em">
-                             <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
-                                 <span  data-toggle="tooltip" title="{{ participante.username }}" >
+                             <div class="mx-1 p-1 d-flex justify-content-between">
+                                 <span  data-toggle="tooltip" title="{{ participante.username|replace_space }}" >
                                     {% if participante.username|length > 20 %}
-                                      {{ participante.username|slice:":20" }}...
+                                      {{ participante.username|slice:":20"|replace_space }}...
                                     {% else %}
-                                      {{ participante.username }}
+                                      {{ participante.username|replace_space }}
                                     {% endif %}
                                  </span>
                              </div>
@@ -31,13 +31,13 @@
                      <h5 class="mx-3 p-1">
                          <i class="bi bi-file-earmark-medical-fill"> Relatórios em Análise</i>
                           <div class=" border border-dark mt-2" style="border-radius: 0.5em">
-                             <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
+                             <div class="mx-1 p-1  d-flex justify-content-between">
                                  <span>Participante1</span>
                                  <span class="text-muted"><i class="bi bi-x-lg" style="color: red"></i></span>
                              </div>
                           </div>
                           <div class=" border border-dark mt-2" style="border-radius: 0.5em">
-                                <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
+                                <div class="mx-1 p-1  d-flex justify-content-between">
                                     <span>Participante2</span>
                                     <span class="text-muted "><i class="bi bi-arrow-counterclockwise" style="color: blue"></i></span>
                                 </div>
@@ -67,11 +67,11 @@
                                  </div>
                                  <div>
                                     <span>Participante</span><br>
-                                     <span class="text-muted"  data-toggle="tooltip"  title="{{ atendimento.participante.username }}" >
+                                     <span class="text-muted"  data-toggle="tooltip"  title="{{ atendimento.participante.username|replace_space }}" >
                                     {% if atendimento.participante.username|length > 20 %}
-                                      {{ atendimento.participante.username|slice:":20" }}...
+                                      {{ atendimento.participante.username|slice:":20"|replace_space }}...
                                     {% else %}
-                                      {{ atendimento.participante.username }}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                      {{ atendimento.participante.username|replace_space }}&emsp;&emsp;&emsp;&emsp;&emsp;
                                     {% endif %}
                                  </span>
                                  </div>
@@ -112,11 +112,11 @@
                                 </div>
                                 <div>
                                     <span>Participante</span><br>
-                                     <span class="text-muted"  data-toggle="tooltip"  title="{{ atendimento.participante.username }}" >
+                                     <span class="text-muted"  data-toggle="tooltip"  title="{{ atendimento.participante.username|replace_space }}" >
                                     {% if atendimento.participante.username|length > 20 %}
-                                      {{ atendimento.participante.username|slice:":20" }}...
+                                      {{ atendimento.participante.username|slice:":20"|replace_space }}...
                                     {% else %}
-                                      {{ atendimento.participante.username }}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                      {{ atendimento.participante.username|replace_space }}&emsp;&emsp;&emsp;&emsp;&emsp;
                                     {% endif %}
                                  </span>
                                 </div>
@@ -205,7 +205,6 @@
     border-color: #d9534f;
   }
 
-  /* Estilo quando o switch está ativado */
   .form-check-input:checked {
     background-color: #28a745;
     border-color: #28a745;
@@ -226,41 +225,31 @@
 
 <script>
   $(document).ready(function(){
-    // Verificar o estado dos switches quando a página é carregada
     $('[id^="flexSwitchCheckDefault"]').each(function() {
-      // Obtenha o número do conteúdo relacionado ao switch
       let contentNumber = $(this).attr('id').replace('flexSwitchCheckDefault', '');
 
-      // Exemplo de seleção de conteúdo relacionado com base no número
       let conteudoAtivo = $(`#conteudoAtivo${contentNumber}`);
       let conteudoDesativo = $(`#conteudoDesativo${contentNumber}`);
 
       if ($(this).prop("checked")) {
-        // Switch está ativo
         conteudoAtivo.removeClass('d-none');
         conteudoDesativo.addClass('d-none');
       } else {
-        // Switch está desativado
         conteudoAtivo.addClass('d-none');
         conteudoDesativo.removeClass('d-none');
       }
     });
 
-    // Atualizar o conteúdo quando um switch é alterado
     $('[id^="flexSwitchCheckDefault"]').change(function(){
-      // Obtenha o número do conteúdo relacionado ao switch
       let contentNumber = $(this).attr('id').replace('flexSwitchCheckDefault', '');
 
-      // Exemplo de seleção de conteúdo relacionado com base no número
       let conteudoAtivo = $(`#conteudoAtivo${contentNumber}`);
       let conteudoDesativo = $(`#conteudoDesativo${contentNumber}`);
 
       if ($(this).prop("checked")) {
-        // Switch está ativo
         conteudoAtivo.removeClass('d-none');
         conteudoDesativo.addClass('d-none');
       } else {
-        // Switch está desativado
         conteudoAtivo.addClass('d-none');
         conteudoDesativo.removeClass('d-none');
       }

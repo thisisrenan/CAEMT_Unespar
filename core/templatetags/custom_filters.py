@@ -22,3 +22,8 @@ def calculate_age(birthdate):
     today = datetime.today()
     age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
     return age
+
+
+@register.filter
+def replace_space(value):
+    return value.replace('-', ' ')

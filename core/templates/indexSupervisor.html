@@ -20,64 +20,38 @@
                           <div class="mt-2">
                              <a href="{%  url "estagiarios" %}" type="button" class="btn btn-outline-primary btn-block">Estagiarios</a>
                           </div>
+                          <div class="mt-2">
+                             <a href="{%  url "orientadores" %}" type="button" class="btn btn-outline-primary btn-block">Orientadores</a>
+                          </div>
                     </h5>
                  </div>
+                  <div class=" border border-muted mt-3" style="border-radius: 0.5em">
+                     <h5 class="mx-3 p-2">
+                         <i class="bi bi-people-fill"> Participantes</i>
+                         {% for participante in participantes %}
+                          <div class=" border border-dark mt-2" style="border-radius: 0.5em">
+                             <div class="mx-1 p-1 d-flex justify-content-between">
+                                 <span  data-toggle="tooltip" title="{{ participante.username|replace_space }}" >
+                                 {% if participante.username|length > 17 %}
+                                        {{ participante.username|slice:":17"|replace_space }}...
+                                    {% else %}
+                                        {{ participante.username|replace_space }}
+                                    {% endif %}
+                                 </span>
+                             </div>
+                          </div>
+                          {% empty %}
+                            <p class="text-danger">Até o momento, não há nenhum participante registrado.</p>
+                           {% endfor %}
+
+
+                    </h5>
+                 </div>
+
 
             </div>
             <div class="col-7">
                 <div class=" border border-muted" style="border-radius: 0.5em">
-                     <h5 class="m-5">
-                         <div class="mb-4">
-                             <h4><i class="bi bi-file-earmark-medical-fill"> relatórios Para análise</i></h4>
-                         </div>
-                         {% for atendimento in atendimentos_previstos %}
-                          <div class="borda-trasejada  border-dark mt-3" style="border-radius: 0.5em">
-                             <div class="mx-1 p-1 mt-2 d-flex justify-content-between">
-                                 <div>
-
-                                     <span>Atendimento</span><br>
-
-                                        {% if atendimento.data_atendimento|date:'d F Y' <= data_hj|date:'d F Y' %}
-                                        <span class="text-muted">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
-                                     {% else %}
-                                        <span class="text-danger">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
-                                     {% endif %}
-                                 </div>
-                                 <div>
-                                    <span>Participante</span><br>
-                                     <span class="text-muted"  data-toggle="tooltip"  title="{{ atendimento.participante.username|replace_space }}" >
-                                    {% if atendimento.participante.username|length > 20 %}
-                                      {{ atendimento.participante.username|slice:":20"|replace_space }}...
-                                    {% else %}
-                                      {{ atendimento.participante.username|replace_space }}&emsp;&emsp;&emsp;&emsp;&emsp;
-                                    {% endif %}
-                                 </span>
-                                 </div>
-                                 <div id="conteudoDesativo{{ forloop.counter }}" class="d-none">
-                                     <span>Motivo da Falta</span><br><a href='' data-toggle="modal" data-target="#ModalFaltou{{ forloop.counter }}" class="text-muted"><i class="bi bi-plus-square"> Adicionar</i></a>
-                                 </div>
-                                  <div id="conteudoAtivo{{ forloop.counter }}" class="d-none">
-                                     <span>Anexar Documentos</span><br><a href="" class="text-muted"><i class="bi bi-paperclip"> Arquivo</i></a>
-                                 </div>
-
-                                 <div>
-                                      <span style="margin-left: -1.5em">Presença</span>
-                                    <br>
-                                    <span>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input " type="checkbox" id="flexSwitchCheckDefault{{ forloop.counter }}">
-                                        </div>
-                                    </span>
-                                 </div>
-                          </div>
-                          </div>
-                          {% empty %}
-                            <p class="text-danger"> Até o momento, não há nenhum relatório.</p>
-                         {% endfor %}
-                    </h5>
-
-                 </div>
-                <div class=" border border-muted mt-3" style="border-radius: 0.5em">
                      <h5 class="m-5">
                          <div class="mb-4">
                              <h4><i class="bi bi-clock-history mx-1"> Atendimentos Ocorridos</i></h4>
@@ -153,21 +127,45 @@
                  </div>
                  <div class=" border border-muted mt-3" style="border-radius: 0.5em">
                      <h5 class="mx-3 p-2">
-                         <i class="bi bi-people-fill"> Participantes</i>
-                         {% for participante in participantes %}
+                         <i class="bi bi-people-fill"> Orientadores</i>
+                         {% for orientador in orientadores %}
                           <div class=" border border-dark mt-2" style="border-radius: 0.5em">
                              <div class="mx-1 p-1 d-flex justify-content-between">
-                                 <span  data-toggle="tooltip" title="{{ participante.username|replace_space }}" >
-                                    {% if participante.username|length > 20 %}
-                                      {{ participante.username|slice:":20"|replace_space }}...
+                                 <span  data-toggle="tooltip" title="{{ orientador.username|replace_space }}" >
+                                    {% if orientador.username|length > 20 %}
+                                      {{ orientador.username|slice:":20"|replace_space }}...
                                     {% else %}
-                                      {{ participante.username|replace_space }}
+                                      {{ orientador.username|replace_space }}
                                     {% endif %}
                                  </span>
                              </div>
                           </div>
                           {% empty %}
-                            <p class="text-danger">Até o momento, não há nenhum participante registrado.</p>
+                            <p class="text-danger">Até o momento, não há nenhum orientador registrado.</p>
+                           {% endfor %}
+
+
+                    </h5>
+                 </div>
+                  <div class=" border border-muted mt-3" style="border-radius: 0.5em">
+                     <h5 class="mx-3 p-2">
+                         <i class="bi bi-people-fill"> Usuários Online</i>
+                         <p class="text-muted text-center">{{ logados|length }} usuários online</p>
+                         {% for usuario in logados %}
+
+                          <div class=" border border-dark mt-2" style="border-radius: 0.5em">
+                             <div class="mx-1 p-1  d-flex justify-content-between">
+                                 <span  data-toggle="tooltip" title="{{ usuario.user.username|replace_space }}" >
+                                    {% if usuario.user.username|length > 20 %}
+                                      {{ usuario.user.username |slice:":20"|replace_space }}...
+                                    {% else %}
+                                      {{ usuario.user.username|replace_space }}
+                                    {% endif %}
+                                 </span>
+                             </div>
+                          </div>
+                          {% empty %}
+                            <p class="text-danger">Até o momento, não há nenhum orientador registrado.</p>
                            {% endfor %}
 
 

@@ -45,6 +45,7 @@ class SupervisorCreate(CreateView):
         response = super().form_valid(form)
         email = self.object.email
         senha = secrets.token_urlsafe(6)
+        print(senha)
         self.object.password = make_password(senha)
         self.object.save()
         messages.info(self.request, f"Supervisor criado com sucesso. <br> Email do usuário: {email} <br> Senha do usuário: { senha }", )

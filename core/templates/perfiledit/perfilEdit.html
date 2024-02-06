@@ -1,13 +1,13 @@
 {% extends 'layouts/admin.html' %}
 {% load bootstrap %}
-
+{% load custom_filters %}
 {% block content %}
     <main class="container">
 <div class="d-flex flex-row mt-5 justify-content-evenly">
     <div class="d-flex flex-column align-items-center w-25 rounded-3">
         <img id="perfilimg" src="{{ userProfile.image.url }}" class="perfil-page rounded-circle mt-2" style="object-fit: cover; width: 10em; height: 10em;" alt="">
         <div class="mt-2">
-            <h4 class="text-capitalize d-flex flex-column align-items-center">{{ userProfile.username }}</h4>
+            <h4 class="text-capitalize d-flex flex-column align-items-center">{{ userProfile.username|replace_space }}</h4>
             <p class="text-uppercase text-muted d-flex flex-column align-items-center">{{ userProfile.role }}</p>
             <div class="list-group list-group-flush">
                 <a href="{% url 'perfil' userProfile.username %}" class=" list-group-item list-group-item-action ">Visualizar perfil público</a>

@@ -34,7 +34,7 @@ def home_view(request):
     if user_role == User.Role.ORIENTADOR:
         view_class = homeOrientador
     elif user_role == User.Role.SUPERVISOR:
-        view_class = homeOrientador
+        view_class = homeSupervisor
     else:
         view_class = homeEstagiario
     view_instance = view_class
