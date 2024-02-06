@@ -32,15 +32,18 @@
                     <td>{{ supervisor.last_name }}</td>
                     <td>
                         {% if supervisor.is_active %}
+
                             <a href='{% url "Edit_Supervisor" supervisor.id %}'>
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
+                            {% if supervisor.username != request.user.username %}
                               <a href='#' data-bs-toggle="modal" data-bs-target="#myModal{{ supervisor.id }}">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
                              <a href='#' data-bs-toggle="modal" data-bs-target="#myModalsenha{{ supervisor.id }}">
                                 <i class="bi bi-key-fill"></i>
-                         </a>
+                            </a>
+                            {% endif %}
                         {% else %}
                             <a href='{% url "reativar_user" supervisor.id %}' class="btn btn-danger btn-sm">
                                 Ativar
