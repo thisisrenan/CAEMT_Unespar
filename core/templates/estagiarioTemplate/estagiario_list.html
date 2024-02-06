@@ -43,6 +43,10 @@
                          <a href='#' data-bs-toggle="modal" data-bs-target="#myModal{{ estagiario.id }}">
                                 <i class="bi bi-trash-fill"></i>
                          </a>
+                            <a href='#' data-bs-toggle="modal" data-bs-target="#myModalsenha{{ estagiario.id }}">
+                                <i class="bi bi-key-fill"></i>
+                         </a>
+
                         {% else %}
                         <a href='{% url "reativar_user" estagiario.id %}' class="btn btn-danger btn-sm">
                                 Ativar
@@ -78,6 +82,35 @@
                 </div>
             </div>
         </div>
+                    <div class="modal" id="myModalsenha{{ estagiario.id }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Redefinir senha do Usuario {{ estagiario.username }}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <!-- Pode adicionar mais informações do orientador aqui se desejar -->
+                        Tem certeza que deseja redefinir a senha do usuário {{ estagiario.username }}?
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                             <form method="POST" action="{% url 'redefinir_senha' estagiario.id %}">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-danger">Confirmar</button>
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
             {% endfor %}
             {% else %}
                  <tr>

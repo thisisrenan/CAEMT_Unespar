@@ -1,5 +1,6 @@
+import secrets
 
-
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
@@ -13,7 +14,7 @@ from django.views import View
 
 
 from core.forms import OrientadorForm, OrientadorFormEdit
-from core.models.users import Orientador
+from core.models.users import Orientador, User
 
 from .core import is_supervisor
 
@@ -24,8 +25,30 @@ class OrientadorCreate(CreateView):
     success_url = reverse_lazy('orientadores')
 
     def form_valid(self, form):
-        messages.success(self.request, "Orientador criado com sucesso.")
-        return super().form_valid(form)
+        for field_name, field_value in form.cleaned_data.items():
+            item = form.cleaned_data[field_name]
+            if field_name not in ['outrasinformacoes', 'biografia']:
+                if not item:
+                    messages.error(self.request, "O Campo'" + field_name + "'é obrigatorio")
+                    return self.render_to_response(self.get_context_data(form=form))
+
+        nome = form.cleaned_data['first_name']
+        sobrenome = form.cleaned_data['last_name']
+
+        orientador = Orientador.objects.filter(first_name=nome, last_name=sobrenome).first()
+        if orientador:
+            messages.error(self.request, "Estagiario já existe.")
+            return self.render_to_response(self.get_context_data(form=form))
+
+
+
+        response = super().form_valid(form)
+        email = self.object.email
+        senha = secrets.token_urlsafe(6)
+        self.object.password = make_password(senha)
+        self.object.save()
+        messages.info(self.request, f"Orientador criado com sucesso. <br> Email do usuário: {email} <br> Senha do usuário: { senha }", )
+        return response
 
 
 class OrientadorList(ListView):
@@ -42,6 +65,8 @@ class OrientadorList(ListView):
 
         return orientador.order_by('-is_active')
 
+
+
 class OrientadorEdit(UpdateView):
     model = Orientador
     template_name = 'orientadoreTemplate/orientador_form.html'
@@ -49,6 +74,21 @@ class OrientadorEdit(UpdateView):
     success_url = reverse_lazy('orientadores')
 
     def form_valid(self, form):
+        for field_name, field_value in form.cleaned_data.items():
+            item = form.cleaned_data[field_name]
+            if field_name not in ['outrasinformacoes', 'biografia']:
+                if not item:
+                    messages.error(self.request, "O Campo'" + field_name + "'é obrigatorio")
+                    return self.render_to_response(self.get_context_data(form=form))
+
+        nome = form.cleaned_data['first_name']
+        sobrenome = form.cleaned_data['last_name']
+
+        orientador = Orientador.objects.filter(first_name=nome, last_name=sobrenome).first()
+        if orientador:
+            messages.error(self.request, "Orientador já existe.")
+            return self.render_to_response(self.get_context_data(form=form))
+
         messages.success(self.request, "Orientador atualizado com sucesso.")
         return super().form_valid(form)
 
@@ -84,6 +124,13 @@ class OrientadorEditProfile(UpdateView):
         return reverse_lazy('edit_profile')
 
     def form_valid(self, form):
+        nome = form.cleaned_data['first_name']
+        sobrenome = form.cleaned_data['last_name']
+
+        username = User.objects.filter(first_name=nome, last_name=sobrenome).first()
+        if username:
+            messages.error(self.request, "username já utilizado.")
+            return self.render_to_response(self.get_context_data(form=form))
         messages.success(self.request, "Perfil Editado com sucesso.")
         return super().form_valid(form)
 

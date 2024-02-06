@@ -59,7 +59,7 @@
 
                                      <span>Atendimento</span><br>
 
-                                        {% if atendimento.data_atendimento|date:'d F Y' <= data_hj|date:'d F Y' %}
+                                        {% if atendimento.data_atendimento|date:'d F Y' >= data_hj|date:'d F Y' %}
                                         <span class="text-muted">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>
                                      {% else %}
                                         <span class="text-danger">{{ atendimento.data_atendimento|date:"d/m/Y - H:i" }}</span>

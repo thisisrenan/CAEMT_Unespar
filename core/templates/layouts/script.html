@@ -13,11 +13,11 @@
         icon: '{{ message.tags }}',
         toast: true,
         position: 'top-end',
-          timer: 4000,
+          timer: 15000,
         timerProgressBar: true,
         showCloseButton: true,
         showConfirmButton: false,
-        title: '{{ message }}'
+        title: '{{ message|safe }}'
       })
     </script>
   {% endfor %}
@@ -44,13 +44,14 @@
 
 <script>
   document.body.addEventListener('msg_success', function (evt) {
+      var tempoExibicao = evt.detail.timer || 4000;
     console.log(evt)
     Swal.fire({
       width: '35em',
       icon: 'success',
       toast: true,
       position: 'top-end',
-        timer: 4000,
+        timer: tempoExibicao,
         timerProgressBar: true,
       showCloseButton: true,
       showConfirmButton: false,
@@ -58,6 +59,10 @@
     })
   })
 </script>
+
+
+
+
 
 <script>
   document.body.addEventListener('msg_error', function (evt) {
@@ -74,4 +79,18 @@
       title: evt.detail.value
     })
   })
+</script>
+
+<script>
+    document.body.addEventListener('msg_info', function (evt) {
+  Swal.fire({
+    width: '35em',
+    icon: 'info',
+    toast: true,
+    position: 'middle',
+    showCloseButton: true,
+    showConfirmButton: false,
+    title: evt.detail.value
+  });
+});
 </script>

@@ -1,5 +1,6 @@
+import secrets
 
-
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.utils import timezone
@@ -151,7 +152,20 @@ def reativarUsuario(request, pk):
         return HttpResponseRedirect(reverse('home'))
 
 
+def redefinirSenha(request,pk):
+    user = get_object_or_404(User, id=pk)
+    senha = secrets.token_urlsafe(6)
+    user.password = make_password(senha)
+    user.save()
+    messages.success(request,
+                  f"Senha Redefinida com Sucesso.<br> Email do usuário: {user.email} <br> Senha do usuário: {senha}", )
 
+    referer = request.META.get('HTTP_REFERER')
+
+    if referer:
+        return HttpResponseRedirect(referer)
+    else:
+        return HttpResponseRedirect(reverse('home'))
 
 class SupervisorEditImage(UpdateView):
     model = User

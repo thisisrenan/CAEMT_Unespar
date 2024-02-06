@@ -28,8 +28,21 @@ def edit_profile_view(request):
 
     return view_instance(request)
 
+def home_view(request):
+    user_role = request.user.role
+
+    if user_role == User.Role.ORIENTADOR:
+        view_class = homeOrientador
+    elif user_role == User.Role.SUPERVISOR:
+        view_class = homeOrientador
+    else:
+        view_class = homeEstagiario
+    view_instance = view_class
+
+    return view_instance(request)
+
 urlpatterns = [
-    path("", homeOrientador, name="home"),
+    path("", home_view, name="home"),
     path("agenda", rediAgenda, name='agendas'),
     path("agenda/<str:semana>", agendaHome, name='agenda'),
     path("agendas/<str:semana>/<str:username>", agendaEdit, name='agendaEdit'),
@@ -53,6 +66,7 @@ urlpatterns += [
 #URLS CORE
 urlpatterns += [
     path('Reativar/<int:pk>', reativarUsuario, name='reativar_user'),
+    path('Gerarsenha/<int:pk>', redefinirSenha, name='redefinir_senha'),
 ]
 
 
