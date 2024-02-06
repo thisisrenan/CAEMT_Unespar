@@ -7,7 +7,8 @@ from django.utils import timezone
 from datetime import time
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
-
+import secrets
+import string
 def user_directory_path(instance, filename):
     ext = filename.split('.')[-1]
     new_filename = f"{instance.username}"
@@ -40,13 +41,11 @@ class User(AbstractUser):
         return reverse('supervisores')
 
     def save(self, *args, **kwargs):
+        self.username = f"{self.first_name.replace(' ', '-')}-{self.last_name.replace(' ', '-')}"
         if not self.pk:
             self.role = self.base_role
-            if self.base_role == "SUPERVISOR":
-                self.set_password(self.password)
-            else:
-                self.set_password(self.password)  # Defina uma senha padrão ou lógica adequada para outros papéis
-        super().save(*args, **kwargs)
+            generated_password = secrets.token_urlsafe(6)
+            self.set_password(generated_password)
         super().save(*args, **kwargs)
 
 

@@ -38,6 +38,9 @@
                               <a href='#' data-bs-toggle="modal" data-bs-target="#myModal{{ supervisor.id }}">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
+                             <a href='#' data-bs-toggle="modal" data-bs-target="#myModalsenha{{ supervisor.id }}">
+                                <i class="bi bi-key-fill"></i>
+                         </a>
                         {% else %}
                             <a href='{% url "reativar_user" supervisor.id %}' class="btn btn-danger btn-sm">
                                 Ativar
@@ -46,7 +49,7 @@
                     </td>
                 </tr>
 
-                              <div class="modal" id="myModal{{ supervisor.id }}">
+                <div class="modal" id="myModal{{ supervisor.id }}">
             <div class="modal-dialog">
                 <div class="modal-content">
 
@@ -65,6 +68,34 @@
                     <!-- Modal footer -->
                     <div class="modal-footer">
                              <form method="POST" action="{% url 'Delete_Supervisor' supervisor.id %}">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-danger">Confirmar</button>
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+                 <div class="modal" id="myModalsenha{{ supervisor.id }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Redefinir senha do Usuario {{ supervisor.username }}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <!-- Pode adicionar mais informações do orientador aqui se desejar -->
+                        Tem certeza que deseja redefinir a senha do usuário {{ supervisor.username }}?
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                             <form method="POST" action="{% url 'redefinir_senha' supervisor.id %}">
                               {% csrf_token %}
                               <button type="submit" class="btn btn-danger">Confirmar</button>
                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

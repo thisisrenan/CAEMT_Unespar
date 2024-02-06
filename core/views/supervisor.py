@@ -1,3 +1,6 @@
+import secrets
+
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
@@ -21,6 +24,32 @@ class SupervisorCreate(CreateView):
     template_name = 'supervisorTemplate/supervisor_form.html'
     success_url = reverse_lazy('supervisores')
 
+    def form_valid(self, form):
+        for field_name, field_value in form.cleaned_data.items():
+            item = form.cleaned_data[field_name]
+            if field_name not in ['outrasinformacoes', 'biografia']:
+                if not item:
+                    messages.error(self.request, "O Campo'" + field_name + "'é obrigatorio")
+                    return self.render_to_response(self.get_context_data(form=form))
+
+        nome = form.cleaned_data['first_name']
+        sobrenome = form.cleaned_data['last_name']
+
+        supervisor = User.objects.filter(first_name=nome, last_name=sobrenome).first()
+        if supervisor:
+            messages.error(self.request, "Supervisor já existe.")
+            return self.render_to_response(self.get_context_data(form=form))
+
+
+
+        response = super().form_valid(form)
+        email = self.object.email
+        senha = secrets.token_urlsafe(6)
+        self.object.password = make_password(senha)
+        self.object.save()
+        messages.info(self.request, f"Supervisor criado com sucesso. <br> Email do usuário: {email} <br> Senha do usuário: { senha }", )
+        return response
+
 
 @method_decorator(user_passes_test(is_supervisor, login_url='home'), name='dispatch')
 class SupervisorList(ListView):
@@ -39,6 +68,25 @@ class SupervisorEdit(UpdateView):
     context_object_name = 'supervisores'
     template_name = 'supervisorTemplate/supervisor_form.html'
     form_class = SupervisorFormEdit
+
+    def form_valid(self, form):
+        for field_name, field_value in form.cleaned_data.items():
+            item = form.cleaned_data[field_name]
+            if field_name not in ['outrasinformacoes', 'biografia']:
+                if not item:
+                    messages.error(self.request, "O Campo'" + field_name + "'é obrigatorio")
+                    return self.render_to_response(self.get_context_data(form=form))
+
+        nome = form.cleaned_data['first_name']
+        sobrenome = form.cleaned_data['last_name']
+
+        supervisor = User.objects.filter(first_name=nome, last_name=sobrenome).first()
+        if supervisor:
+            messages.error(self.request, "Supervisor já existe.")
+            return self.render_to_response(self.get_context_data(form=form))
+
+        messages.success(self.request, "Supervisor atualizado com sucesso.")
+        return super().form_valid(form)
 
 class SupervisorDelete(View):
     success_url = reverse_lazy('supervisores')
@@ -67,6 +115,14 @@ class SupervisorEditProfile(UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
     def form_valid(self, form):
+        nome = form.cleaned_data['first_name']
+        sobrenome = form.cleaned_data['last_name']
+
+        username = User.objects.filter(first_name=nome, last_name=sobrenome).first()
+        if username:
+            messages.error(self.request, "username já utilizado.")
+            return self.render_to_response(self.get_context_data(form=form))
+
         messages.success(self.request, "Perfil atualizado com sucesso.")
         return super().form_valid(form)
     def get_success_url(self):

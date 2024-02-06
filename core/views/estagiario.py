@@ -1,3 +1,5 @@
+import secrets
+
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
@@ -6,12 +8,13 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.hashers import make_password
 
 from django.views import View
 
 
 from core.forms import EstagiarioForm, EstagiarioFormEdit
-from core.models.users import Estagiario
+from core.models.users import Estagiario, User
 
 from .core import is_supervisor
 
@@ -22,8 +25,30 @@ class EstagiarioCreate(CreateView):
     success_url = reverse_lazy('estagiarios')
 
     def form_valid(self, form):
-        messages.success(self.request, "Estagiario criado com sucesso.")
-        return super().form_valid(form)
+        for field_name, field_value in form.cleaned_data.items():
+            item = form.cleaned_data[field_name]
+            if field_name not in ['outrasinformacoes', 'biografia']:
+                if not item:
+                    messages.error(self.request, "O Campo'" + field_name + "'é obrigatorio")
+                    return self.render_to_response(self.get_context_data(form=form))
+
+        nome = form.cleaned_data['first_name']
+        sobrenome = form.cleaned_data['last_name']
+
+        estagiario = Estagiario.objects.filter(first_name=nome, last_name=sobrenome).first()
+        if estagiario:
+            messages.error(self.request, "Estagiario já existe.")
+            return self.render_to_response(self.get_context_data(form=form))
+
+
+
+        response = super().form_valid(form)
+        email = self.object.email
+        senha = secrets.token_urlsafe(6)
+        self.object.password = make_password(senha)
+        self.object.save()
+        messages.info(self.request, f"Estagiario criado com sucesso. <br> Email do usuário: {email} <br> Senha do usuário: { senha }", )
+        return response
 
 
     def form_invalid(self, form):
@@ -61,6 +86,21 @@ class EstagiarioEdit(UpdateView):
     form_class = EstagiarioFormEdit
 
     def form_valid(self, form):
+        for field_name, field_value in form.cleaned_data.items():
+            item = form.cleaned_data[field_name]
+            if field_name not in ['outrasinformacoes', 'biografia']:
+                if not item:
+                    messages.error(self.request, "O Campo'" + field_name + "'é obrigatorio")
+                    return self.render_to_response(self.get_context_data(form=form))
+
+        nome = form.cleaned_data['first_name']
+        sobrenome = form.cleaned_data['last_name']
+
+        estagiario = Estagiario.objects.filter(first_name=nome, last_name=sobrenome).first()
+        if estagiario:
+            messages.error(self.request, "Estagiario já existe.")
+            return self.render_to_response(self.get_context_data(form=form))
+
         messages.success(self.request, "Estagiario atualizado com sucesso.")
         return super().form_valid(form)
 
@@ -91,6 +131,14 @@ class EstagiarioEditProfile(UpdateView):
         return self.request.user.estagiario
 
     def form_valid(self, form):
+        nome = form.cleaned_data['first_name']
+        sobrenome = form.cleaned_data['last_name']
+
+        username = User.objects.filter(first_name=nome, last_name=sobrenome).first()
+        if username:
+            messages.error(self.request, "username já utilizado.")
+            return self.render_to_response(self.get_context_data(form=form))
+
         messages.success(self.request, "Perfil atualizado com sucesso.")
         return super().form_valid(form)
     def get_success_url(self):
