@@ -1,5 +1,6 @@
 from datetime import datetime, time, timedelta
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
@@ -149,7 +150,11 @@ class ParticipanterDelete(View):
 
     def post(self, request, pk):
         participante = get_object_or_404(Participante, pk=pk)
-        agendaParticipante = agenda.objects.get(participante=participante)
+        try:
+            agendaParticipante = agenda.objects.get(participante=participante)
+        except ObjectDoesNotExist:
+            agendaParticipante = None
+
         if agendaParticipante:
             agendaParticipante.delete()
         participante.is_active = False

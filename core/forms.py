@@ -100,3 +100,13 @@ class OrientadorEditProfileForm(UserChangeForm):
     class Meta:
         model = Orientador
         fields = ['first_name', 'last_name', 'telefone', 'biografia', 'outrasinformacoes', 'data_de_nascimento']
+
+
+class inputImage(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ['image']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['image'].widget = forms.ClearableFileInput(attrs={'class': 'form-control'})

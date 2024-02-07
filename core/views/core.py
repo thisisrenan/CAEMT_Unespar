@@ -17,6 +17,7 @@ from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.views import PasswordChangeView
 
+from core.forms import inputImage
 from core.models import User
 from core.models.users import UserActivity, Atendimentos, agenda, Participante, Estagiario, Orientador
 
@@ -188,14 +189,16 @@ def redefinirSenha(request,pk):
 class SupervisorEditImage(UpdateView):
     model = User
     context_object_name = 'userProfile'
-    fields = ['image']
+    form_class = inputImage
     template_name = 'perfiledit/perfilEdit.html'
+
     def get_object(self, queryset=None):
-            return self.request.user
+        return self.request.user
 
     def form_valid(self, form):
         messages.success(self.request, "Imagem atualizada com sucesso.")
         return super().form_valid(form)
+
     def get_success_url(self):
         return reverse_lazy('edit_photo')
 
