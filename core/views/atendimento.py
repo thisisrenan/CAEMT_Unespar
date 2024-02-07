@@ -17,8 +17,10 @@ from django.contrib.auth.views import PasswordChangeView
 
 from core.models import User
 from core.models.users import UserActivity, Atendimentos, agenda, Participante
+from core.views.core import is_login
 
 
+@user_passes_test(is_login, login_url='/ERRO')
 def presencaFalta(request):
     if request.method == 'POST':
         participante = request.POST.get("participante")

@@ -5,11 +5,11 @@ from django.contrib import messages
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
 
 from core.models.users import Documentos, Participante
-from .core import is_supervisor
-
+from .core import *
+@method_decorator(user_passes_test(is_login, login_url='/ERRO'), name='dispatch')
 class DocumentosCreate(CreateView):
     model = Documentos
     fields = ['titulo', 'descricao', 'arquivo']
@@ -31,7 +31,7 @@ class DocumentosCreate(CreateView):
         return super().form_valid(form)
 
 
-
+@method_decorator(user_passes_test(is_login, login_url='/ERRO'), name='dispatch')
 class DocumentosList(ListView):
     model = Documentos
     template_name = 'documentosTemplate/documentos_list.html'
@@ -51,6 +51,7 @@ class DocumentosList(ListView):
 
         return context
 
+@method_decorator(user_passes_test(is_login, login_url='/ERRO'), name='dispatch')
 class DocumentosDelete(DeleteView):
     model = Documentos
     context_object_name = 'documento'

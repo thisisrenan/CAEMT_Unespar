@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
 from django.http import HttpResponseRedirect
 
 
@@ -17,12 +17,12 @@ from django.views import View
 from core.forms import ParticipanteForm, EnderecoForm, ResponsavelForm
 from core.models.users import Participante, Endereco, Responsavel, agenda
 
-from .core import is_supervisor
+from .core import *
 
 
 
 
-
+@method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
 class ParticipanteCreate(CreateView):
     model = Participante
     form_class = ParticipanteForm
@@ -50,9 +50,9 @@ class ParticipanteCreate(CreateView):
         data_nascimento = form.cleaned_data['data_de_nascimento']
         username = f"{nome.replace(' ', '').capitalize()}_{sobrenome.replace(' ', '').capitalize()}"
 
-        participante = Participante.objects.filter(nome=nome, sobrenome=sobrenome).first()
+        participante = User.objects.filter(nome=nome, sobrenome=sobrenome).first()
         if participante:
-            messages.warning(self.request, "Participante já existe.")
+            messages.error(self.request, "Usuário já existe.")
             return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
 
         form.instance.username = username
@@ -97,6 +97,7 @@ class ParticipanteCreate(CreateView):
         messages.success(self.request, "Participante Criado com sucesso.")
         return redirect('Create_Endereco', pk=self.object.id)
 
+@method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
 class ParticipanteList(ListView):
     model = Participante
     template_name = 'participanteTemplate/participante_list.html'
@@ -120,6 +121,8 @@ class ParticipanteList(ListView):
                     return Participante.objects.filter(nome__icontains=query).order_by('-is_active')
                 return Participante.objects.all().order_by('-is_active')
 
+
+@method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
 class ParticipanteEdit(UpdateView):
     model = Participante
     form_class = ParticipanteForm
@@ -131,6 +134,7 @@ class ParticipanteEdit(UpdateView):
         return super().form_valid(form)
 
 
+@method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
 class ResponsalveEdit(UpdateView):
     model = Responsavel
     form_class = ResponsavelForm
@@ -140,6 +144,8 @@ class ResponsalveEdit(UpdateView):
         messages.success(self.request, "responsavel atualizado com sucesso.")
         return super().form_valid(form)
 
+
+@method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
 class ParticipanterDelete(View):
     template_name = 'participanteTemplate/participante_confirm_delete.html'
     success_url = reverse_lazy('participantes')
@@ -163,6 +169,8 @@ class ParticipanterDelete(View):
         messages.success(request, "Participante deletado com sucesso.")
         return redirect(self.success_url)
 
+
+@method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
 class EnderecoCreate(CreateView):
     model = Endereco
     form_class = EnderecoForm
@@ -183,6 +191,7 @@ class EnderecoCreate(CreateView):
         return reverse_lazy('participantes')  # Substitua 'sua_pagina_desejada' pela URL desejada
 
 
+@method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
 class EnderecoEdit(UpdateView):
     model = Endereco
     form_class = EnderecoForm
@@ -194,6 +203,7 @@ class EnderecoEdit(UpdateView):
         return super().form_valid(form)
 
 
+@user_passes_test(is_supervisor, login_url='/ERRO')
 def reativarParticipante(request, pk):
     user = get_object_or_404(Participante, id=pk)
     user.is_active = True

@@ -11,6 +11,7 @@ class UpdateUserActivityMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
 
+
         inactive_users = UserActivity.objects.filter(last_activity__lt=timezone.now() - timedelta(minutes=1))
         inactive_users.delete()
 

@@ -16,8 +16,9 @@ from django.views import View
 from core.forms import EstagiarioForm, EstagiarioFormEdit
 from core.models.users import Estagiario, User
 
-from .core import is_supervisor
+from .core import *
 
+@method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
 class EstagiarioCreate(CreateView):
     model = Estagiario
     form_class = EstagiarioForm
@@ -35,9 +36,9 @@ class EstagiarioCreate(CreateView):
         nome = form.cleaned_data['first_name']
         sobrenome = form.cleaned_data['last_name']
 
-        estagiario = Estagiario.objects.filter(first_name=nome, last_name=sobrenome).first()
+        estagiario = User.objects.filter(first_name=nome, last_name=sobrenome).first()
         if estagiario:
-            messages.error(self.request, "Estagiario já existe.")
+            messages.error(self.request, "Usuário já existe.")
             return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -56,6 +57,8 @@ class EstagiarioCreate(CreateView):
         messages.error(self.request, "Erro ao criar estagiário. Por favor, corrija os erros no formulário")
         return render(self.request, self.template_name, {'form': form})
 
+
+@method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
 class EstagiarioList(ListView):
     model = Estagiario
     template_name = 'estagiarioTemplate/estagiario_list.html'
@@ -80,6 +83,7 @@ class EstagiarioList(ListView):
 
         return estagiarios
 
+@method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
 class EstagiarioEdit(UpdateView):
     model = Estagiario
     template_name = 'estagiarioTemplate/estagiario_form.html'
@@ -96,7 +100,7 @@ class EstagiarioEdit(UpdateView):
         messages.success(self.request, "Estagiario atualizado com sucesso.")
         return super().form_valid(form)
 
-
+@method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
 class EstagiarioDelete(View):
     template_name = 'estagiarioTemplate/estagiario_confirm_delete.html'
     success_url = reverse_lazy('estagiarios')
@@ -113,6 +117,8 @@ class EstagiarioDelete(View):
         messages.success(request, "Estagiario deletado com sucesso.")
         return redirect(self.success_url)
 
+
+@method_decorator(user_passes_test(is_estagiario, login_url='/ERRO'), name='dispatch')
 class EstagiarioEditProfile(UpdateView):
     model = Estagiario
     context_object_name = 'userProfile'

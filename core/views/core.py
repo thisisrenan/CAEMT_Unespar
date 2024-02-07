@@ -23,13 +23,20 @@ from core.models.users import UserActivity, Atendimentos, agenda, Participante, 
 
 
 def is_supervisor(user):
-    return user.is_authenticated and user.role == 'SUPERVISOR'
+    return user.is_authenticated and  user.role == 'SUPERVISOR'
 
 def is_orientador(user):
     return user.is_authenticated and user.role == 'ORIENTADOR'
 
 def is_estagiario(user):
     return user.is_authenticated and user.role == 'ESTAGIARIO'
+
+def is_supervisor_orientador(user):
+    return user.is_authenticated and (user.role == 'SUPERVISOR' or user.role == 'ORIENTADOR')
+
+def is_login(user):
+    return user.is_authenticated
+
 
 
 def get_logged_in_users():
@@ -38,8 +45,8 @@ def get_logged_in_users():
     return users_activity
 
 def index(request):
-
     return render(request, 'registration/login.html', {})
+
 
 @login_required
 def homeEstagiario(request):
@@ -102,7 +109,6 @@ def homeEstagiario(request):
     print(participantes)
     return render(request, "indexEstagiario.html", context)
 
-
 @login_required
 def homeOrientador(request):
     user = request.user
@@ -129,6 +135,8 @@ def homeOrientador(request):
     print(participantes)
     return render(request, "indexOrientador.html", context)
 
+
+@login_required
 def homeSupervisor(request):
     user = request.user
     estagiarios = Estagiario.objects.filter(is_active=True)
@@ -147,6 +155,7 @@ def homeSupervisor(request):
     print(participantes)
     return render(request, "indexSupervisor.html", context)
 
+
 @login_required
 def PerfilProfile(request, username):
     user = get_object_or_404(User,username=username)
@@ -155,7 +164,9 @@ def PerfilProfile(request, username):
     }
     return render(request, 'perfil/perfil.html', context)
 
-#edit perfil
+
+@user_passes_test(is_supervisor, login_url='/ERRO')
+@login_required
 def reativarUsuario(request, pk):
     user = get_object_or_404(User, id=pk)
     user.is_active = True
@@ -170,14 +181,18 @@ def reativarUsuario(request, pk):
     else:
         return HttpResponseRedirect(reverse('home'))
 
-
-def redefinirSenha(request,pk):
+@user_passes_test(is_supervisor, login_url='/ERRO')
+@login_required
+def redefinirSenha(request, pk):
     user = get_object_or_404(User, id=pk)
-    senha = secrets.token_urlsafe(6)
-    user.password = make_password(senha)
-    user.save()
-    messages.success(request,
-                  f"Senha Redefinida com Sucesso.<br> Email do usuário: {user.email} <br> Senha do usuário: {senha}", )
+
+    if request.method == 'POST':
+        senha = secrets.token_urlsafe(6)
+        user.password = make_password(senha)
+        user.save()
+        messages.success(request, f"Senha Redefinida com Sucesso. <br>"
+                                  f"Email do usuário: {user.email}  <br>"
+                                  f"Senha do usuário: {senha}")
 
     referer = request.META.get('HTTP_REFERER')
 
@@ -186,6 +201,8 @@ def redefinirSenha(request,pk):
     else:
         return HttpResponseRedirect(reverse('home'))
 
+
+@method_decorator(login_required, name='dispatch')
 class SupervisorEditImage(UpdateView):
     model = User
     context_object_name = 'userProfile'
@@ -201,8 +218,7 @@ class SupervisorEditImage(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('edit_photo')
-
-
+@method_decorator(login_required, name='dispatch')
 class SupervisorChangePasswordView(PasswordChangeView):
     template_name = 'perfiledit/changePassword.html'
 
@@ -217,5 +233,8 @@ class SupervisorChangePasswordView(PasswordChangeView):
         return reverse_lazy('edit_profile')
 
 
+@login_required
+def paginaErro(request):
+    return render(request, 'layouts/erro.html')
 
 

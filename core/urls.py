@@ -14,7 +14,7 @@ from .views.core import *
 from .views.atendimento import *
 
 def edit_profile_view(request):
-    # Determine a role do usuário
+
     user_role = request.user.role
 
     # Escolha a visualização com base na role do usuário
@@ -28,18 +28,21 @@ def edit_profile_view(request):
 
     return view_instance(request)
 
+
 def home_view(request):
-    user_role = request.user.role
+    if request.user.is_authenticated:
+        user_role = request.user.role
+        if user_role == User.Role.ORIENTADOR:
+            view_class = homeOrientador
+        elif user_role == User.Role.SUPERVISOR:
+            view_class = homeSupervisor
+        else:
+            view_class = homeEstagiario
+        view_instance = view_class
 
-    if user_role == User.Role.ORIENTADOR:
-        view_class = homeOrientador
-    elif user_role == User.Role.SUPERVISOR:
-        view_class = homeSupervisor
+        return view_instance(request)
     else:
-        view_class = homeEstagiario
-    view_instance = view_class
-
-    return view_instance(request)
+        return render(request, '/login/')
 
 urlpatterns = [
     path("", home_view, name="home"),
@@ -49,6 +52,10 @@ urlpatterns = [
     path('agenda/criar/', criar_agenda, name='create_agenda'),
     path('agenda/deletar/<int:pk>', deletar_agenda, name='deletar_agenda'),
 
+]
+
+urlpatterns += [
+    path("ERRO",paginaErro, name='erro'),
 ]
 
 urlpatterns += [

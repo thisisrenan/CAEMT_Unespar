@@ -92,6 +92,7 @@
                     <a class="nav-link dropdown-item" aria-current="page" href="{% url "home" %}">Home</a>
                 </li>
         </ul>
+        {% if request.user.role != "ESTAGIARIO" %}
         <hr class="dropdown-divider " style="color: lightgray; margin: 0.5em;">
         <ul style="list-style: none; margin-top: 0; margin-bottom: 0;">
            <li class="nav-item">
@@ -99,6 +100,7 @@
                 </li>
         </ul>
         <hr class="dropdown-divider " style="color: lightgray; margin: 0.5em;">
+      {% if request.user.role == "SUPERVISOR" %}
        <ul style="list-style: none; margin-bottom: 0;">
            <li class="nav-item">
                     <a class="nav-link dropdown-item" aria-current="page" href="{% url 'orientadores' %}">Orientadores</a>
@@ -110,7 +112,9 @@
                     <a class="nav-link dropdown-item" aria-current="page" href="{% url 'supervisores' %}">Supervisores</a>
                 </li>
         </ul>
+
         <hr class="dropdown-divider " style="color: lightgray; margin: 0.5em;">
+           {% endif %}
         <ul style="list-style: none; margin-top: 0; margin-bottom: 0;">
            <li class="nav-item">
                     <a class="nav-link dropdown-item" aria-current="page" href="{% url 'participantes' %}">Participantes</a>
@@ -122,6 +126,7 @@
                     <a class="nav-link dropdown-item" aria-current="page" href="{% url 'agendas' %}">Agendamento</a>
                 </li>
         </ul>
+      {% endif %}
   </div>
 </div>
 

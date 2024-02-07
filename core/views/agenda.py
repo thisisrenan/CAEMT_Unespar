@@ -9,11 +9,14 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Count, Q
 from core.models.users import agenda, Participante, Estagiario
-from .core import is_supervisor
+from .core import is_supervisor, is_supervisor_orientador
 
+
+@user_passes_test(is_supervisor_orientador, login_url='/ERRO')
 def horario_reservado(self, horario, reserva):
     return self.horario == horario
 
+@user_passes_test(is_supervisor_orientador, login_url='/ERRO')
 def rediAgenda(request):
     dias_semana = {
         0: 'SEGUNDA-FEIRA',
@@ -31,6 +34,7 @@ def rediAgenda(request):
 
     return redirect('agenda/' + dia)
 
+@user_passes_test(is_supervisor_orientador, login_url='/ERRO')
 def agendaHome(request, semana):
     dia_da_semana_valor = [x[0] for x in agenda.SEMANA_CHOICES if x[1].upper() == semana.upper()]
 
@@ -91,6 +95,7 @@ def agendaHome(request, semana):
     else:
         return HttpResponse("Dia da semana inválido. Página de erro aqui.")
 
+@user_passes_test(is_supervisor_orientador, login_url='/ERRO')
 def criar_agenda(request):
     if request.method == 'POST':
         semana = request.POST.get("semana")
@@ -123,7 +128,7 @@ def criar_agenda(request):
         else:
             return redirect(reverse('agenda', args=[semana]))
 
-
+@user_passes_test(is_supervisor_orientador, login_url='/ERRO')
 def deletar_agenda(request,pk):
     semana = request.POST.get("semana")
     agendamento = agenda.objects.get(id=pk)
@@ -132,6 +137,7 @@ def deletar_agenda(request,pk):
     return redirect(reverse('agenda', args=[semana]))
 
 
+@user_passes_test(is_supervisor_orientador, login_url='/ERRO')
 def agendaEdit(request, semana, username):
     dia_da_semana_valor = [x[0] for x in agenda.SEMANA_CHOICES if x[1].upper() == semana.upper()]
     try:

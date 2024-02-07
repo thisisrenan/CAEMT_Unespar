@@ -16,8 +16,8 @@ from django.views import View
 from core.forms import OrientadorForm, OrientadorFormEdit
 from core.models.users import Orientador, User
 
-from .core import is_supervisor
-
+from .core import *
+@method_decorator(user_passes_test(is_supervisor, login_url='/ERRO'), name='dispatch')
 class OrientadorCreate(CreateView):
     model = Orientador
     form_class = OrientadorForm
@@ -35,9 +35,9 @@ class OrientadorCreate(CreateView):
         nome = form.cleaned_data['first_name']
         sobrenome = form.cleaned_data['last_name']
 
-        orientador = Orientador.objects.filter(first_name=nome, last_name=sobrenome).first()
+        orientador = User.objects.filter(first_name=nome, last_name=sobrenome).first()
         if orientador:
-            messages.error(self.request, "Estagiario já existe.")
+            messages.error(self.request, "Usuário já existe.")
             return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -50,7 +50,7 @@ class OrientadorCreate(CreateView):
         messages.info(self.request, f"Orientador criado com sucesso. <br> Email do usuário: {email} <br> Senha do usuário: { senha }", )
         return response
 
-
+@method_decorator(user_passes_test(is_supervisor, login_url='/ERRO'), name='dispatch')
 class OrientadorList(ListView):
     model = Orientador
     template_name = 'orientadoreTemplate/orientador_list.html'
@@ -66,7 +66,7 @@ class OrientadorList(ListView):
         return orientador.order_by('-is_active')
 
 
-
+@method_decorator(user_passes_test(is_supervisor, login_url='/ERRO'), name='dispatch')
 class OrientadorEdit(UpdateView):
     model = Orientador
     template_name = 'orientadoreTemplate/orientador_form.html'
@@ -85,7 +85,7 @@ class OrientadorEdit(UpdateView):
         return super().form_valid(form)
 
 
-
+@method_decorator(user_passes_test(is_supervisor, login_url='/ERRO'), name='dispatch')
 class OrientadorDelete(View):
     success_url = reverse_lazy('orientadores')
 
@@ -102,7 +102,7 @@ class OrientadorDelete(View):
         return redirect(self.success_url)
 
 #edit Perfil
-
+@method_decorator(user_passes_test(is_orientador, login_url='/ERRO'), name='dispatch')
 class OrientadorEditProfile(UpdateView):
     model = Orientador
     context_object_name = 'userProfile'

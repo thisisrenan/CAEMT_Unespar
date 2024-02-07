@@ -15,8 +15,9 @@ from django.views import View
 from core.forms import SupervisorForm, SupervisorFormEdit
 from core.models import User
 
-from .core import is_supervisor
+from .core import *
 
+@method_decorator(user_passes_test(is_supervisor, login_url='/ERRO'), name='dispatch')
 class SupervisorCreate(CreateView):
     model = User
     form_class = SupervisorForm
@@ -37,7 +38,7 @@ class SupervisorCreate(CreateView):
 
         supervisor = User.objects.filter(first_name=nome, last_name=sobrenome).first()
         if supervisor:
-            messages.error(self.request, "Supervisor já existe.")
+            messages.error(self.request, "Usuário já existe.")
             return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -52,7 +53,7 @@ class SupervisorCreate(CreateView):
         return response
 
 
-@method_decorator(user_passes_test(is_supervisor, login_url='home'), name='dispatch')
+@method_decorator(user_passes_test(is_supervisor, login_url='/ERRO'), name='dispatch')
 class SupervisorList(ListView):
     model = User
     template_name = 'supervisorTemplate/supervisor_list.html'
@@ -64,6 +65,7 @@ class SupervisorList(ListView):
             return User.objects.filter(username__icontains=query, role='SUPERVISOR')
         return User.objects.filter(role='SUPERVISOR')
 
+@method_decorator(user_passes_test(is_supervisor, login_url='/ERRO'), name='dispatch')
 class SupervisorEdit(UpdateView):
     model = User
     context_object_name = 'supervisores'
@@ -81,6 +83,7 @@ class SupervisorEdit(UpdateView):
         messages.success(self.request, "Supervisor atualizado com sucesso.")
         return super().form_valid(form)
 
+@method_decorator(user_passes_test(is_supervisor, login_url='/ERRO'), name='dispatch')
 class SupervisorDelete(View):
     success_url = reverse_lazy('supervisores')
 
@@ -98,7 +101,7 @@ class SupervisorDelete(View):
 
 
 #edit Perfil
-
+@method_decorator(user_passes_test(is_supervisor, login_url='/ERRO'), name='dispatch')
 class SupervisorEditProfile(UpdateView):
     model = User
     context_object_name = 'userProfile'
