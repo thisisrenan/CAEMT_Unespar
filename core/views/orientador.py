@@ -34,9 +34,10 @@ class OrientadorCreate(CreateView):
 
         nome = form.cleaned_data['first_name']
         sobrenome = form.cleaned_data['last_name']
+        username = f"{nome.replace(' ', '-')}-{sobrenome.replace(' ', '-')}"
 
-        orientador = User.objects.filter(first_name=nome, last_name=sobrenome).first()
-        if orientador:
+        user = User.objects.filter(username=username)
+        if user:
             messages.error(self.request, "Usuário já existe.")
             return self.render_to_response(self.get_context_data(form=form))
 

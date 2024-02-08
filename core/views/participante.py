@@ -50,7 +50,7 @@ class ParticipanteCreate(CreateView):
         data_nascimento = form.cleaned_data['data_de_nascimento']
         username = f"{nome.replace(' ', '').capitalize()}_{sobrenome.replace(' ', '').capitalize()}"
 
-        participante = User.objects.filter(nome=nome, sobrenome=sobrenome).first()
+        participante = Participante.objects.filter(username=username)
         if participante:
             messages.error(self.request, "Usuário já existe.")
             return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
@@ -61,15 +61,16 @@ class ParticipanteCreate(CreateView):
         today = datetime.today()
         age = today.year - data_nascimento.year - ((today.month, today.day) < (data_nascimento.month, data_nascimento.day))
         if age < 18:
-
             for field_name, field_value in responsavel_form.data.items():
-                if field_name not in ['serie', 'escola','participante']:
+
+                if field_name not in ['serie', 'escola']:
                     if not field_value:
-                        messages.warning(self.request, f"O Campo '{field_name}' é obrigatório")
+                        messages.warning(self.request, f"Os dados do responsável são obrigatórios")
                         return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
 
-            participante = form.save()
+
             if responsavel_form.is_valid():
+                participante = form.save()
                 nome_responsavel = responsavel_form.cleaned_data['nome']
                 sobrenome_responsavel = responsavel_form.cleaned_data['sobrenome']
                 telefone_responsavel = responsavel_form.cleaned_data['telefone']

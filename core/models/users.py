@@ -24,8 +24,8 @@ class User(AbstractUser):
 
     email = models.EmailField(unique=True, verbose_name='Email')
     username = models.CharField(unique=True, verbose_name='Username', max_length=10)
-    biografia = models.CharField(verbose_name='Bio', max_length=50, blank=True)
-    outrasinformacoes = models.CharField(verbose_name='OutrasInformacoes', max_length=500, blank=True)
+    biografia = models.CharField(verbose_name='Biografia', max_length=50, blank=True)
+    outrasinformacoes = models.CharField(verbose_name='Outras Informações', max_length=500, blank=True)
     image = models.ImageField(upload_to='pics', default='padrao.png')
 
     USERNAME_FIELD = 'email'
@@ -52,7 +52,7 @@ class User(AbstractUser):
 
 class Orientador(User):
     base_role = User.Role.ORIENTADOR
-    data_de_nascimento = models.DateField(verbose_name='Nascimento', blank=True)
+    data_de_nascimento = models.DateField(verbose_name='Data De Nascimento', blank=True)
     telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
 
     class Meta:

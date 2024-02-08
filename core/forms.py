@@ -12,6 +12,19 @@ class OrientadorForm(forms.ModelForm):
         exclude = ['role', 'username','user_permissions', 'groups', 'is_staff', 'is_superuser', 'last_login', 'is_active','password','image',]
         fields = [ 'first_name', 'last_name', 'email', 'data_de_nascimento', 'telefone', 'biografia','outrasinformacoes']
 
+    telefone = PhoneNumberField(
+        widget=forms.TextInput(attrs={'class': 'telefone-input', 'placeholder': '+55 (__) 9 9999 9999'}),
+        error_messages={'invalid': 'Número de telefone inválido'}
+    )
+    data_de_nascimento = forms.DateField(
+        widget=forms.TextInput(attrs={'class': 'data-nascimento-input', 'placeholder': 'DD/MM/AAAA'}),
+        error_messages={'invalid': 'Data de nascimento inválida'}
+    )
+    email = forms.EmailField(
+        widget=forms.TextInput(attrs={'class': 'email-input', 'placeholder': 'email@gmail.com'}),
+        error_messages={'invalid': 'Email inválido'}
+    )
+
 
 
 class OrientadorFormEdit(forms.ModelForm):
@@ -19,6 +32,15 @@ class OrientadorFormEdit(forms.ModelForm):
         model = Orientador
         exclude = ['role','username', 'user_permissions', 'groups', 'is_staff', 'is_superuser', 'last_login', 'is_active','image']
         fields = ['first_name', 'last_name', 'data_de_nascimento', 'telefone','biografia','outrasinformacoes' ]
+
+    telefone = PhoneNumberField(
+        widget=forms.TextInput(attrs={'class': 'telefone-input', 'placeholder': '+55 (__) 9 9999 9999'}),
+        error_messages={'invalid': 'Número de telefone inválido'}
+    )
+    data_de_nascimento = forms.DateField(
+        widget=forms.TextInput(attrs={'class': 'data-nascimento-input', 'placeholder': 'DD/MM/AAAA'}),
+        error_messages={'invalid': 'Data de nascimento inválida'}
+    )
 
 
 
@@ -30,6 +52,18 @@ class EstagiarioForm(forms.ModelForm):
         exclude = ['role', 'username','user_permissions', 'groups', 'is_staff', 'is_superuser', 'last_login', 'is_active','password','image']
         fields = [ 'first_name', 'last_name', 'email', 'data_de_nascimento','ano_letivo', 'telefone','biografia','outrasinformacoes','orientador_responsavel']
 
+    telefone = PhoneNumberField(
+        widget=forms.TextInput(attrs={'class': 'telefone-input', 'placeholder': '+55 (__) 9 9999 9999'}),
+        error_messages={'invalid': 'Número de telefone inválido'}
+    )
+    data_de_nascimento = forms.DateField(
+        widget=forms.TextInput(attrs={'class': 'data-nascimento-input', 'placeholder': 'DD/MM/AAAA'}),
+        error_messages={'invalid': 'Data de nascimento inválida'}
+    )
+    email = forms.EmailField(
+        widget=forms.TextInput(attrs={'class': 'email-input', 'placeholder': 'email@gmail.com'}),
+        error_messages={'invalid': 'Email inválido'}
+    )
 
 
 class EstagiarioFormEdit(forms.ModelForm):
@@ -37,6 +71,15 @@ class EstagiarioFormEdit(forms.ModelForm):
         model = Estagiario
         exclude = ['role','username', 'user_permissions', 'groups', 'is_staff', 'is_superuser', 'last_login', 'is_active','image']
         fields = ['first_name', 'last_name', 'data_de_nascimento', 'telefone','orientador_responsavel','biografia','outrasinformacoes','ano_letivo']
+
+    telefone = PhoneNumberField(
+        widget=forms.TextInput(attrs={'class': 'telefone-input', 'placeholder': '+55 (__) 9 9999 9999'}),
+        error_messages={'invalid': 'Número de telefone inválido'}
+    )
+    data_de_nascimento = forms.DateField(
+        widget=forms.TextInput(attrs={'class': 'data-nascimento-input', 'placeholder': 'DD/MM/AAAA'}),
+        error_messages={'invalid': 'Data de nascimento inválida'}
+    )
 
 
 class SupervisorForm(forms.ModelForm):
@@ -47,7 +90,18 @@ class SupervisorForm(forms.ModelForm):
         exclude = ['role', 'username','user_permissions', 'groups', 'is_staff', 'is_superuser', 'last_login', 'is_active','password', 'password_confirm', 'image']
         fields = ['first_name', 'last_name', 'email','biografia','outrasinformacoes']
 
-
+    telefone = PhoneNumberField(
+        widget=forms.TextInput(attrs={'class': 'telefone-input', 'placeholder': '+55 (__) 9 9999 9999'}),
+        error_messages={'invalid': 'Número de telefone inválido'}
+    )
+    data_de_nascimento = forms.DateField(
+        widget=forms.TextInput(attrs={'class': 'data-nascimento-input', 'placeholder': 'DD/MM/AAAA'}),
+        error_messages={'invalid': 'Data de nascimento inválida'}
+    )
+    email = forms.EmailField(
+        widget=forms.TextInput(attrs={'class': 'email-input', 'placeholder': 'email@gmail.com'}),
+        error_messages={'invalid': 'Email inválido'}
+    )
 
 
 class SupervisorFormEdit(forms.ModelForm):
@@ -56,6 +110,14 @@ class SupervisorFormEdit(forms.ModelForm):
         exclude = ['role','username','user_permissions', 'groups', 'is_staff', 'is_superuser', 'last_login', 'is_active', 'image',]
         fields = ['first_name', 'last_name','biografia','outrasinformacoes',]
 
+    telefone = PhoneNumberField(
+        widget=forms.TextInput(attrs={'class': 'telefone-input', 'placeholder': '+55 (__) 9 9999 9999'}),
+        error_messages={'invalid': 'Número de telefone inválido'}
+    )
+    data_de_nascimento = forms.DateField(
+        widget=forms.TextInput(attrs={'class': 'data-nascimento-input', 'placeholder': 'DD/MM/AAAA'}),
+        error_messages={'invalid': 'Data de nascimento inválida'}
+    )
 
 
 
@@ -64,6 +126,15 @@ class ParticipanteForm(forms.ModelForm):
         model = Participante
         fields = '__all__'
         exclude = ['username','date_joined','date_final', 'responsavel', 'qtd_atendimentos', 'is_active']
+
+    telefone = PhoneNumberField(
+        widget=forms.TextInput(attrs={'class': 'telefone-input', 'placeholder': '+55 (__) 9 9999 9999'}),
+        error_messages={'invalid': 'Número de telefone inválido'}
+    )
+    data_de_nascimento = forms.DateField(
+        widget=forms.TextInput(attrs={'class': 'data-nascimento-input', 'placeholder': 'DD/MM/AAAA'}),
+        error_messages={'invalid': 'Data de nascimento inválida'}
+    )
 
 
 class ResponsavelForm(forms.ModelForm):
@@ -76,6 +147,11 @@ class ResponsavelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.required = False
+
+    telefone = PhoneNumberField(
+        widget=forms.TextInput(attrs={'class': 'telefone-input', 'placeholder': '+55 (__) 9 9999 9999'}),
+        error_messages={'invalid': 'Número de telefone inválido'}
+    )
 
 class EnderecoForm(forms.ModelForm):
     class Meta:
@@ -93,6 +169,15 @@ class UserProfileForm(forms.ModelForm):
         fields = '__all__'
         exclude = ['role', 'user_permissions', 'groups', 'is_staff', 'is_superuser', 'last_login', 'is_active', 'image', 'password','date_joined','data_final','username']
 
+    telefone = PhoneNumberField(
+        widget=forms.TextInput(attrs={'class': 'telefone-input', 'placeholder': '+55 (__) 9 9999 9999'}),
+        error_messages={'invalid': 'Número de telefone inválido'}
+    )
+    data_de_nascimento = forms.DateField(
+        widget=forms.TextInput(attrs={'class': 'data-nascimento-input', 'placeholder': 'DD/MM/AAAA'}),
+        error_messages={'invalid': 'Data de nascimento inválida'}
+    )
+
 class OrientadorEditProfileForm(UserChangeForm):
     telefone = PhoneNumberField(label='Telefone', required=False)
     data_de_nascimento = forms.DateField(label='Data de Nascimento', required=False)
@@ -101,6 +186,14 @@ class OrientadorEditProfileForm(UserChangeForm):
         model = Orientador
         fields = ['first_name', 'last_name', 'telefone', 'biografia', 'outrasinformacoes', 'data_de_nascimento']
 
+    telefone = PhoneNumberField(
+        widget=forms.TextInput(attrs={'class': 'telefone-input', 'placeholder': '+55 (__) 9 9999 9999'}),
+        error_messages={'invalid': 'Número de telefone inválido'}
+    )
+    data_de_nascimento = forms.DateField(
+        widget=forms.TextInput(attrs={'class': 'data-nascimento-input', 'placeholder': 'DD/MM/AAAA'}),
+        error_messages={'invalid': 'Data de nascimento inválida'}
+    )
 
 class inputImage(UserChangeForm):
     class Meta:

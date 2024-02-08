@@ -1,12 +1,19 @@
 {% extends 'layouts/admin.html' %}
 {% load bootstrap %}
-
+{% load widget_tweaks %}
 {% block content %}
-    <main class="container">
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form|bootstrap }}
-
+<main class="container">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group {% if field.errors %}has-error{% endif %}">
+                <label for="{{ field.id_for_label }}" class="control-label">{{ field.label }}</label>
+                {{ field|add_class:"form-control" }}
+                {% if field.errors %}
+                    <small class="form-text text-danger">{{ field.errors.0|escape }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
     <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Salvar</button>
     <a class="btn btn-danger" href="{% url 'supervisores' %}">Cancelar</a>
 </form>

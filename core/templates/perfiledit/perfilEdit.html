@@ -20,11 +20,11 @@
     <div class="d-flex row rounded-3 border w-75 align-items-stretch">
     <div class="align-items-center mt-3 text-center border-bottom">
         {% if request.resolver_match.url_name == 'edit_photo' %}
-            <h3 class="font-weight-bold">Photo</h3>
-            <p>Add a nice photo of yourself for your profile.</p>
+            <h3 class="font-weight-bold">Foto</h3>
+            <p>Adicione uma bela foto sua ao seu perfil.</p>
         {% elif request.resolver_match.url_name == 'edit_profile'  %}
-            <h3 class="font-weight-bold">Public profile</h3>
-            <p>Add information about yourself</p>
+            <h3 class="font-weight-bold">Perfil público</h3>
+            <p>Adicione informações sobre você.</p>
             {% else %}
         {% endif %}
     </div>
