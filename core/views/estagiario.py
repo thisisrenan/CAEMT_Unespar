@@ -1,5 +1,6 @@
 import secrets
 
+from django.db.models import F
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
@@ -82,7 +83,7 @@ class EstagiarioList(ListView):
         else:
             estagiarios = estagiarios_ativos
 
-        estagiarios = estagiarios.order_by('-is_active')
+        estagiarios = estagiarios.order_by(F('date_joined').desc(), '-is_active')
 
         return estagiarios
 

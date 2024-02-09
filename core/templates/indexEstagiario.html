@@ -1,7 +1,7 @@
 {% extends 'layouts/admin.html' %}
 {% load custom_filters %}
 {% block content %}
-    <main class="container-fluid w-75 mt-5">
+    <main class="container-fluid w-75 mt-2" style="width: 100%; transform: scale(0.9)">
     <h1>Painel</h1>
         <div class="row">
             <div class="col-3">
@@ -71,9 +71,9 @@
                                     {% if atendimento.participante.username|length > 20 %}
                                       {{ atendimento.participante.username|slice:":20"|replace_space }}...
                                     {% else %}
-                                      {{ atendimento.participante.username|replace_space }}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                      {{ atendimento.participante.username|replace_space }}
                                     {% endif %}
-                                 </span>
+                                    </span>
                                  </div>
                                  <div id="conteudoDesativo{{ forloop.counter }}" class="d-none">
                                      <span>Motivo da Falta</span><br><a href='' data-toggle="modal" data-target="#ModalFaltou{{ forloop.counter }}" class="text-muted"><i class="bi bi-plus-square"> Adicionar</i></a>
@@ -116,7 +116,7 @@
                                     {% if atendimento.participante.username|length > 20 %}
                                       {{ atendimento.participante.username|slice:":20"|replace_space }}...
                                     {% else %}
-                                      {{ atendimento.participante.username|replace_space }}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                      {{ atendimento.participante.username|replace_space }}
                                     {% endif %}
                                  </span>
                                 </div>
@@ -152,7 +152,10 @@
             </div>
         </div>
 
-     {% for atendimento in atendimentos_previstos %}
+
+
+    </main>
+  {% for atendimento in atendimentos_previstos %}
         <!--ModalFaltou-->
     <div class="modal" id="ModalFaltou{{ forloop.counter }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
@@ -172,7 +175,7 @@
                     <div class="row">
                         <div class="col-12">
                             <span>Motivo da Falta:</span>
-                            <textarea name="motivo" id="motivo" class="form-control" maxlength="100" rows="3" style="resize: none; font-size: 1.1em"></textarea>
+                            <textarea name="motivo" id="motivo" class="form-control" maxlength="100" rows="3" required style="resize: none; font-size: 1.1em"></textarea>
                         </div>
 
                     </div>
@@ -192,9 +195,6 @@
 </div>
 </div>
     {% endfor %}
-
-    </main>
-
       <style>
     .borda-trasejada {
       border: 1px dashed #000;

@@ -64,8 +64,8 @@ class SupervisorList(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q')
         if query:
-            return User.objects.filter(username__icontains=query.replace(' ', '-'), role='SUPERVISOR')
-        return User.objects.filter(role='SUPERVISOR')
+            return User.objects.filter(username__icontains=query.replace(' ', '-'), role='SUPERVISOR').order_by('date_joined')
+        return User.objects.filter(role='SUPERVISOR').order_by('date_joined')
 
 @method_decorator(user_passes_test(is_supervisor, login_url='/ERRO'), name='dispatch')
 class SupervisorEdit(UpdateView):

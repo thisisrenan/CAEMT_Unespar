@@ -1,6 +1,7 @@
 from datetime import datetime, time, timedelta
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import F
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
@@ -116,12 +117,12 @@ class ParticipanteList(ListView):
         else:
             if user.role == 'ORIENTADOR':
                 if query:
-                    return Participante.objects.filter(nome__icontains=query,is_active=True).order_by('-is_active')
-                return Participante.objects.filter(is_active=True).order_by('-is_active')
+                    return Participante.objects.filter(nome__icontains=query,is_active=True).order_by(F('date_joined').desc(), '-is_active')
+                return Participante.objects.filter(is_active=True).order_by(F('date_joined').desc(), '-is_active')
             else:
                 if query:
-                    return Participante.objects.filter(nome__icontains=query).order_by('-is_active')
-                return Participante.objects.all().order_by('-is_active')
+                    return Participante.objects.filter(nome__icontains=query).order_by(F('date_joined').desc(), '-is_active')
+                return Participante.objects.all().order_by(F('date_joined').desc(), '-is_active')
 
 
 @method_decorator(user_passes_test(is_supervisor_orientador, login_url='/ERRO'), name='dispatch')
