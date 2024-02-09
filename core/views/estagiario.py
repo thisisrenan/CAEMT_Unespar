@@ -64,18 +64,20 @@ class EstagiarioList(ListView):
     model = Estagiario
     template_name = 'estagiarioTemplate/estagiario_list.html'
     context_object_name = 'estagiarios'
+    paginate_by = 10
 
     def get_queryset(self):
         query = self.request.GET.get('q')
         role_do_usuario = self.request.user.role
 
         estagiarios_ativos = Estagiario.objects.filter(is_active=True)
+        estagiarios_desativados = Estagiario.objects.filter(is_active=False)
 
         if query:
-            estagiarios_ativos = estagiarios_ativos.filter(username__icontains=query)
+            estagiarios_ativos = estagiarios_ativos.filter(username__icontains=query.replace(' ', '-'))
+            estagiarios_desativados = estagiarios_desativados.filter(username__icontains=query.replace(' ', '-'))
 
         if role_do_usuario == 'SUPERVISOR':
-            estagiarios_desativados = Estagiario.objects.filter(is_active=False)
             estagiarios = estagiarios_ativos.union(estagiarios_desativados)
         else:
             estagiarios = estagiarios_ativos

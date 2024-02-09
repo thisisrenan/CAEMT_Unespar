@@ -59,11 +59,12 @@ class SupervisorList(ListView):
     model = User
     template_name = 'supervisorTemplate/supervisor_list.html'
     context_object_name = 'supervisores'
+    paginate_by = 10
 
     def get_queryset(self):
         query = self.request.GET.get('q')
         if query:
-            return User.objects.filter(username__icontains=query, role='SUPERVISOR')
+            return User.objects.filter(username__icontains=query.replace(' ', '-'), role='SUPERVISOR')
         return User.objects.filter(role='SUPERVISOR')
 
 @method_decorator(user_passes_test(is_supervisor, login_url='/ERRO'), name='dispatch')

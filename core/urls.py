@@ -42,7 +42,8 @@ def home_view(request):
 
         return view_instance(request)
     else:
-        return render(request, '/login/')
+        view_instance = homeSupervisor
+        return view_instance(request)
 
 urlpatterns = [
     path("", home_view, name="home"),

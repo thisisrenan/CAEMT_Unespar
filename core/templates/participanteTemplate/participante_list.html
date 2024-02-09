@@ -6,15 +6,20 @@
     <div class="d-flex col mb-3 mt-3 justify-content-between">
          <a href='{%  url "Create_Participante" %}' class="btn btn-light">Criar Participante</a>
     <div>
-        <form method="get" action="{% url 'participantes' %}">
-        <input type="text" name="q" placeholder="Buscar participantes" >
-            <button type="submit" class="btn btn-light "><i class="bi bi-search"></i></button>
+       <form method="get" action="{% url 'participantes' %}">
+            {% with search_query=request.GET.q %}
+                {% if search_query %}
+                <a href="{% url 'participantes' %}" class="btn btn-sm btn-outline-dark"><i class="bi bi-x-lg"></i></a>
+                {% endif %}
+                <input type="text" name="q" placeholder="Buscar participantes" value="{{ search_query }}">
+            {% endwith %}
+            <button type="submit" class="btn btn-light"><i class="bi bi-search"></i></button>
         </form>
     </div>
 
     </div>
 <div class="row">
-  <div class=" m-auto">
+    <div class=" m-auto">
     <table class="table table-hover">
         <thead class="table-light">
              <th scope="col">#</th>
@@ -95,8 +100,46 @@
         </tbody>
       </table>
 
-
     </div>
+    <div class="container d-flex justify-content-center">
+  <nav aria-label="Page navigation">
+    {% if is_paginated %}
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{page_obj.previous_page_number}}"
+          >&laquo;</a
+        >
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#">&laquo;</a>
+      </li>
+      {% endif %}
+      {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+      <li class="page-item"><a class="page-link active">{{ i }}</a></li>
+      {% else %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+      </li>
+      {% endif %}
+      {% endfor %} {% if page_obj.has_next %}
+      <li class="page-item">
+        <a href="?page={{page_obj.next_page_number}}" class="page-link"
+          >&raquo;</a
+        >
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link">&raquo;</a>
+      </li>
+      {% endif %}
+    </ul>
+    {% endif %}
+  </nav>
+</div>
+
 </div>
     </main>
 {% endblock %}

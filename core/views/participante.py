@@ -103,6 +103,7 @@ class ParticipanteList(ListView):
     model = Participante
     template_name = 'participanteTemplate/participante_list.html'
     context_object_name = 'participantes'
+    paginate_by = 10
 
     def get_queryset(self):
 

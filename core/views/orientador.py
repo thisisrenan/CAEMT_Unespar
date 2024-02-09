@@ -56,11 +56,12 @@ class OrientadorList(ListView):
     model = Orientador
     template_name = 'orientadoreTemplate/orientador_list.html'
     context_object_name = 'orientadores'
+    paginate_by = 10
 
     def get_queryset(self):
         query = self.request.GET.get('q')
         if query:
-            orinetador = Orientador.objects.filter(username__icontains=query)
+            orientador = Orientador.objects.filter(username__icontains=query.replace(' ', '-'))
         else:
             orientador = Orientador.objects.all()
 
