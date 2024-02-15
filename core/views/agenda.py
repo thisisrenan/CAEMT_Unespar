@@ -124,7 +124,7 @@ def criar_agenda(request):
         nova_agenda.save()
         messages.success(request, "Agendado com sucesso.")
         if request.POST.get('edit') == 'True':
-            return redirect(reverse('agendaEdit', args=[semana, participante.username]))
+            return redirect(reverse('Participante_perfil', args=[participante.username]))
         else:
             return redirect(reverse('agenda', args=[semana]))
 
@@ -206,5 +206,6 @@ def agendaEdit(request, semana, username):
             "users": participante.username,
         }
         return render(request, "agenda/index.html", context)
+
     else:
         return HttpResponse("Dia da semana inválido. Página de erro aqui.")

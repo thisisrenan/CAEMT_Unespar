@@ -23,7 +23,7 @@
             {% else %}
                 <a href='{% url "agendaEdit" 'segunda-feira' participantes.username %}' class="btn btn-light">Agendar Horario</a>
             {% endif %}
-    <a class="btn btn-danger" href="{% url 'participantes' %}">Cancelar</a>
+   <a class="btn btn-danger" href="{% url 'Participante_perfil' participantes.username %}">Cancelar</a>
 
     </form>
     </main>

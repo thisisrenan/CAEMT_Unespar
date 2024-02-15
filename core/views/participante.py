@@ -49,7 +49,8 @@ class ParticipanteCreate(CreateView):
         nome = form.cleaned_data['nome']
         sobrenome = form.cleaned_data['sobrenome']
         data_nascimento = form.cleaned_data['data_de_nascimento']
-        username = f"{nome.replace(' ', '').capitalize()}_{sobrenome.replace(' ', '').capitalize()}"
+        username = f"{nome.replace(' ', '-')}-{sobrenome.replace(' ', '-')}"
+
 
         participante = Participante.objects.filter(username=username)
         if participante:
@@ -190,6 +191,13 @@ class EnderecoCreate(CreateView):
 
         return redirect(reverse('agendaEdit', args=['segunda-feira', participante.username]))
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        participante_id = self.kwargs['pk']
+        participante = get_object_or_404(Participante, id=participante_id)
+        context['participante'] = participante
+        return context
+
     def get_success_url(self):
         return reverse_lazy('participantes')  # Substitua 'sua_pagina_desejada' pela URL desejada
 
@@ -214,3 +222,11 @@ def reativarParticipante(request, pk):
     messages.success(request, "Participante ativado com sucesso.")
 
     return redirect('participantes')
+
+@login_required
+def PerfilParticipante(request, username):
+    participante = get_object_or_404(Participante,username=username)
+    context = {
+        "participante": participante
+    }
+    return render(request, 'participanteTemplate/perfilparticipante.html', context)

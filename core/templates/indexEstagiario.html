@@ -13,9 +13,10 @@
                              <div class="mx-1 p-1 d-flex justify-content-between">
                                  <span  data-toggle="tooltip" title="{{ participante.username|replace_space }}" >
                                     {% if participante.username|length > 20 %}
-                                      {{ participante.username|slice:":20"|replace_space }}...
+
+                                    <a href="{% url 'Participante_perfil' participante.username %}">  {{ participante.username|slice:":20"|replace_space }}...</a>
                                     {% else %}
-                                      {{ participante.username|replace_space }}
+                                      <a href="{% url 'Participante_perfil' participante.username %}"> {{ participante.username|replace_space }} </a>
                                     {% endif %}
                                  </span>
                              </div>

@@ -117,7 +117,7 @@ class Participante(models.Model):
     qtd_atendimentos = models.IntegerField(default=0)
 
     def get_absolute_url(self):
-        return reverse('participantes')
+        return reverse('Participante_perfil', kwargs={'username': self.username})
 
     def save(self, *args, **kwargs):
         if not self.username:
@@ -159,7 +159,8 @@ class Endereco(models.Model):
     participante = models.OneToOneField(Participante, on_delete=models.CASCADE , null=True, blank=True, verbose_name='Endereço')
 
     def get_absolute_url(self):
-        return reverse('participantes')
+        return reverse('Participante_perfil', kwargs={'username': self.participante.username})
+
 
 
 class Documentos(models.Model):

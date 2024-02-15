@@ -8,7 +8,11 @@
     {{ form|bootstrap }}
 
     <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Salvar</button>
-    <a class="btn btn-danger" href="{% url 'participantes' %}">Cancelar</a>
+    {% if endereco.participante.username %}
+    	    <a class="btn btn-danger" href="{% url 'Participante_perfil' endereco.participante.username %}">Cancelar</a>
+    {% else %}
+        <a class="btn btn-danger" href="{% url 'Participante_perfil' participante.username %}">Cancelar</a>
+    {% endif %}
 </form>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

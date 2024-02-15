@@ -8,7 +8,7 @@
     {{ form|bootstrap }}
 
     <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Salvar</button>
-    <a class="btn btn-danger" href="{% url 'Edit_Participante' responsavel.participante.id %}">Cancelar</a>
+    <a class="btn btn-danger" href="{% url 'Participante_perfil' responsavel.participante.username %}">Cancelar</a>
 
     </form>
     </main>
