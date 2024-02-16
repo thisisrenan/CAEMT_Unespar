@@ -98,7 +98,7 @@ def homeEstagiario(request):
         participantes.append(agendamento.participante)
 
     atendimentos_previstos = Atendimentos.objects.filter(ocorreu=False, estagiario=user).order_by('data_atendimento')
-    atendimentos_ocorridos = Atendimentos.objects.filter(ocorreu=True, estagiario=user).order_by('data_atendimento')
+    atendimentos_ocorridos = Atendimentos.objects.filter(ocorreu=True, estagiario=user).order_by('-data_atendimento')
 
     context = {
         "data_hj": data_atual,
@@ -118,7 +118,7 @@ def homeOrientador(request):
     participantes = []
     atendimentos_ocorridos = []
     for estagiario in estagiarios:
-        atendimentos = Atendimentos.objects.filter(estagiario=estagiario, ocorreu=True)
+        atendimentos = Atendimentos.objects.filter(estagiario=estagiario, ocorreu=True).order_by('-id')
         for atendimento in atendimentos:
             atendimentos_ocorridos.append(atendimento)
 
@@ -143,14 +143,14 @@ def homeSupervisor(request):
     orientadores = Orientador.objects.filter(is_active=True)
     participantes = Participante.objects.filter(is_active=True)
     atendimentos_ocorridos = Atendimentos.objects.filter(ocorreu=True)
-    usuarios_logados = get_logged_in_users()
-    users = get_logged_in_users()
+    usuarios_logados = get_logged_in_users().order_by('-id')
+
     context = {
         "logados": usuarios_logados,
-        "estagiarios": estagiarios,
-        "participantes": participantes,
-        "orientadores": orientadores,
-        "atendimentos_ocorridos": atendimentos_ocorridos
+        "estagiarios": estagiarios.order_by('-id'),
+        "participantes": participantes.order_by('-id'),
+        "orientadores": orientadores.order_by('-id'),
+        "atendimentos_ocorridos": atendimentos_ocorridos.order_by('-id')
     }
     print(participantes)
     return render(request, "indexSupervisor.html", context)

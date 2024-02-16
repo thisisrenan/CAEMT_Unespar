@@ -50,7 +50,7 @@
 
 
             </div>
-            <div class="col-7">
+            <div class="col-8">
                 <div class=" border border-muted" style="border-radius: 0.5em">
                      <h5 class="m-5">
                          <div class="mb-4">
@@ -68,11 +68,24 @@
                                     {% if atendimento.participante.username|length > 20 %}
                                       {{ atendimento.participante.username|slice:":20"|replace_space }}...
                                     {% else %}
-                                      {{ atendimento.participante.username|replace_space }}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                      {{ atendimento.participante.username|replace_space }}&emsp;&emsp;&emsp;
                                     {% endif %}
                                  </span>
                                 </div>
+                                <div>
+                                    <span>Estagiarios</span><br>
+                                    {% for estagiario in atendimento.estagiario.all %}
+                                        <span class="text-muted"  data-toggle="tooltip"  title="{{ estagiario.username|replace_space }}" >
+                                            {% if estagiario.username|length > 20 %}
+                                              {{ atendimento.participante.username|slice:":20"|replace_space }}...
+                                            {% else %}
+                                              {{ estagiario.username|replace_space }}&emsp;&emsp;
+                                            {% endif %}
+                                        </span>
+                                    {% endfor %}
 
+
+                                </div>
                                 <div>
                                     <span>Motivo da Falta</span><br>
                                      {% if atendimento.presenca %}
@@ -102,7 +115,7 @@
                     </h5>
                  </div>
             </div>
-            <div class="col-3">
+            <div class="col-2">
                 <div class=" border border-muted" style="border-radius: 0.5em">
                      <h5 class="mx-3 p-2">
                          <i class="bi bi-people-fill"> Estagiarios</i>
