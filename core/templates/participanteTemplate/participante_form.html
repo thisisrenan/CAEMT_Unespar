@@ -10,8 +10,9 @@
             <h2 class="mt-5"> Cadastro Participante </h2>
             {{ form|bootstrap }}
 
+
            <div id="responsavel-form-container" style="display: none;">
-                <h2 class="mt-5"> Cadastro Responsavel </h2>
+                <h2 class="mt-2"> Cadastro Responsavel </h2>
                 {{ responsavel_form|bootstrap }}
             </div>
 
@@ -21,34 +22,22 @@
     </main>
 
     <script>
-    $(document).ready(function () {
-        function verificarIdade() {
-            var dataNascimento = $('#id_data_de_nascimento').val();
+        $('input[name="data_de_nascimento"]').mask('00/00/0000');
+        $('input[name="telefone"]')
+        $('input[name="telefone_responsavel"]').mask('+55 (00) 0 0000-0000');
+        $(document).ready(function () {
+            function verificarIdade() {
+                var isChecked = $('#checkresponsavel').is(':checked');
 
-            if (dataNascimento) {
-                var idade = calcularIdade(dataNascimento);
-                if (idade < 18) {
+                if (isChecked) {
                     $('#responsavel-form-container').show();
                 } else {
                     $('#responsavel-form-container').hide();
                 }
             }
-        }
 
-        function calcularIdade(dataNascimento) {
-            var hoje = new Date();
-            var dataNascimento = new Date(dataNascimento);
-            var idade = hoje.getFullYear() - dataNascimento.getFullYear();
-
-            if (hoje.getMonth() < dataNascimento.getMonth() || (hoje.getMonth() === dataNascimento.getMonth() && hoje.getDate() < dataNascimento.getDate())) {
-                idade--;
-            }
-
-            return idade;
-        }
-
-        $('#id_data_de_nascimento').change(verificarIdade);
-        verificarIdade();
-    });
+            $('#checkresponsavel').change(verificarIdade);
+            verificarIdade();
+        });
 </script>
 {% endblock %}

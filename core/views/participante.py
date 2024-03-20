@@ -38,17 +38,23 @@ class ParticipanteCreate(CreateView):
         return context
 
     def form_valid(self, form):
+
         responsavel_form = ResponsavelForm(self.request.POST, prefix='responsavel')
+
         for field_name, field_value in form.cleaned_data.items():
             item = form.cleaned_data[field_name]
-            if field_name not in ['serie', 'escola', 'telefone']:
+
+            if field_name not in ['serie', 'escola', 'telefone','checkresponsavel']:
                 if not item:
+
                     messages.warning(self.request, "O Campo'" + field_name + "'é obrigatorio")
                     return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
 
         nome = form.cleaned_data['nome']
         sobrenome = form.cleaned_data['sobrenome']
         data_nascimento = form.cleaned_data['data_de_nascimento']
+        temresponsavel= form.cleaned_data['checkresponsavel']
+        print(temresponsavel, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa")
         username = f"{nome.replace(' ', '-')}-{sobrenome.replace(' ', '-')}"
 
 
@@ -62,7 +68,7 @@ class ParticipanteCreate(CreateView):
 
         today = datetime.today()
         age = today.year - data_nascimento.year - ((today.month, today.day) < (data_nascimento.month, data_nascimento.day))
-        if age < 18:
+        if temresponsavel:
             for field_name, field_value in responsavel_form.data.items():
 
                 if field_name not in ['serie', 'escola']:

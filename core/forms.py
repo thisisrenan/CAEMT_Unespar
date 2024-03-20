@@ -122,6 +122,10 @@ class SupervisorFormEdit(forms.ModelForm):
 
 
 class ParticipanteForm(forms.ModelForm):
+    checkresponsavel = forms.BooleanField(label='Tem responsável?', required=False,
+                                          widget=forms.CheckboxInput(
+                                              attrs={'id': 'checkresponsavel', 'name': 'checkresponsavel'}))
+
     class Meta:
         model = Participante
         fields = '__all__'

@@ -2,14 +2,17 @@
 {% block content %}
 <main class="container">
   <h1 class="mt-5"><a class="btn btn-group-vertical" href="{% url 'Participante_perfil' participante_nome %}"><i class="bi bi-arrow-return-left"></i></a> Documentos do Participante {{ participante_nome }}</h1>
-    <div class="d-flex col mb-3 mt-3 justify-content-between">
+    <div x-data="{ open: false }" >
 
-          <a class="fs-3 text-decoration-none text-dark"  data-bs-toggle="collapse" href="#collapseDoc" role="button" aria-expanded="false" aria-controls="collapseDoc">
-              <i class="bi bi-caret-right">Documentos Pessoais</i>
-          </a>
+
+    <div   class="d-flex col mb-3 mt-3 justify-content-between">
+
+        <a class="fs-3 text-decoration-none text-dark" @click="open = ! open"    data-bs-toggle="collapse" href="#collapseDoc" role="button" aria-expanded="false" aria-controls="collapseDoc" type="button">
+            <i class="bi bi-caret-right"></i> Documentos Pessoais
+        </a>
         <a href="{% url 'Create_Documetos' participante_id %}" class="btn btn-light">Adicionar Documento</a>
     </div>
-<div class="collapse" id="collapseDoc">
+    <div x-show="open"  x-transition.opacity>
   <div class="card card-body">
       {% if documentos %}
       <ul class="list-group list-group-flush">
@@ -61,7 +64,19 @@
       <p>No Documetos</p>
       {% endif %}
   </div>
-</div>
+
+    </div>
+        <button @click="handleClick">...</button>
+    </div>
 
 </main>
+
+
+<script>
+    function handleClick(e) {
+        console.log("TESTE")
+        alert("TESTE")
+    }
+</script>
+
 {% endblock %}

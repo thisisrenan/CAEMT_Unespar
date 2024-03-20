@@ -26,6 +26,7 @@
               <th scope="col">Nome Completo</th>
               <th scope="col">Data de Nacimento</th>
               <th scope="col">Telefone</th>
+             <th scope="col">Data de Inicio</th>
             <th scope="col">Ações</th>
         </thead>
 
@@ -46,6 +47,7 @@
                     </td>
                     <td>{{ participante.data_de_nascimento|date:"d/m/Y"  }}</td>
                     <td>{{ participante.telefone }}</td>
+                    <td>{{ participante.date_joined |date:"d/m/Y"  }}</td>
                     <td>
                         {% if participante.is_active %}
                             <a href="{% url 'Participante_perfil' participante.username %}">
