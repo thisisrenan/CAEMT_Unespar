@@ -23,8 +23,9 @@
 
     <script>
         $('input[name="data_de_nascimento"]').mask('00/00/0000');
-        $('input[name="telefone"]')
-        $('input[name="telefone_responsavel"]').mask('+55 (00) 0 0000-0000');
+        $('input[name="telefone"]').mask('(00) 0 0000-0000');
+        $('input[name="responsavel-telefone"]').mask('(00) 0 0000-0000');
+        
         $(document).ready(function () {
             function verificarIdade() {
                 var isChecked = $('#checkresponsavel').is(':checked');

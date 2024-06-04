@@ -73,6 +73,7 @@ class ParticipanteCreate(CreateView):
 
                 if field_name not in ['serie', 'escola']:
                     if not field_value:
+                        print(field_name, field_value)
                         messages.warning(self.request, f"Os dados do responsável são obrigatórios")
                         return self.render_to_response(self.get_context_data(form=form, responsavel_form=responsavel_form))
 

@@ -53,7 +53,7 @@ class User(AbstractUser):
 class Orientador(User):
     base_role = User.Role.ORIENTADOR
     data_de_nascimento = models.DateField(verbose_name='Data De Nascimento', blank=True)
-    telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
+    telefone = models.CharField(verbose_name='Telefone', blank=True, max_length=16)
 
     class Meta:
         verbose_name_plural = "Orientador"
@@ -81,7 +81,7 @@ class Estagiario(User):
     base_role = User.Role.ESTAGIARIO
     ano_letivo = models.IntegerField(verbose_name='Ano', blank=True, default=3, choices=ANO_CHOICES)
     data_de_nascimento = models.DateField(verbose_name='Nascimento', blank=True)
-    telefone = PhoneNumberField(verbose_name='Telefone', blank=True)
+    telefone = models.CharField(verbose_name='Telefone', blank=True,  max_length=16)
     orientador_responsavel = models.ForeignKey(Orientador, on_delete=models.SET_NULL, null=True, blank=True, related_name='estagiarios', verbose_name='Orientador')
 
     class Meta:
@@ -107,7 +107,7 @@ class Participante(models.Model):
     date_final = models.DateTimeField(verbose_name='Date Final', blank=True, null=True)
     nome = models.CharField(max_length=100)
     sobrenome = models.CharField(max_length=100)
-    telefone = PhoneNumberField(verbose_name='Telefone', blank=True, null=True)
+    telefone = models.CharField(verbose_name='Telefone', blank=True, null=True,  max_length=16)
     motivo_busca_atendimento = models.TextField(verbose_name='Motivo da Busca por Atendimento', blank=True)
     data_de_nascimento = models.DateField( blank=True, null=True)
     escola = models.CharField(max_length=100,blank=True, null=True)
@@ -134,7 +134,7 @@ class Responsavel(models.Model):
 
     nome = models.CharField(max_length=100)
     sobrenome = models.CharField(max_length=100)
-    telefone = PhoneNumberField(verbose_name='Telefone', blank=True, null=True)
+    telefone = models.CharField(verbose_name='Telefone', blank=True, null=True,  max_length=16)
     email = models.EmailField()
     participante = models.OneToOneField(Participante, blank=True, null=True, on_delete=models.CASCADE)
 
