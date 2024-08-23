@@ -1,17 +1,21 @@
 
 
 <div class="d-flex flex-row justify-content-center">
-    <div class="col-sm-12 mt-5">
+    <div class="col-xl-12 mt-5">
         <div class="row d-flex align-items-cente ">
-          <div class="row align-items-center">
-                <h1 class="display-4 col-6 mb-5 font fw-bold">CAEMT Unespar</h1>
-                <img class="col-6" src="../../static/img/logoMus.png" alt="">
+            <div class="row align-items-center">
+                <div class="col-7">
+                    <h1 class="display-5 mb-5 font fw-bold">CAEMT Unespar</h1>
+                </div>
+                <div class="col-5 d-flex justify-content-end">
+                    <img src="../../static/img/logoMus.png" class="img-fluid" alt="">
+                </div>
             </div>
 
             <p class="lead" style="font-size: 1.5em">Centro de Atendimento e Estudos em Musicoterapia</p>
         </div>
     </div>
-    <div class=" col-xl-11 mb-5" >
+    <div class=" col-xl-12 mb-5">
         <form id="form" class="p-5" method="post">
                 {% csrf_token %}
                 <div class="text-center mb-3">
