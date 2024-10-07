@@ -27,3 +27,27 @@ A necessidade de gerenciar eficientemente as informações relacionadas aos part
 - Gerenciamento de atendimentos, permitindo a criação, edição e exclusão de documentos pelos estagiários.
 - Acesso controlado com permissões específicas para cada tipo de usuário.
 
+## Especificações do Banco de Dados
+
+O sistema de banco de dados é o sqllite utilizando o método de modelo que o Django oferece.
+### Modelo Relacional
+OBS: Os nomes das tabelas necessariamente não estão descritos da mesma forma
+![alt text](./img_readme/ModeloBDCAEMT.drawio.png)
+
+
+## Especificações do projeto
+
+O sistema utilizada python com a tecnologia django e está separado nos seguintes diretorios:
+```shell
+.
+├───CAEMTUnespar
+├───core
+│   ├───middleware
+│   ├───migrations
+│   ├───models
+│   ├───static
+│   ├───templates
+│   ├───templatetags
+│   └───views
+└───
+```
